@@ -34,8 +34,9 @@ window.addEventListener("keydown", (e) => {
     keys[e.key.toLowerCase()] = true;
     if (e.key.toLowerCase() === 'c') {
         editMode = !editMode;
-        debugUI.innerText = editMode ? `EDIT MODE ON\nDrag to Paint\n'V': Toggle Solid/Walkable\n'[' / ']': Brush Size\n'F': Fill All Solid\n'X': Clear All` : "Debug Mode: Click any tile to get its ID";
-        debugUI.style.color = editMode ? "#f55" : "#0f0";
+        debugUI.innerText = `EDIT MODE ON\nDrag to Paint\n'V': Toggle Solid/Walkable\n'[' / ']': Brush Size\n'F': Fill All Solid\n'X': Clear All`;
+        debugUI.style.color = "#f55";
+        debugUI.style.display = editMode ? 'block' : 'none';
     }
     
     if (!editMode) return;
@@ -360,20 +361,21 @@ function loop() {
 loadZone("town", 400, 400);
 loop();
 
-// --- 8. DEBUG MODE: CLICK TO GET TILE ID ---
+// --- 8. EDIT MODE UI ---
 const debugUI = document.createElement('div');
 debugUI.style.position = 'absolute';
 debugUI.style.top = '10px';
 debugUI.style.left = '10px';
 debugUI.style.background = 'rgba(0,0,0,0.8)';
-debugUI.style.color = '#0f0';
+debugUI.style.color = '#f55';
 debugUI.style.padding = '10px 15px';
 debugUI.style.fontFamily = 'monospace';
 debugUI.style.fontSize = '16px';
 debugUI.style.pointerEvents = 'none'; // let clicks pass through
 debugUI.style.borderRadius = '5px';
 debugUI.style.zIndex = '1000';
-debugUI.innerText = "Debug Mode: Click any tile to get its ID";
+debugUI.style.display = 'none'; // Hidden by default
+debugUI.innerText = `EDIT MODE ON\nDrag to Paint\n'V': Toggle Solid/Walkable\n'[' / ']': Brush Size\n'F': Fill All Solid\n'X': Clear All`;
 document.body.appendChild(debugUI);
 
 function handleMouse(e) {
@@ -403,14 +405,6 @@ function handleMouse(e) {
                 }
             }
             localStorage.setItem('collision_' + currentZone, JSON.stringify(collisionData));
-        } else if (e.type === 'mousedown') {
-            const tileCol = Math.floor(worldX / tileSize);
-            const tileRow = Math.floor(worldY / tileSize);
-            if (tileRow >= 0 && tileRow < currentMapData.length && tileCol >= 0 && tileCol < currentMapData[0].length) {
-                const tileID = currentMapData[tileRow][tileCol];
-                debugUI.innerText = `Tile ID: ${tileID}\nCol: ${tileCol} | Row: ${tileRow}`;
-                console.log(`Clicked Tile ID: ${tileID} at (Col: ${tileCol}, Row: ${tileRow})`);
-            }
         }
     }
 }
