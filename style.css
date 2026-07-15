@@ -1,0 +1,14 @@
+body {
+    background: #111;
+    margin: 0;
+    overflow: hidden;
+}
+
+/* Canvas fills the screen and stays crisp */
+canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    image-rendering: pixelated;
+    /* Retro look */
+}
