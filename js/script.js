@@ -39,13 +39,25 @@ const player = {
     maxHp: 100,
     attack: 10,
     isAttacking: false,
+    isDefending: false,
+    comboStep: 0,
+    comboTimer: 0,
     image: new Image(),
     frameX: 0,
     frameY: 0,
     isMoving: false,
     animTimer: 0
 };
+player.image = new Image();
 player.image.src = "assets/images/characters/main-character.png";
+
+player.attackImage = new Image();
+player.attackImage.src = "assets/images/characters/main-character-attack.png";
+
+// You can tweak these or remove this block since we handle it dynamically now
+const playerSpriteConfig = {
+    scale: 1.0 
+};
 
 const keys = {};
 
@@ -444,18 +456,44 @@ function update() {
         player.frameY = 3; player.isMoving = true; 
     }
 
+    // Decrement combo window timer
+    if (player.comboTimer > 0) {
+        player.comboTimer--;
+    } else {
+        player.comboStep = 0;
+    }
+
+    // Defense takes priority
+    if (keys["f"]) { // using 'f' instead of 'd' to prevent breaking movement
+        player.isDefending = true;
+        player.isAttacking = false;
+        player.frameX = 4; // defense frame from sample7
+        player.isMoving = false;
+    } else {
+        player.isDefending = false;
+    }
+
     // Animation loop
-    if (player.isMoving) {
-        player.animTimer++;
-        // Speed up animation when sprinting
-        const animSpeedLimit = keys["shift"] ? 4 : 8;
-        if (player.animTimer >= animSpeedLimit) { // change frame based on speed
-            player.frameX = (player.frameX + 1) % 4; // 4 frames per animation
+    if (!player.isDefending) {
+        if (player.isAttacking) {
+            player.animTimer++;
+            // Hold the attack frame for a short duration to show the attack
+            if (player.animTimer >= 10) { 
+                player.isAttacking = false;
+            }
+        } else if (player.isMoving) {
+            player.animTimer++;
+            // Speed up animation when sprinting
+            const animSpeedLimit = keys["shift"] ? 4 : 8;
+            if (player.animTimer >= animSpeedLimit) { // change frame based on speed
+                // Since we use the original walk sprite when moving, we need 4 frames for the walk cycle
+                player.frameX = (player.frameX + 1) % 4; 
+                player.animTimer = 0;
+            }
+        } else {
+            player.frameX = 0; // idle frame
             player.animTimer = 0;
         }
-    } else {
-        player.frameX = 0; // idle frame
-        player.animTimer = 0;
     }
 
     // Update Camera Center
@@ -494,6 +532,8 @@ function update() {
 
     // --- UPDATE NPCs ---
     npcs.forEach(npc => {
+        if (npc.hp <= 0) return; // Dead NPCs don't move or act
+
         npc.directionTimer--;
         if (npc.directionTimer <= 0) {
             npc.directionTimer = Math.random() * 120 + 60; // 1-3 seconds
@@ -596,23 +636,54 @@ function draw() {
     }
 
     // Draw the Player
-    if (player.image.complete && player.image.width > 0) {
-        // The sprite sheet has transparent padding. Custom offsets and frame sizes:
-        const offsetX = 190;
-        const offsetY = 50;
-        const frameWidth = 160;
-        const frameHeight = 214;
+    const useAttackSprite = player.isAttacking || player.isDefending;
+    const currentImg = useAttackSprite ? player.attackImage : player.image;
+    if (currentImg.complete && currentImg.width > 0) {
+        let fW, fH, sX, sY, displayWidth, displayHeight;
+        
+        if (useAttackSprite) {
+            // Centers of the irregular sprite frames in sample7.png
+            const attackCentersX = [88, 250, 414, 555, 707, 872]; // 0:stand, 1:att1, 2:att2, 3:att3, 4:def, 5:att4
+            const attackCentersY = [115, 311, 522, 741];
 
-        // Calculate display size maintaining aspect ratio
-        const displayWidth = player.size;
-        const displayHeight = player.size * (frameHeight / frameWidth);
+            // If the character is facing the wrong way when attacking, swap the values here!
+            // Format: { Walk_Row : Attack_Row }
+            const orientationMap = {
+                0: 0, // Walk Down (0) uses Attack Row 0
+                1: 3, // Walk Left (1) uses Attack Row 3
+                2: 2, // Walk Up (2) uses Attack Row 2
+                3: 1  // Walk Right (3) uses Attack Row 1
+            };
+            const mappedRow = orientationMap[player.frameY];
+
+            fW = 170; // Safe window size around the center
+            fH = 170;
+            sX = attackCentersX[player.frameX] - fW / 2;
+            sY = attackCentersY[mappedRow] - fH / 2;
+
+            // Fix overlap issue where Left-Facing Attack 3 catches the back of Attack 2
+            if (mappedRow === 3 && player.frameX === 3) {
+                sX += 15; // Shift the capture window 15 pixels to the right
+            }
+            
+            // Slightly reduced scale to prevent the character from looking too big
+            displayWidth = player.size * 1.2;
+            displayHeight = player.size * 1.2;
+        } else {
+            // Original walk cycle dimensions
+            fW = 160;
+            fH = 214;
+            sX = 190 + (player.frameX * fW);
+            sY = 50 + (player.frameY * fH);
+            displayWidth = player.size;
+            displayHeight = player.size * (fH / fW);
+        }
 
         ctx.drawImage(
-            player.image,
-            offsetX + (player.frameX * frameWidth),
-            offsetY + (player.frameY * frameHeight),
-            frameWidth, frameHeight,
-            player.x, player.y - (displayHeight - player.size), // align bottom of sprite to collision box
+            currentImg,
+            sX, sY, fW, fH,
+            player.x - (displayWidth - player.size) / 2, // Center horizontally
+            player.y - (displayHeight - player.size), // align bottom of sprite to collision box
             displayWidth, displayHeight
         );
     } else {
@@ -797,6 +868,43 @@ canvas.addEventListener('mousedown', (e) => {
         undoStack.push(JSON.stringify(collisionData));
         if (undoStack.length > 20) undoStack.shift();
         redoStack = [];
+    } else {
+        // Left click to attack
+        if (e.button === 0 && !player.isDefending && !isOverlayActive) {
+            
+            if (player.comboTimer <= 0 || !player.isAttacking) {
+                player.comboStep = 1; // start at attack 1
+            } else {
+                player.comboStep++;
+                if (player.comboStep === 4) player.comboStep = 5; // skip defense, go to attack 4
+                if (player.comboStep > 5) player.comboStep = 1; // loop back to attack 1
+            }
+
+            player.isAttacking = true;
+            player.frameX = player.comboStep; 
+            player.animTimer = 0;
+            player.comboTimer = 90; // ~1.5s window to click again for next combo
+
+            // Attack hitbox logic
+            let attackBox = { x: player.x, y: player.y, w: player.size, h: player.size };
+            const range = 15; // Shorter attack range for fists (previously 40)
+            
+            if (player.frameY === 2) { attackBox.y -= range; attackBox.h += range; } // up
+            if (player.frameY === 0) { attackBox.y += range; attackBox.h += range; } // down
+            if (player.frameY === 1) { attackBox.x -= range; attackBox.w += range; } // left
+            if (player.frameY === 3) { attackBox.x += range; attackBox.w += range; } // right
+
+            // Check if NPCs got hit
+            npcs.forEach(npc => {
+                if (npc.hp > 0) {
+                    let npcBox = { x: npc.x, y: npc.y, w: npc.size, h: npc.size };
+                    if (rectIntersect(attackBox, npcBox)) {
+                        npc.hp -= player.attack;
+                        if (npc.hp < 0) npc.hp = 0;
+                    }
+                }
+            });
+        }
     }
     isDragging = true; 
     handleMouse(e); 
