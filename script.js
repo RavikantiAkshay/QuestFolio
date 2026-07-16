@@ -7,6 +7,7 @@ let currentZone = "town";
 let currentMapData = [];
 let currentTileset = new Image();
 let collisionData = [];
+let doorPaintData = [];
 let editMode = false;
 let isDragging = false;
 let paintMode = 1;
@@ -44,18 +45,128 @@ player.image.src = "main-character.png";
 
 const keys = {};
 
+const interactables = {
+    "town": [
+        { "x": 896, "y": 304, "w": 48, "h": 48, "id": "lab", "text": "Lab (Projects)" },
+        { "x": 280, "y": 408, "w": 40, "h": 48, "id": "home", "text": "Home (About Me)" },
+        { "x": 904, "y": 656, "w": 48, "h": 56, "id": "workshop", "text": "Workshop" }
+    ],
+    "school": [
+        { "x": 224, "y": 536, "w": 64, "h": 56, "id": "school", "text": "School (Education)" },
+        { "x": 616, "y": 576, "w": 64, "h": 80, "id": "library", "text": "Library (Skills)" },
+        { "x": 1008, "y": 624, "w": 56, "h": 48, "id": "post", "text": "Post Office (Contact)" }
+    ],
+    "castle": [
+        { "x": 600, "y": 368, "w": 88, "h": 72, "id": "boss", "text": "Boss Room (Resume)" }
+    ]
+};
+
+let activeInteractable = null;
+let isOverlayActive = false;
+
+// Create 404 Overlay
+const overlay = document.createElement('div');
+overlay.style.position = 'absolute';
+overlay.style.top = '0';
+overlay.style.left = '0';
+overlay.style.width = '100vw';
+overlay.style.height = '100vh';
+overlay.style.background = 'rgba(0,0,0,0.9)';
+overlay.style.color = 'white';
+overlay.style.display = 'none';
+overlay.style.flexDirection = 'column';
+overlay.style.alignItems = 'center';
+overlay.style.justifyContent = 'center';
+overlay.style.fontFamily = 'sans-serif';
+overlay.style.zIndex = '2000';
+overlay.innerHTML = `
+    <h1 id="overlayTitle" style="font-size: 3rem; margin-bottom: 20px;">Building Name</h1>
+    <p style="font-size: 1.5rem; color: #aaa;">404 - Interior Under Construction</p>
+    <p style="margin-top: 50px; font-size: 1.2rem; background: #333; padding: 10px 20px; border-radius: 5px;">Press ESC or E to return</p>
+`;
+document.body.appendChild(overlay);
+
 window.addEventListener("keydown", (e) => {
     keys[e.key.toLowerCase()] = true;
+
+    // Handle Interaction (E key)
+    if (e.key.toLowerCase() === 'e') {
+        if (!isOverlayActive && activeInteractable) {
+            document.getElementById('overlayTitle').innerText = activeInteractable.text;
+            overlay.style.display = 'flex';
+            isOverlayActive = true;
+        } else if (isOverlayActive) {
+            overlay.style.display = 'none';
+            isOverlayActive = false;
+        }
+    }
+    if (e.key === 'Escape' && isOverlayActive) {
+        overlay.style.display = 'none';
+        isOverlayActive = false;
+    }
+    // Uncomment this block to re-enable Edit Modes!
+    /*
     if (e.key.toLowerCase() === 'c') {
         editMode = !editMode;
-        debugUI.innerText = `EDIT MODE ON\nDrag to Paint\n'V': Toggle Solid/Walkable\n'[' / ']': Brush Size\n'F': Fill All Solid\n'X': Clear All`;
-        debugUI.style.color = "#f55";
+        
+        // --- BLUE DOOR MODE ---
+        debugUI.innerText = `DOOR EDIT MODE ON\nDrag to Paint Doors\n'P': Print Array to Console\n'V': Toggle Paint/Erase\n'[' / ']': Brush Size`;
+        debugUI.style.color = "#55f";
+        
+        // --- RED COLLISION MODE ---
+        // Uncomment below and comment above to use Red mode
+        // debugUI.innerText = `EDIT MODE ON\nDrag to Paint\n'V': Toggle Solid/Walkable\n'[' / ']': Brush Size\n'F': Fill All Solid\n'X': Clear All`;
+        // debugUI.style.color = "#f55";
+
         debugUI.style.display = editMode ? 'block' : 'none';
+        coordUI.style.display = 'none'; // Not needed anymore
     }
+    */
     
     if (!editMode) return;
 
-    if (e.key.toLowerCase() === 'z' && e.ctrlKey) {
+    if (e.key.toLowerCase() === 'p') {
+        let doors = [];
+        let visited = Array.from({length: doorPaintData.length}, () => Array(doorPaintData[0].length).fill(false));
+        for (let r = 0; r < doorPaintData.length; r++) {
+            for (let c = 0; c < doorPaintData[0].length; c++) {
+                if (doorPaintData[r][c] === 1 && !visited[r][c]) {
+                    let minR = r, maxR = r, minC = c, maxC = c;
+                    let queue = [[r, c]];
+                    visited[r][c] = true;
+                    while(queue.length > 0) {
+                        let [cr, cc] = queue.shift();
+                        minR = Math.min(minR, cr);
+                        maxR = Math.max(maxR, cr);
+                        minC = Math.min(minC, cc);
+                        maxC = Math.max(maxC, cc);
+                        let dirs = [[0,1], [1,0], [0,-1], [-1,0]];
+                        for (let d of dirs) {
+                            let nr = cr + d[0];
+                            let nc = cc + d[1];
+                            if (nr >= 0 && nr < doorPaintData.length && nc >= 0 && nc < doorPaintData[0].length) {
+                                if (doorPaintData[nr][nc] === 1 && !visited[nr][nc]) {
+                                    visited[nr][nc] = true;
+                                    queue.push([nr, nc]);
+                                }
+                            }
+                        }
+                    }
+                    doors.push({
+                        x: minC * collisionSize,
+                        y: minR * collisionSize,
+                        w: (maxC - minC + 1) * collisionSize,
+                        h: (maxR - minR + 1) * collisionSize,
+                        id: "custom_door",
+                        text: "Custom Door"
+                    });
+                }
+            }
+        }
+        console.log("DOOR CONFIG FOR " + currentZone + ":\n", JSON.stringify(doors, null, 2));
+        alert("Printed Doors array to console! Press F12 to copy it.");
+    }
+    else if (e.key.toLowerCase() === 'z' && e.ctrlKey) {
         if (undoStack.length > 0) {
             redoStack.push(JSON.stringify(collisionData));
             collisionData = JSON.parse(undoStack.pop());
@@ -84,18 +195,14 @@ window.addEventListener("keydown", (e) => {
         }
     }
     else if (e.key.toLowerCase() === 'x') {
-        if (confirm("Are you sure you want to CLEAR all invisible walls from the map?")) {
-            undoStack.push(JSON.stringify(collisionData));
-            if (undoStack.length > 20) undoStack.shift();
-            redoStack = [];
-            collisionData = collisionData.map(row => row.map(() => 0));
-            localStorage.setItem('collision_' + currentZone, JSON.stringify(collisionData));
+        if (confirm("Are you sure you want to CLEAR all painted doors?")) {
+            doorPaintData = doorPaintData.map(row => row.map(() => 0));
         }
     }
 
     if (editMode) {
         const size = (brushRadius * 2) + 1;
-        debugUI.innerText = `EDIT MODE ON\nBrush: ${paintMode === 1 ? 'SOLID (Red)' : 'ERASE'}\nSize: ${size}x${size}\n'Ctrl+Z/Y': Undo/Redo\n'V' to toggle, 'F' Fill, 'X' Clear`;
+        debugUI.innerText = `DOOR EDIT MODE ON\nBrush: ${paintMode === 1 ? 'PAINT (Blue)' : 'ERASE'}\nSize: ${size}x${size}\n'P': Print Array\n'V' to toggle, 'X' Clear Doors`;
     }
 });
 window.addEventListener("keyup", (e) => keys[e.key.toLowerCase()] = false);
@@ -140,6 +247,8 @@ function loadZone(zoneName, startX, startY) {
             school: typeof collision_school_data !== 'undefined' ? collision_school_data : null,
             castle: typeof collision_castle_data !== 'undefined' ? collision_castle_data : null
         };
+
+        doorPaintData = Array.from({length: collisionRows}, () => Array(collisionCols).fill(0));
 
         const savedCollision = localStorage.getItem('collision_' + zoneName);
         if (savedCollision) {
@@ -292,6 +401,21 @@ function isWalkable(nextX, nextY, entitySize = player.size, ignoreEntity = null)
 }
 
 function update() {
+    if (isOverlayActive) return; // Freeze game when reading
+
+    // Update interactables
+    activeInteractable = null;
+    if (interactables[currentZone]) {
+        for (let item of interactables[currentZone]) {
+            let interactBox = { x: item.x - 20, y: item.y - 20, w: item.w + 40, h: item.h + 40 };
+            let playerBox = { x: player.x, y: player.y, w: player.size, h: player.size };
+            if (rectIntersect(playerBox, interactBox)) {
+                activeInteractable = item;
+                break;
+            }
+        }
+    }
+
     player.isMoving = false;
 
     // Sprint logic: double speed if Shift is held
@@ -446,7 +570,7 @@ function draw() {
         
         // Draw collision debug overlay
         if (editMode && collisionData.length > 0) {
-            ctx.fillStyle = "rgba(255, 0, 0, 0.4)";
+            ctx.fillStyle = "rgba(0, 0, 255, 0.6)"; // Blue for doors
             const startCol = Math.max(0, Math.floor(cameraX / collisionSize));
             const endCol = Math.min(collisionData[0].length, Math.ceil((cameraX + canvas.width) / collisionSize));
             const startRow = Math.max(0, Math.floor(cameraY / collisionSize));
@@ -454,7 +578,7 @@ function draw() {
 
             for (let row = startRow; row < endRow; row++) {
                 for (let col = startCol; col < endCol; col++) {
-                    if (collisionData[row] && collisionData[row][col] === 1) {
+                    if (doorPaintData[row] && doorPaintData[row][col] === 1) {
                         ctx.fillRect(col * collisionSize, row * collisionSize, collisionSize, collisionSize);
                     }
                 }
@@ -531,6 +655,27 @@ function draw() {
         ctx.restore();
     });
 
+    // Draw Interaction Prompt
+    if (activeInteractable && !isOverlayActive) {
+        const pulse = Math.abs(Math.sin(Date.now() / 200)) * 5;
+        ctx.fillStyle = "white";
+        ctx.font = "bold 16px sans-serif";
+        ctx.textAlign = "center";
+        
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "black";
+        ctx.strokeText(`[E] Enter ${activeInteractable.text}`, player.x + player.size/2, player.y - 15 - pulse);
+        ctx.fillText(`[E] Enter ${activeInteractable.text}`, player.x + player.size/2, player.y - 15 - pulse);
+    }
+
+    // Draw Interaction zones in edit mode
+    if (editMode && interactables[currentZone]) {
+        ctx.fillStyle = "rgba(0, 0, 255, 0.4)"; // blue transparent for doors
+        interactables[currentZone].forEach(door => {
+            ctx.fillRect(door.x, door.y, door.w, door.h);
+        });
+    }
+
     ctx.restore();
 }
 
@@ -562,6 +707,22 @@ debugUI.style.display = 'none'; // Hidden by default
 debugUI.innerText = `EDIT MODE ON\nDrag to Paint\n'V': Toggle Solid/Walkable\n'[' / ']': Brush Size\n'F': Fill All Solid\n'X': Clear All`;
 document.body.appendChild(debugUI);
 
+const coordUI = document.createElement('div');
+coordUI.style.position = 'absolute';
+coordUI.style.top = '10px';
+coordUI.style.right = '10px';
+coordUI.style.background = 'rgba(0,0,0,0.8)';
+coordUI.style.color = '#5f5';
+coordUI.style.padding = '10px 15px';
+coordUI.style.fontFamily = 'monospace';
+coordUI.style.fontSize = '16px';
+coordUI.style.pointerEvents = 'none';
+coordUI.style.borderRadius = '5px';
+coordUI.style.zIndex = '1000';
+coordUI.style.display = 'none'; // Hidden by default
+coordUI.innerText = `Hover over doors!`;
+document.body.appendChild(coordUI);
+
 function handleMouse(e) {
     const clickX = e.clientX / scale;
     const clickY = e.clientY / scale;
@@ -584,11 +745,12 @@ function handleMouse(e) {
             for (let r = row - brushRadius; r <= row + brushRadius; r++) {
                 for (let c = col - brushRadius; c <= col + brushRadius; c++) {
                     if (r >= 0 && r < collisionData.length && c >= 0 && c < collisionData[0].length) {
-                        collisionData[r][c] = paintMode;
+                        doorPaintData[r][c] = paintMode; // Paint doors instead of collision
+                        // collisionData[r][c] = paintMode;
                     }
                 }
             }
-            localStorage.setItem('collision_' + currentZone, JSON.stringify(collisionData));
+            // localStorage.setItem('collision_' + currentZone, JSON.stringify(collisionData));
         }
     }
 }
@@ -602,6 +764,23 @@ canvas.addEventListener('mousedown', (e) => {
     isDragging = true; 
     handleMouse(e); 
 });
-canvas.addEventListener('mousemove', (e) => { if (isDragging) handleMouse(e); });
+canvas.addEventListener('mousemove', (e) => { 
+    if (editMode) {
+        const clickX = e.clientX / scale;
+        const clickY = e.clientY / scale;
+        let cX = player.x + (player.size / 2) - (canvas.width / 2);
+        let cY = player.y + (player.size / 2) - (canvas.height / 2);
+        if (cX < 0) cX = 0;
+        if (cY < 0) cY = 0;
+        if (cX > mapWidth - canvas.width) cX = Math.max(0, mapWidth - canvas.width);
+        if (cY > mapHeight - canvas.height) cY = Math.max(0, mapHeight - canvas.height);
+        
+        const worldX = Math.floor(clickX + cX);
+        const worldY = Math.floor(clickY + cY);
+        // Display top-left corner coordinates for a 64x64 box centered on mouse
+        coordUI.innerText = `Door Hover Coordinates:\nx: ${worldX - 32}, y: ${worldY - 32}`;
+    }
+    if (isDragging) handleMouse(e); 
+});
 canvas.addEventListener('mouseup', () => { isDragging = false; });
 canvas.addEventListener('mouseleave', () => { isDragging = false; });
