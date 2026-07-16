@@ -80,6 +80,53 @@ const interactables = {
 let activeInteractable = null;
 let isOverlayActive = false;
 
+// Dialogue System
+const dialogueBox = document.getElementById('dialogue-box');
+const dialogueBackdrop = document.getElementById('dialogue-backdrop');
+const dialogueName = document.getElementById('dialogue-name');
+const dialogueText = document.getElementById('dialogue-text');
+
+let isDialogueActive = false;
+let currentDialogueQueue = [];
+let currentDialogueIndex = 0;
+let hasSeenIntro = false;
+
+function showDialogue(name, texts) {
+    isDialogueActive = true;
+    isOverlayActive = true;
+    currentDialogueQueue = texts;
+    currentDialogueIndex = 0;
+    dialogueName.innerText = name;
+    dialogueText.innerText = currentDialogueQueue[currentDialogueIndex];
+    if (dialogueBox) {
+        dialogueBox.style.display = 'block';
+        dialogueBackdrop.style.display = 'block';
+    }
+}
+
+function nextDialogue() {
+    currentDialogueIndex++;
+    if (currentDialogueIndex < currentDialogueQueue.length) {
+        dialogueText.innerText = currentDialogueQueue[currentDialogueIndex];
+    } else {
+        isDialogueActive = false;
+        isOverlayActive = false;
+        if (dialogueBox) {
+            dialogueBox.style.display = 'none';
+            dialogueBackdrop.style.display = 'none';
+        }
+    }
+}
+
+if (dialogueBox) {
+    dialogueBox.addEventListener('mousedown', (e) => {
+        e.stopPropagation(); // prevent attack click
+        nextDialogue();
+    });
+}
+
+// Cinematic Intro replaces the physical NPC
+
 // Create 404 Overlay
 const overlay = document.createElement('div');
 overlay.style.position = 'absolute';
@@ -244,6 +291,20 @@ function loadZone(zoneName, startX, startY) {
     if (!zoneName) return;
 
     currentZone = zoneName;
+
+    // Show intro dialogue once on first load
+    if (zoneName === 'town' && !hasSeenIntro) {
+        hasSeenIntro = true;
+        setTimeout(() => {
+            showDialogue("AKBOT-E7", [
+                "Hi there! You've just entered the Town of Akshay.",
+                "Every building you see holds hidden details and information about him.",
+                "Use W, A, S, D to move around and explore the area.",
+                "Left-Click to attack, and hold 'F' to defend if you run into trouble.",
+                "Go on, uncover his story... the more you know, the better it gets!"
+            ]);
+        }, 500);
+    }
     currentMapData = world[zoneName].data;
     currentTileset.src = world[zoneName].tilesetSrc;
 
@@ -405,7 +466,7 @@ function isWalkable(nextX, nextY, entitySize = player.size, ignoreEntity = null)
 
     for (let i = 0; i < npcs.length; i++) {
         const npc = npcs[i];
-        if (npc === ignoreEntity) continue;
+        if (npc === ignoreEntity || npc.hp <= 0) continue;
         const npcBox = {
             x: npc.x + marginX,
             y: npc.y + marginTop,
@@ -423,6 +484,7 @@ function update() {
 
     // Update interactables
     activeInteractable = null;
+
     if (interactables[currentZone]) {
         for (let item of interactables[currentZone]) {
             let interactBox = { x: item.x - 20, y: item.y - 20, w: item.w + 40, h: item.h + 40 };
@@ -538,7 +600,32 @@ function update() {
             if (npc.deathTimer > 0) {
                 npc.deathTimer--;
             } else {
-                npcs.splice(i, 1); // Remove from game entirely
+                // Wait for respawn instead of removing
+                if (npc.respawnTimer === undefined) {
+                    npc.respawnTimer = 300; // 5 seconds (60fps * 5)
+                }
+                
+                if (npc.respawnTimer > 0) {
+                    npc.respawnTimer--;
+                } else {
+                    // Respawn NPC at a random walkable location
+                    let spawnX, spawnY;
+                    let attempts = 0;
+                    do {
+                        spawnX = Math.random() * mapWidth;
+                        spawnY = Math.random() * mapHeight;
+                        attempts++;
+                    } while (!isWalkable(spawnX, spawnY, npc.size, npc) && attempts < 100);
+                    
+                    if (attempts < 100) {
+                        npc.x = spawnX;
+                        npc.y = spawnY;
+                    }
+                    // Reset stats for respawn
+                    npc.hp = npc.maxHp;
+                    npc.respawnTimer = undefined;
+                    npc.deathTimer = undefined;
+                }
             }
             continue; // Dead NPCs don't move or act
         }
@@ -742,7 +829,7 @@ function draw() {
 
     // Helper to draw health bars
     function drawHealthBar(entity, isPlayer = false) {
-        if (entity.hp === undefined) return;
+        if (entity.hp === undefined || entity.hp <= 0) return;
 
         // For NPCs, only show if damaged or player is very close (within 75 pixels)
         if (!isPlayer) {

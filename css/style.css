@@ -12,3 +12,89 @@ canvas {
     image-rendering: pixelated;
     /* Retro look */
 }
+
+/* Dialogue System */
+#dialogue-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 900;
+    display: none;
+}
+
+.dialogue-box {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: 800px;
+    background: rgba(10, 10, 20, 0.95);
+    border: 4px solid #f1c40f;
+    border-radius: 8px;
+    padding: 20px;
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+    z-index: 1000;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    cursor: pointer;
+    user-select: none;
+}
+
+.dialogue-content {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+#dialogue-portrait {
+    width: 160px;
+    height: 160px;
+    background-image: url('../assets/images/characters/akbot-e7.png');
+    /* Scaled down slightly to 900px to give the character breathing room (margins) */
+    background-size: 900px 900px;
+    /* Adjusted slightly left per user request */
+    background-position: -150px -47px;
+    background-repeat: no-repeat;
+    flex-shrink: 0;
+    border: 3px solid #f1c40f;
+    border-radius: 12px;
+    background-color: #111;
+}
+
+.dialogue-text-container {
+    flex-grow: 1;
+}
+
+#dialogue-name {
+    margin: 0 0 10px 0;
+    color: #f1c40f;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+#dialogue-text {
+    margin: 0;
+    font-size: 1.2rem;
+    line-height: 1.6;
+}
+
+.dialogue-continue {
+    display: block;
+    text-align: right;
+    margin-top: 20px;
+    font-size: 1rem;
+    color: #bdc3c7;
+    animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
