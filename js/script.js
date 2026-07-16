@@ -35,6 +35,10 @@ const player = {
     y: 400,
     size: 48,
     speed: 5,
+    hp: 100,
+    maxHp: 100,
+    attack: 10,
+    isAttacking: false,
     image: new Image(),
     frameX: 0,
     frameY: 0,
@@ -289,6 +293,8 @@ function loadZone(zoneName, startX, startY) {
                     y: spawnY,
                     size: 48,
                     speed: 1 + Math.random(), // 1 to 2 speed
+                    hp: 30,
+                    maxHp: 30,
                     frameX: 0,
                     frameY: Math.floor(Math.random() * 4),
                     isMoving: false,
@@ -641,6 +647,37 @@ function draw() {
             );
         }
     });
+
+    // Helper to draw health bars
+    function drawHealthBar(entity, isPlayer = false) {
+        if (entity.hp === undefined) return;
+
+        // For NPCs, only show if damaged or player is very close (within 75 pixels)
+        if (!isPlayer) {
+            const dist = Math.hypot(player.x - entity.x, player.y - entity.y);
+            if (entity.hp >= entity.maxHp && dist > 75) {
+                return;
+            }
+        }
+
+        const barWidth = 40;
+        const barHeight = 6;
+        const hpPercent = Math.max(0, entity.hp / entity.maxHp);
+        // Position just above the character's head
+        const bx = entity.x + (entity.size / 2) - (barWidth / 2);
+        const by = entity.y - 25; 
+
+        ctx.fillStyle = "black";
+        ctx.fillRect(bx - 1, by - 1, barWidth + 2, barHeight + 2);
+        ctx.fillStyle = "red";
+        ctx.fillRect(bx, by, barWidth, barHeight);
+        ctx.fillStyle = "#2ecc71";
+        ctx.fillRect(bx, by, barWidth * hpPercent, barHeight);
+    }
+
+    // Draw Health Bars
+    drawHealthBar(player, true);
+    npcs.forEach(npc => drawHealthBar(npc, false));
 
     // Draw Wind Particles (Leaves)
     particles.forEach(p => {
