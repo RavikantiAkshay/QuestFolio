@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Caesar+Dressing&display=swap');
+
 body {
     background: #111;
     margin: 0;
@@ -97,4 +99,183 @@ canvas {
 @keyframes blink {
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
+}
+
+/* Interior Overlay */
+#interior-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 800; /* Lower than dialogue box (1000) */
+    display: none;
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #000; /* Hide overworld edges */
+}
+
+.interior-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: contain; /* Show full image, don't crop */
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: brightness(0.85); /* Removed blur so you can see the room clearly */
+    z-index: 1;
+}
+
+.interior-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+  :root{
+    --wood-dark: #2b1a12;
+    --wood-mid: #4a2f1e;
+    --wood-light: #6b432a;
+    --parchment: #ecdcb8;
+    --parchment-shadow: #d9c393;
+    --ink: #2b2118;
+    --ink-soft: #4a3c2c;
+    --rod-brown: #8a5a34;
+    --rod-dark: #5e3a1f;
+    --gold: #c98a2c;
+    --paper-line: #b89a68;
+  }
+
+#interior-close {
+    position:absolute;
+    top:24px; right:24px;
+    display:flex; align-items:center; gap:10px;
+    padding:10px 18px;
+    background: #1b1310;
+    border: 3px solid #6b432a;
+    box-shadow: inset 0 0 0 2px #3a2416, 0 4px 0 rgba(0,0,0,0.5);
+    color: #e8d9b8;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    z-index: 10;
+    border-radius: 4px;
+    transition: transform 0.08s ease, background 0.15s ease;
+}
+#interior-close:hover { background:#2a1d14; transform: translateY(-2px); }
+#interior-close:active { transform: translateY(0); }
+#interior-close .x { color:#e0574a; font-weight:bold; }
+
+.scroll-wrap {
+    position: relative;
+    width: min(680px, 88vw);
+    z-index: 5;
+    filter: drop-shadow(0 18px 30px rgba(0,0,0,0.55));
+}
+
+.rod {
+    position: relative;
+    height: 34px;
+    background: linear-gradient(180deg, var(--rod-brown) 0%, #a06b3f 35%, var(--rod-dark) 100%);
+    border-radius: 6px;
+    box-shadow: inset 0 -4px 0 rgba(0,0,0,0.25), inset 0 3px 0 rgba(255,255,255,0.15);
+}
+.rod::before, .rod::after {
+    content:"";
+    position:absolute;
+    top:50%; transform: translateY(-50%);
+    width: 34px; height: 46px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #a8734a, var(--rod-dark) 75%);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+}
+.rod::before { left: -22px; }
+.rod::after { right: -22px; }
+
+.parchment {
+    position: relative;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(255,255,255,0.15), transparent 40%),
+      linear-gradient(180deg, var(--parchment) 0%, var(--parchment-shadow) 100%);
+    padding: 34px 44px 42px;
+    color: var(--ink);
+    box-shadow:
+      inset 0 0 0 3px #c7ad7c,
+      inset 0 0 40px rgba(120, 90, 40, 0.25);
+    /* Removed max-height and overflow-y to allow full expansion */
+}
+.parchment::before, .parchment::after {
+    content:"";
+    position:absolute; left:0; right:0; height:10px;
+    background: repeating-linear-gradient(90deg, var(--parchment) 0 8px, var(--parchment-shadow) 8px 16px);
+}
+.parchment::before { top:-2px; }
+.parchment::after { bottom:-2px; }
+
+/* Hide scrollbar on parchment */
+.parchment::-webkit-scrollbar { width: 0; }
+
+.title-row {
+    display:flex;
+    align-items:center;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 6px;
+}
+
+h1.title {
+    font-family: 'Caesar Dressing', cursive;
+    font-size: clamp(26px, 4vw, 36px);
+    letter-spacing: 4px;
+    margin: 0;
+    color: #3a2b1a;
+    text-shadow: 2px 2px 0 rgba(255,255,255,0.35);
+}
+
+.compass { width: 46px; height: 46px; flex-shrink:0; }
+
+.divider {
+    text-align:center;
+    color: var(--paper-line);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 14px;
+    letter-spacing: 4px;
+    margin: 10px 0 22px;
+    user-select:none;
+}
+
+.role {
+    text-align:center;
+    font-size: 32px;
+    font-family: 'Caesar Dressing', cursive;
+    color: var(--ink-soft);
+    margin: 0 0 18px;
+    letter-spacing: 2px;
+}
+
+.body-text {
+    font-size: 26px;
+    line-height: 1.5;
+    text-align: center;
+    color: var(--ink);
+    margin: 0 auto 18px;
+    max-width: 480px;
+    font-family: 'Caesar Dressing', cursive;
+}
+
+.body-text:last-of-type { margin-bottom: 0; }
+
+@media (max-width: 520px){
+    .parchment { padding: 26px 20px 32px; }
+    .body-text { font-size: 20px; }
+    .role { font-size: 22px; }
 }

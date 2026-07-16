@@ -35,5 +35,10 @@ const world = {
         east: null,
         south: "school",
         west: null
+    },
+    "home_interior": {
+        type: "static",
+        src: "assets/images/environments/home.jpg",
+        data: [] // No tile map
     }
 };

@@ -64,7 +64,7 @@ const keys = {};
 const interactables = {
     "town": [
         { "x": 896, "y": 304, "w": 48, "h": 48, "id": "lab", "text": "Lab (Projects)" },
-        { "x": 280, "y": 408, "w": 40, "h": 48, "id": "home", "text": "Home (About Me)" },
+        { "x": 280, "y": 408, "w": 40, "h": 48, "id": "home", "text": "Enter Home" },
         { "x": 904, "y": 656, "w": 48, "h": 56, "id": "workshop", "text": "Workshop" }
     ],
     "school": [
@@ -80,6 +80,20 @@ const interactables = {
 let activeInteractable = null;
 let isOverlayActive = false;
 
+// Interior System
+const interiorOverlay = document.getElementById('interior-overlay');
+const interiorBg = document.getElementById('interior-bg');
+const interiorTitle = document.getElementById('interior-title');
+const interiorBody = document.getElementById('interior-body');
+const interiorClose = document.getElementById('interior-close');
+
+if (interiorClose) {
+    interiorClose.addEventListener('click', () => {
+        if (interiorOverlay) interiorOverlay.style.display = 'none';
+        isOverlayActive = false;
+    });
+}
+
 // Dialogue System
 const dialogueBox = document.getElementById('dialogue-box');
 const dialogueBackdrop = document.getElementById('dialogue-backdrop');
@@ -89,13 +103,15 @@ const dialogueText = document.getElementById('dialogue-text');
 let isDialogueActive = false;
 let currentDialogueQueue = [];
 let currentDialogueIndex = 0;
+let dialogueOnComplete = null;
 let hasSeenIntro = false;
 
-function showDialogue(name, texts) {
+function showDialogue(name, texts, onComplete = null) {
     isDialogueActive = true;
     isOverlayActive = true;
     currentDialogueQueue = texts;
     currentDialogueIndex = 0;
+    dialogueOnComplete = onComplete;
     dialogueName.innerText = name;
     dialogueText.innerText = currentDialogueQueue[currentDialogueIndex];
     if (dialogueBox) {
@@ -110,10 +126,15 @@ function nextDialogue() {
         dialogueText.innerText = currentDialogueQueue[currentDialogueIndex];
     } else {
         isDialogueActive = false;
-        isOverlayActive = false;
         if (dialogueBox) {
             dialogueBox.style.display = 'none';
             dialogueBackdrop.style.display = 'none';
+        }
+        if (dialogueOnComplete) {
+            dialogueOnComplete();
+            dialogueOnComplete = null;
+        } else {
+            isOverlayActive = false;
         }
     }
 }
@@ -155,16 +176,58 @@ window.addEventListener("keydown", (e) => {
     // Handle Interaction (E key)
     if (e.key.toLowerCase() === 'e') {
         if (!isOverlayActive && activeInteractable) {
-            document.getElementById('overlayTitle').innerText = activeInteractable.text;
-            overlay.style.display = 'flex';
             isOverlayActive = true;
-        } else if (isOverlayActive) {
+            
+            if (activeInteractable.id === 'home') {
+                if (interiorBg) {
+                    interiorBg.style.backgroundImage = "url('assets/images/environments/home.jpg')";
+                    interiorBg.style.filter = "none"; // clear image during dialogue
+                    interiorBg.style.backgroundSize = "contain";
+                    interiorBg.style.backgroundRepeat = "no-repeat";
+                }
+                const intContent = document.querySelector('.interior-content');
+                if (intContent) intContent.style.display = 'none'; // hide scroll initially
+                if (interiorOverlay) interiorOverlay.style.display = 'block';
+
+                showDialogue("AKBOT-E7", [
+                    "Welcome to Akshay's Home!",
+                    "Here you'll find the core details of who he is.",
+                    "Take this scroll, it contains everything you need to know."
+                ], () => {
+                    // On dialogue complete, show the scroll
+                    if (interiorBg) interiorBg.style.filter = "brightness(0.5) blur(6px)";
+                    if (interiorTitle) interiorTitle.innerText = "ABOUT ME";
+                    if (interiorBody) interiorBody.innerHTML = `
+                        <p class="role">Full Stack Developer</p>
+                        <p class="body-text">
+                            Welcome to my home! I'm a developer who is passionate
+                            about creating immersive and interactive experiences.
+                        </p>
+                        <p class="body-text">
+                            I specialize in building scalable web applications, and
+                            I love turning complex problems into simple, beautiful,
+                            and intuitive designs.
+                        </p>
+                    `;
+                    if (intContent) intContent.style.display = 'flex';
+                });
+                
+                // CRITICAL: Hide the dark backdrop so the interior image is bright and clear during dialogue!
+                if (dialogueBackdrop) dialogueBackdrop.style.display = 'none';
+
+            } else {
+                document.getElementById('overlayTitle').innerText = activeInteractable.text;
+                overlay.style.display = 'flex';
+            }
+        } else if (isOverlayActive && !isDialogueActive) {
             overlay.style.display = 'none';
+            if (interiorOverlay) interiorOverlay.style.display = 'none';
             isOverlayActive = false;
         }
     }
-    if (e.key === 'Escape' && isOverlayActive) {
+    if (e.key === 'Escape' && isOverlayActive && !isDialogueActive) {
         overlay.style.display = 'none';
+        if (interiorOverlay) interiorOverlay.style.display = 'none';
         isOverlayActive = false;
     }
     // Uncomment this block to re-enable Edit Modes!
@@ -305,12 +368,36 @@ function loadZone(zoneName, startX, startY) {
             ]);
         }, 500);
     }
-    currentMapData = world[zoneName].data;
-    currentTileset.src = world[zoneName].tilesetSrc;
+    let zoneConfig = world[zoneName];
+    if (zoneConfig.type === "static") {
+        currentMapData = [];
+        if (!zoneConfig.imgElement) {
+            let img = new Image();
+            img.src = zoneConfig.src;
+            img.onload = () => {
+                zoneConfig.width = img.width;
+                zoneConfig.height = img.height;
+                mapWidth = img.width;
+                mapHeight = img.height;
+                resize();
+            };
+            zoneConfig.imgElement = img;
+        } else {
+            mapWidth = zoneConfig.width;
+            mapHeight = zoneConfig.height;
+            resize();
+        }
+    } else {
+        currentMapData = zoneConfig.data;
+        currentTileset.src = zoneConfig.tilesetSrc;
+        if (currentMapData.length > 0) {
+            mapWidth = currentMapData[0].length * tileSize;
+            mapHeight = currentMapData.length * tileSize;
+            resize();
+        }
+    }
 
-    if (currentMapData.length > 0) {
-        mapWidth = currentMapData[0].length * tileSize;
-        mapHeight = currentMapData.length * tileSize;
+    if (zoneConfig.type !== "static" && currentMapData.length > 0) {
         resize(); // Update the canvas bounds based on the new map size
         
         const collisionRows = mapHeight / collisionSize;
@@ -688,8 +775,14 @@ function draw() {
     ctx.save();
     ctx.translate(-cameraX, -cameraY);
 
-    // Draw the Map blocks
-    if (currentTileset.complete && currentMapData.length > 1) {
+    let zoneConfig = world[currentZone];
+
+    // Draw the Map blocks or Static Background
+    if (zoneConfig && zoneConfig.type === "static") {
+        if (zoneConfig.imgElement && zoneConfig.imgElement.complete) {
+            ctx.drawImage(zoneConfig.imgElement, 0, 0);
+        }
+    } else if (currentTileset.complete && currentMapData.length > 1) {
         // Only draw tiles within the camera view for performance
         const startCol = Math.max(0, Math.floor(cameraX / tileSize));
         const endCol = Math.min(currentMapData[0].length, Math.ceil((cameraX + canvas.width) / tileSize));

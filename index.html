@@ -22,6 +22,34 @@
         </div>
     </div>
 
+    <!-- Interior Overlay (Hybrid Approach) -->
+    <div id="interior-overlay" style="display: none;">
+        <div class="interior-background" id="interior-bg"></div>
+        <div class="interior-content">
+            <button id="interior-close"><span class="x">✕</span> Return to Town</button>
+            <div class="scroll-wrap" id="scroll-wrap-container">
+                <div class="rod"></div>
+                <div class="parchment">
+                    <div class="title-row">
+                        <h1 class="title" id="interior-title">ABOUT ME</h1>
+                        <svg class="compass" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" fill="#e0574a" stroke="#7a2418" stroke-width="1.5"/>
+                            <circle cx="12" cy="12" r="7.5" fill="#f2b9a8" stroke="#7a2418" stroke-width="1"/>
+                            <polygon points="12,5.5 13.6,11 12,12.5 10.4,11" fill="#3a2b1a"/>
+                            <polygon points="12,18.5 13.6,13 12,11.5 10.4,13" fill="#3a2b1a"/>
+                            <circle cx="12" cy="12" r="1.6" fill="#3a2b1a"/>
+                        </svg>
+                    </div>
+                    <div class="divider">--------------------------</div>
+                    <div id="interior-body">
+                        <!-- Dynamic content goes here -->
+                    </div>
+                </div>
+                <div class="rod"></div>
+            </div>
+        </div>
+    </div>
+
     <script src="js/data/collisionData.js"></script>
     <script src="js/data/collisionDataSchool.js"></script>
     <script src="js/data/collisionDataCastle.js"></script>
