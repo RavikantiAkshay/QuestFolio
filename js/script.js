@@ -531,8 +531,17 @@ function update() {
     }
 
     // --- UPDATE NPCs ---
-    npcs.forEach(npc => {
-        if (npc.hp <= 0) return; // Dead NPCs don't move or act
+    for (let i = npcs.length - 1; i >= 0; i--) {
+        const npc = npcs[i];
+        if (npc.hp <= 0) {
+            // Handle death animation timing
+            if (npc.deathTimer > 0) {
+                npc.deathTimer--;
+            } else {
+                npcs.splice(i, 1); // Remove from game entirely
+            }
+            continue; // Dead NPCs don't move or act
+        }
 
         npc.directionTimer--;
         if (npc.directionTimer <= 0) {
@@ -568,7 +577,7 @@ function update() {
             npc.frameX = 0;
             npc.animTimer = 0;
         }
-    });
+    }
 
     // Screen Transitions (now using mapWidth/mapHeight instead of canvas bounds)
     if (player.y < 0) {
@@ -695,6 +704,16 @@ function draw() {
     // Draw NPCs
     npcs.forEach(npc => {
         if (npc.image && npc.image.complete && npc.image.width > 0) {
+            ctx.save();
+            
+            // Death animation: fade out and float up
+            if (npc.hp <= 0) {
+                const progress = npc.deathTimer / 30; // Goes from 1.0 down to 0.0
+                ctx.globalAlpha = progress;
+                const floatOffset = (1 - progress) * 20; // Floats up by 20 pixels
+                ctx.translate(0, -floatOffset);
+            }
+
             const offsetX = 190;
             const offsetY = 50;
             const frameWidth = 160;
@@ -716,6 +735,8 @@ function draw() {
                 npc.x, npc.y - (displayHeight - npc.size),
                 displayWidth, displayHeight
             );
+            
+            ctx.restore();
         }
     });
 
@@ -900,7 +921,10 @@ canvas.addEventListener('mousedown', (e) => {
                     let npcBox = { x: npc.x, y: npc.y, w: npc.size, h: npc.size };
                     if (rectIntersect(attackBox, npcBox)) {
                         npc.hp -= player.attack;
-                        if (npc.hp < 0) npc.hp = 0;
+                        if (npc.hp <= 0) {
+                            npc.hp = 0;
+                            npc.deathTimer = 30; // 30 frames for death animation
+                        }
                     }
                 }
             });
