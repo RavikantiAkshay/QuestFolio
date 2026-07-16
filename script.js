@@ -15,6 +15,20 @@ const collisionSize = 8; // Fine-grained collision grid
 let undoStack = [];
 let redoStack = [];
 
+// --- WIND & NPCS ---
+let npcs = [];
+let particles = [];
+let globalTime = 0;
+let cameraX = 0;
+let cameraY = 0;
+const npcImages = [];
+const npcImageSrcs = ["npc1.png", "npc2.png", "npc3.png", "npc4.png"]; // Add as many as you want here
+npcImageSrcs.forEach(src => {
+    let img = new Image();
+    img.src = src;
+    npcImages.push(img);
+});
+
 const player = {
     x: 400,
     y: 400,
@@ -147,6 +161,36 @@ function loadZone(zoneName, startX, startY) {
     player.x = startX;
     player.y = startY;
 
+    // Spawn NPCs in Town and School
+    npcs = [];
+    if (zoneName === "town" || zoneName === "school") {
+        // Wait for collisionData to be populated before spawning NPCs
+        setTimeout(() => {
+            for (let i = 0; i < 6; i++) {
+                let spawnX, spawnY;
+                let attempts = 0;
+                do {
+                    spawnX = Math.random() * (mapWidth - 100) + 50;
+                    spawnY = Math.random() * (mapHeight - 100) + 50;
+                    attempts++;
+                } while (!isWalkable(spawnX, spawnY, 48) && attempts < 100);
+                
+                npcs.push({
+                    x: spawnX,
+                    y: spawnY,
+                    size: 48,
+                    speed: 1 + Math.random(), // 1 to 2 speed
+                    frameX: 0,
+                    frameY: Math.floor(Math.random() * 4),
+                    isMoving: false,
+                    animTimer: 0,
+                    directionTimer: Math.random() * 100,
+                    image: npcImages[Math.floor(Math.random() * npcImages.length)]
+                });
+            }
+        }, 100); // slight delay to ensure map load
+    }
+
     // Ensure player spawns in a walkable area to prevent getting stuck in walls
     if (collisionData.length > 0 && typeof isWalkable === 'function' && !isWalkable(player.x, player.y)) {
         let found = false;
@@ -177,7 +221,14 @@ function loadZone(zoneName, startX, startY) {
 }
 
 // --- 5. UPDATE LOGIC & ZONE TRANSITIONS ---
-function isWalkable(nextX, nextY) {
+function rectIntersect(r1, r2) {
+    return !(r2.x >= r1.x + r1.w || 
+             r2.x + r2.w <= r1.x || 
+             r2.y >= r1.y + r1.h || 
+             r2.y + r2.h <= r1.y);
+}
+
+function isWalkable(nextX, nextY, entitySize = player.size, ignoreEntity = null) {
     if (!collisionData || collisionData.length === 0 || !collisionData[0]) return true;
 
     // Adjust these margins to make the collision box fit the sprite's feet
@@ -185,10 +236,11 @@ function isWalkable(nextX, nextY) {
     const marginTop = 24; // Character head/shoulders don't collide
     const marginBot = 4;
     
+    // 1. Check Map Collision
     const left = Math.floor((nextX + marginX) / collisionSize);
-    const right = Math.floor((nextX + player.size - marginX) / collisionSize);
+    const right = Math.floor((nextX + entitySize - marginX) / collisionSize);
     const top = Math.floor((nextY + marginTop) / collisionSize);
-    const bottom = Math.floor((nextY + player.size - marginBot) / collisionSize);
+    const bottom = Math.floor((nextY + entitySize - marginBot) / collisionSize);
 
     // Clamp coordinates to prevent array out-of-bounds errors, 
     // but still check the edge tiles to see if they are walls or paths.
@@ -206,6 +258,36 @@ function isWalkable(nextX, nextY) {
     if (collisionData[clampedBottom][clampedLeft] === 1) return false;
     if (collisionData[clampedBottom][clampedRight] === 1) return false;
 
+    // 2. Check Dynamic Entity Collision
+    const hitBox = {
+        x: nextX + marginX,
+        y: nextY + marginTop,
+        w: entitySize - marginX * 2,
+        h: entitySize - marginTop - marginBot
+    };
+
+    if (ignoreEntity !== player) {
+        const playerBox = {
+            x: player.x + marginX,
+            y: player.y + marginTop,
+            w: player.size - marginX * 2,
+            h: player.size - marginTop - marginBot
+        };
+        if (rectIntersect(hitBox, playerBox)) return false;
+    }
+
+    for (let i = 0; i < npcs.length; i++) {
+        const npc = npcs[i];
+        if (npc === ignoreEntity) continue;
+        const npcBox = {
+            x: npc.x + marginX,
+            y: npc.y + marginTop,
+            w: npc.size - marginX * 2,
+            h: npc.size - marginTop - marginBot
+        };
+        if (rectIntersect(hitBox, npcBox)) return false;
+    }
+
     return true;
 }
 
@@ -216,19 +298,19 @@ function update() {
     const currentSpeed = keys["shift"] ? player.speed * 2 : player.speed;
 
     if (keys["arrowup"] || keys["w"]) { 
-        if (isWalkable(player.x, player.y - currentSpeed)) player.y -= currentSpeed; 
+        if (isWalkable(player.x, player.y - currentSpeed, player.size, player)) player.y -= currentSpeed; 
         player.frameY = 2; player.isMoving = true; 
     }
     else if (keys["arrowdown"] || keys["s"]) { 
-        if (isWalkable(player.x, player.y + currentSpeed)) player.y += currentSpeed; 
+        if (isWalkable(player.x, player.y + currentSpeed, player.size, player)) player.y += currentSpeed; 
         player.frameY = 0; player.isMoving = true; 
     }
     else if (keys["arrowleft"] || keys["a"]) { 
-        if (isWalkable(player.x - currentSpeed, player.y)) player.x -= currentSpeed; 
+        if (isWalkable(player.x - currentSpeed, player.y, player.size, player)) player.x -= currentSpeed; 
         player.frameY = 1; player.isMoving = true; 
     }
     else if (keys["arrowright"] || keys["d"]) { 
-        if (isWalkable(player.x + currentSpeed, player.y)) player.x += currentSpeed; 
+        if (isWalkable(player.x + currentSpeed, player.y, player.size, player)) player.x += currentSpeed; 
         player.frameY = 3; player.isMoving = true; 
     }
 
@@ -245,6 +327,78 @@ function update() {
         player.frameX = 0; // idle frame
         player.animTimer = 0;
     }
+
+    // Update Camera Center
+    cameraX = player.x + (player.size / 2) - (canvas.width / 2);
+    cameraY = player.y + (player.size / 2) - (canvas.height / 2);
+    if (cameraX < 0) cameraX = 0;
+    if (cameraY < 0) cameraY = 0;
+    if (cameraX > mapWidth - canvas.width) cameraX = Math.max(0, mapWidth - canvas.width);
+    if (cameraY > mapHeight - canvas.height) cameraY = Math.max(0, mapHeight - canvas.height);
+
+    // --- WIND PARTICLES (LEAVES) ---
+    globalTime++;
+    if (Math.random() < 0.2) { // 20% chance per frame to spawn leaf
+        particles.push({
+            x: cameraX - 100 + Math.random() * (canvas.width + 100),
+            y: cameraY - 50 - Math.random() * 100,
+            vx: 3 + Math.random() * 3, // Blow right
+            vy: 2 + Math.random() * 2, // Blow down
+            size: 3 + Math.random() * 4,
+            color: Math.random() > 0.5 ? '#27ae60' : '#2ecc71',
+            wobble: Math.random() * Math.PI * 2,
+            wobbleSpeed: 0.05 + Math.random() * 0.1
+        });
+    }
+
+    // Update Particles
+    for (let i = particles.length - 1; i >= 0; i--) {
+        let p = particles[i];
+        p.x += p.vx + Math.sin(p.wobble) * 2;
+        p.y += p.vy;
+        p.wobble += p.wobbleSpeed;
+        if (p.y > cameraY + canvas.height + 50 || p.x > cameraX + canvas.width + 50) {
+            particles.splice(i, 1);
+        }
+    }
+
+    // --- UPDATE NPCs ---
+    npcs.forEach(npc => {
+        npc.directionTimer--;
+        if (npc.directionTimer <= 0) {
+            npc.directionTimer = Math.random() * 120 + 60; // 1-3 seconds
+            npc.isMoving = Math.random() > 0.4; // 60% chance to move
+            if (npc.isMoving) {
+                npc.frameY = Math.floor(Math.random() * 4); // New direction
+            }
+        }
+
+        if (npc.isMoving) {
+            let nextX = npc.x;
+            let nextY = npc.y;
+            if (npc.frameY === 2) nextY -= npc.speed; // up
+            if (npc.frameY === 0) nextY += npc.speed; // down
+            if (npc.frameY === 1) nextX -= npc.speed; // left
+            if (npc.frameY === 3) nextX += npc.speed; // right
+
+            if (isWalkable(nextX, nextY, npc.size, npc)) {
+                npc.x = nextX;
+                npc.y = nextY;
+            } else {
+                npc.isMoving = false; // Stop if hit wall
+                npc.directionTimer = 10; // Turn around sooner
+            }
+
+            npc.animTimer++;
+            if (npc.animTimer >= 12) {
+                npc.frameX = (npc.frameX + 1) % 4;
+                npc.animTimer = 0;
+            }
+        } else {
+            npc.frameX = 0;
+            npc.animTimer = 0;
+        }
+    });
 
     // Screen Transitions (now using mapWidth/mapHeight instead of canvas bounds)
     if (player.y < 0) {
@@ -264,16 +418,6 @@ function update() {
 // --- 6. DRAW THE GAME ---
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Calculate Camera Center
-    let cameraX = player.x + (player.size / 2) - (canvas.width / 2);
-    let cameraY = player.y + (player.size / 2) - (canvas.height / 2);
-
-    // Clamp camera to map bounds
-    if (cameraX < 0) cameraX = 0;
-    if (cameraY < 0) cameraY = 0;
-    if (cameraX > mapWidth - canvas.width) cameraX = Math.max(0, mapWidth - canvas.width);
-    if (cameraY > mapHeight - canvas.height) cameraY = Math.max(0, mapHeight - canvas.height);
 
     ctx.save();
     ctx.translate(-cameraX, -cameraY);
@@ -346,6 +490,46 @@ function draw() {
         ctx.fillStyle = "red";
         ctx.fillRect(player.x, player.y, player.size, player.size);
     }
+
+    // Draw NPCs
+    npcs.forEach(npc => {
+        if (npc.image && npc.image.complete && npc.image.width > 0) {
+            const offsetX = 190;
+            const offsetY = 50;
+            const frameWidth = 160;
+            const frameHeight = 214;
+            const displayWidth = npc.size;
+            const displayHeight = npc.size * (frameHeight / frameWidth);
+            
+            // Draw a tiny shadow
+            ctx.fillStyle = "rgba(0,0,0,0.3)";
+            ctx.beginPath();
+            ctx.ellipse(npc.x + npc.size/2, npc.y + npc.size - 4, npc.size/3, npc.size/6, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.drawImage(
+                npc.image,
+                offsetX + (npc.frameX * frameWidth),
+                offsetY + (npc.frameY * frameHeight),
+                frameWidth, frameHeight,
+                npc.x, npc.y - (displayHeight - npc.size),
+                displayWidth, displayHeight
+            );
+        }
+    });
+
+    // Draw Wind Particles (Leaves)
+    particles.forEach(p => {
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        // Draw a leaf-like shape (oval rotated)
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.wobble);
+        ctx.ellipse(0, 0, p.size, p.size / 2, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+    });
 
     ctx.restore();
 }
