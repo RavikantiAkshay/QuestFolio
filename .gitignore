@@ -8,8 +8,8 @@
 *.svg
 *.ico
 
-!main-character.png
-!npc*.png
+!assets/images/characters/main-character.png
+!assets/images/characters/npc*.png
 
 # OS generated files
 .DS_Store

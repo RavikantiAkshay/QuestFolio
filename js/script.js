@@ -23,7 +23,7 @@ let globalTime = 0;
 let cameraX = 0;
 let cameraY = 0;
 const npcImages = [];
-const npcImageSrcs = ["npc1.png", "npc2.png", "npc3.png", "npc4.png"]; // Add as many as you want here
+const npcImageSrcs = ["assets/images/characters/npc1.png", "assets/images/characters/npc2.png", "assets/images/characters/npc3.png", "assets/images/characters/npc4.png"]; // Add as many as you want here
 npcImageSrcs.forEach(src => {
     let img = new Image();
     img.src = src;
@@ -41,7 +41,7 @@ const player = {
     isMoving: false,
     animTimer: 0
 };
-player.image.src = "main-character.png";
+player.image.src = "assets/images/characters/main-character.png";
 
 const keys = {};
 

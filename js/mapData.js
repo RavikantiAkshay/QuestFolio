@@ -14,7 +14,7 @@ const tilesPerRow = 10;
 const world = {
     "town": {
         data: typeof image_882ea4_array !== 'undefined' ? image_882ea4_array : [], // Fallback if not pasted yet
-        tilesetSrc: "tileset_image_882ea4.png",
+        tilesetSrc: "assets/images/tilesets/tileset_image_882ea4.png",
         north: null,
         east: "school",
         south: null,
@@ -22,7 +22,7 @@ const world = {
     },
     "school": {
         data: typeof image_882eac_array !== 'undefined' ? image_882eac_array : [],
-        tilesetSrc: "tileset_image_882eac.png",
+        tilesetSrc: "assets/images/tilesets/tileset_image_882eac.png",
         north: "castle",
         east: null,
         south: null,
@@ -30,7 +30,7 @@ const world = {
     },
     "castle": {
         data: typeof image_882eca_array !== 'undefined' ? image_882eca_array : [],
-        tilesetSrc: "tileset_image_882eca.png",
+        tilesetSrc: "assets/images/tilesets/tileset_image_882eca.png",
         north: null,
         east: null,
         south: "school",
