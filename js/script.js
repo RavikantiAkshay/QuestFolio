@@ -298,6 +298,7 @@ if (bpNextBtn) {
 if (interiorExplore) {
     interiorExplore.addEventListener('click', () => {
         if (scrollWrapContainer) scrollWrapContainer.style.display = 'none'; // hide the parchment
+        if (document.getElementById('typewriter-wrap-container')) document.getElementById('typewriter-wrap-container').style.display = 'none'; // hide the typewriter
         if (document.getElementById('lab-computer-container')) document.getElementById('lab-computer-container').style.display = 'none'; // hide the computer
         
         if (interiorBg) {
@@ -413,23 +414,24 @@ window.addEventListener("keydown", (e) => {
                     interiorExplore.innerHTML = '<span class="x">🔍</span> Explore Home';
                     interiorExplore.style.display = 'flex'; // make sure explore button is visible again
                 }
-                if (scrollWrapContainer) scrollWrapContainer.style.display = 'block'; // make sure scroll wrap is visible again
+                const typewriterWrapContainer = document.getElementById('typewriter-wrap-container');
+                if (typewriterWrapContainer) typewriterWrapContainer.style.display = 'block';
                 if (document.getElementById('lab-computer-container')) document.getElementById('lab-computer-container').style.display = 'none'; // hide lab computer
                 if (document.getElementById('workshop-container')) document.getElementById('workshop-container').style.display = 'none';
 
                 showDialogue("AKBOT-E7", [
-                    "Welcome to Akshay's Home! Take this scroll, it contains everything you need to know."
+                    "Welcome to Akshay's Home! Oh, look... a page is still stuck in his old typewriter. Let's see what it says."
                 ], () => {
-                    // On dialogue complete, show the scroll
+                    // On dialogue complete, show the typewriter paper
                     if (interiorBg) interiorBg.style.filter = "brightness(0.5) blur(6px)";
-                    if (interiorTitle) interiorTitle.innerText = "ABOUT ME";
+                    if (interiorTitle) interiorTitle.innerText = "";
                     if (interiorBody) interiorBody.innerHTML = `
-                        <p class="role">Full Stack Developer</p>
-                        <p class="body-text">
+                        <h1 class="typewriter-title" style="margin-bottom: 30px;">Akshay Ravikanti</h1>
+                        <p class="typewriter-text">
                             Welcome to my home! I'm a developer who is passionate
                             about creating immersive and interactive experiences.
                         </p>
-                        <p class="body-text">
+                        <p class="typewriter-text">
                             I specialize in building scalable web applications, and
                             I love turning complex problems into simple, beautiful,
                             and intuitive designs.
@@ -455,7 +457,7 @@ window.addEventListener("keydown", (e) => {
                     interiorExplore.innerHTML = '<span class="x">🔍</span> Explore Lab';
                     interiorExplore.style.display = 'flex'; // Enable explore in lab
                 }
-                if (document.getElementById('scroll-wrap-container')) document.getElementById('scroll-wrap-container').style.display = 'none';
+                if (document.getElementById('typewriter-wrap-container')) document.getElementById('typewriter-wrap-container').style.display = 'none';
                 if (document.getElementById('workshop-container')) document.getElementById('workshop-container').style.display = 'none';
                 
                 const labComputer = document.getElementById('lab-computer-container');
@@ -488,7 +490,7 @@ window.addEventListener("keydown", (e) => {
                     interiorExplore.innerHTML = '<span class="x">🔍</span> Explore Workshop';
                     interiorExplore.style.display = 'flex';
                 }
-                if (document.getElementById('scroll-wrap-container')) document.getElementById('scroll-wrap-container').style.display = 'none';
+                if (document.getElementById('typewriter-wrap-container')) document.getElementById('typewriter-wrap-container').style.display = 'none';
                 if (document.getElementById('lab-computer-container')) document.getElementById('lab-computer-container').style.display = 'none';
                 
                 const workshopContainer = document.getElementById('workshop-container');

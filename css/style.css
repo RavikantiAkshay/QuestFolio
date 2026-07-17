@@ -180,109 +180,252 @@ canvas {
 .interior-btn:active { transform: translateY(0); }
 .interior-btn .x { color:#e0574a; font-weight:bold; font-family: sans-serif; }
 
-.scroll-wrap {
+.typewriter-wrap {
     position: relative;
-    width: min(680px, 88vw);
+    width: 600px;
+    height: 700px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    margin: 0 auto;
     z-index: 5;
-    filter: drop-shadow(0 18px 30px rgba(0,0,0,0.55));
+    filter: drop-shadow(0 20px 30px rgba(0,0,0,0.6));
 }
 
-.rod {
+.typewriter-paper {
+    background-color: #f9f5e8;
+    background-image: 
+        linear-gradient(to bottom, transparent 80%, rgba(0,0,0,0.35) 100%),
+        linear-gradient(transparent 50%, rgba(0,0,0,0.03) 50%);
+    width: 480px;
+    height: 520px;
+    padding: 40px 40px 80px 40px;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.15), inset 0 0 40px rgba(150, 130, 100, 0.1);
     position: relative;
-    height: 34px;
-    background: linear-gradient(180deg, var(--rod-brown) 0%, #a06b3f 35%, var(--rod-dark) 100%);
+    z-index: 1;
+    border-radius: 4px 4px 0 0;
+    margin: 0 auto -30px auto;
+    color: #1a1a1a;
+    box-sizing: border-box;
+    background-size: 100% 100%, 100% 4px;
+    overflow-y: auto;
+    
+    transform: perspective(800px) rotateX(3deg);
+    transform-origin: bottom center;
+}
+.typewriter-paper::-webkit-scrollbar { width: 0; }
+
+.typewriter-machine {
+    width: 580px;
+    height: 240px;
+    position: relative;
+    z-index: 5;
+}
+
+.tw-roller-area {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 560px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 10;
+}
+
+
+
+.tw-knob {
+    width: 35px;
+    height: 45px;
+    background: linear-gradient(90deg, #3d2314, #5c341d, #3d2314);
     border-radius: 6px;
-    box-shadow: inset 0 -4px 0 rgba(0,0,0,0.25), inset 0 3px 0 rgba(255,255,255,0.15);
+    border: 2px solid #1a0f08;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.8), -3px 0 5px rgba(0,0,0,0.3);
+    z-index: 7;
 }
-.rod::before, .rod::after {
-    content:"";
-    position:absolute;
-    top:50%; transform: translateY(-50%);
-    width: 34px; height: 46px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #a8734a, var(--rod-dark) 75%);
-    box-shadow: 0 3px 6px rgba(0,0,0,0.4);
-}
-.rod::before { left: -22px; }
-.rod::after { right: -22px; }
 
-.parchment {
+.tw-roller-bar {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 480px;
+    height: 35px;
+    background: linear-gradient(180deg, #ccc, #fff 20%, #777 50%, #222);
+    border-radius: 17px;
+    border: 2px solid #333;
+    z-index: 6;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.tw-clip {
+    width: 25px;
+    height: 40px;
+    background: linear-gradient(90deg, #aaa, #eee, #aaa);
+    border-radius: 4px;
+    border: 1px solid #555;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    margin-top: 5px;
+}
+
+.tw-chassis {
+    position: absolute;
+    top: 25px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, #5e2828, #3b1414);
+    border-radius: 20px 20px 15px 15px;
+    border: 4px solid #1c0808;
+    border-bottom-width: 12px;
+    box-shadow: 
+        inset 0 8px 15px rgba(255,255,255,0.15),
+        0 15px 20px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.tw-chassis::before {
+    content: "";
+    position: absolute;
+    top: 5px; left: 15px; right: 15px; bottom: 15px;
+    border: 2px solid #8c5757;
+    border-radius: 12px;
+    pointer-events: none;
+}
+
+.tw-center-hump {
+    width: 280px;
+    height: 60px;
+    background: #2a0e0e;
+    border-radius: 0 0 140px 140px;
+    margin-top: 0;
+    border: 3px solid #1c0808;
+    border-top: none;
     position: relative;
-    background:
-      radial-gradient(ellipse at 20% 10%, rgba(255,255,255,0.15), transparent 40%),
-      linear-gradient(180deg, var(--parchment) 0%, var(--parchment-shadow) 100%);
-    padding: 34px 44px 42px;
-    color: var(--ink);
-    box-shadow:
-      inset 0 0 0 3px #c7ad7c,
-      inset 0 0 40px rgba(120, 90, 40, 0.25);
-    /* Removed max-height and overflow-y to allow full expansion */
+    overflow: hidden;
+    box-shadow: inset 0 -5px 15px rgba(0,0,0,0.8);
 }
-.parchment::before, .parchment::after {
-    content:"";
-    position:absolute; left:0; right:0; height:10px;
-    background: repeating-linear-gradient(90deg, var(--parchment) 0 8px, var(--parchment-shadow) 8px 16px);
+
+.tw-typebars {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 80px;
+    background: repeating-linear-gradient(75deg, #444, #444 2px, #222 2px, #222 6px);
+    border-radius: 50%;
 }
-.parchment::before { top:-2px; }
-.parchment::after { bottom:-2px; }
 
-/* Hide scrollbar on parchment */
-.parchment::-webkit-scrollbar { width: 0; }
-
-.title-row {
-    display:flex;
-    align-items:center;
+.tw-keyboard-area {
+    margin-top: 15px;
+    width: 480px;
+    height: 125px;
+    background: #111;
+    border-radius: 12px;
+    box-shadow: inset 0 5px 20px rgba(0,0,0,0.9);
+    display: flex;
+    flex-direction: column;
     justify-content: center;
-    gap: 14px;
-    margin-bottom: 6px;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
 }
 
-h1.title {
-    font-family: 'MedievalSharp', cursive;
-    font-size: clamp(28px, 4vw, 38px);
-    letter-spacing: 2px;
-    margin: 0;
-    color: #3a2b1a;
-    text-shadow: 2px 2px 0 rgba(255,255,255,0.35);
+.tw-key-row {
+    display: flex;
+    gap: 8px;
 }
 
-.compass { width: 46px; height: 46px; flex-shrink:0; }
-
-.divider {
-    text-align:center;
-    color: var(--paper-line);
-    font-family: 'Press Start 2P', monospace;
-    font-size: 14px;
-    letter-spacing: 4px;
-    margin: 10px 0 22px;
-    user-select:none;
+.tw-key {
+    width: 26px;
+    height: 26px;
+    background: radial-gradient(circle at 30% 30%, #fdfdfd, #b8b8b8);
+    border-radius: 50%;
+    border: 2px solid #333;
+    box-shadow: 0 4px 0 #111, 0 5px 3px rgba(0,0,0,0.5);
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Share Tech Mono', Courier, monospace;
+    font-size: 12px;
+    font-weight: bold;
+    color: #222;
+    padding-bottom: 2px;
+}
+.tw-key::after {
+    content: "";
+    position: absolute;
+    top: 4px; left: 4px; right: 4px; bottom: 4px;
+    border: 1px solid rgba(0,0,0,0.3);
+    border-radius: 50%;
 }
 
-.role {
-    text-align:center;
-    font-size: 30px;
-    font-family: 'MedievalSharp', cursive;
-    color: var(--ink-soft);
-    margin: 0 0 18px;
-    letter-spacing: 1px;
+.tw-spacebar {
+    width: 220px;
+    height: 22px;
+    background: linear-gradient(180deg, #fdfdfd, #b8b8b8);
+    border-radius: 11px;
+    border: 2px solid #333;
+    box-shadow: 0 4px 0 #111, 0 5px 3px rgba(0,0,0,0.5);
+    margin-top: 5px;
 }
 
-.body-text {
-    font-size: 24px;
-    line-height: 1.6;
+.typewriter-title {
+    font-family: 'Special Elite', 'Courier New', Courier, monospace;
+    font-size: 32px;
+    font-weight: bold;
     text-align: center;
-    color: var(--ink);
-    margin: 0 auto 18px;
-    max-width: 480px;
-    font-family: 'VT323', monospace;
+    letter-spacing: 2px;
+    margin: 0 0 25px 0;
+    color: #111;
+    text-shadow: 0.5px 0.5px 1px rgba(0,0,0,0.4);
 }
 
-.body-text:last-of-type { margin-bottom: 0; }
+.typewriter-divider {
+    text-align: center;
+    font-family: 'Special Elite', 'Courier New', Courier, monospace;
+    letter-spacing: 5px;
+    margin-bottom: 30px;
+    color: #444;
+}
 
-@media (max-width: 520px){
-    .parchment { padding: 26px 20px 32px; }
-    .body-text { font-size: 20px; }
-    .role { font-size: 22px; }
+.typewriter-text {
+    font-family: 'Special Elite', 'Courier New', Courier, monospace;
+    font-size: 19px;
+    line-height: 1.6;
+    color: #222;
+    margin: 0 auto 20px;
+    max-width: 480px;
+    text-shadow: 0.5px 0.5px 0px rgba(0,0,0,0.1);
+    text-align: left;
+}
+.typewriter-text:last-of-type { margin-bottom: 0; }
+
+.typewriter-role {
+    font-family: 'Special Elite', 'Courier New', Courier, monospace;
+    font-size: 24px;
+    text-align: center;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 25px;
+    text-decoration: underline;
+    text-decoration-style: dashed;
+}
+
+@media (max-width: 650px) {
+    .typewriter-wrap {
+        transform: scale(0.65);
+        transform-origin: bottom center;
+        margin-bottom: -50px;
+    }
 }
 
 /* ========================================================================= */

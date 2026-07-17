@@ -5,7 +5,7 @@
     <title>My Connected RPG World</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Permanent+Marker&family=Special+Elite&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css?v=2">
 </head>
 
@@ -33,25 +33,44 @@
                 <button class="interior-btn" id="interior-explore"><span class="x">🔍</span> Explore Home</button>
                 <button class="interior-btn" id="interior-close"><span class="x">✕</span> Return to Town</button>
             </div>
-            <div class="scroll-wrap" id="scroll-wrap-container" style="display: none;">
-                <div class="rod"></div>
-                <div class="parchment">
-                    <div class="title-row">
-                        <h1 class="title" id="interior-title">ABOUT ME</h1>
-                        <svg class="compass" viewBox="0 0 24 24" fill="none">
-                            <circle cx="12" cy="12" r="10" fill="#e0574a" stroke="#7a2418" stroke-width="1.5"/>
-                            <circle cx="12" cy="12" r="7.5" fill="#f2b9a8" stroke="#7a2418" stroke-width="1"/>
-                            <polygon points="12,5.5 13.6,11 12,12.5 10.4,11" fill="#3a2b1a"/>
-                            <polygon points="12,18.5 13.6,13 12,11.5 10.4,13" fill="#3a2b1a"/>
-                            <circle cx="12" cy="12" r="1.6" fill="#3a2b1a"/>
-                        </svg>
-                    </div>
-                    <div class="divider">--------------------------</div>
+            <div class="typewriter-wrap" id="typewriter-wrap-container" style="display: none;">
+                <div class="typewriter-paper">
                     <div id="interior-body">
                         <!-- Dynamic content goes here -->
                     </div>
                 </div>
-                <div class="rod"></div>
+                
+                <div class="typewriter-machine">
+                    <div class="tw-roller-area">
+                        <div class="tw-knob left"></div>
+                        <div class="tw-roller-bar">
+                            <div class="tw-clip"></div>
+                            <div class="tw-clip"></div>
+                        </div>
+                        <div class="tw-knob right"></div>
+                    </div>
+                    
+                    <div class="tw-chassis">
+                        <div class="tw-center-hump">
+                            <div class="tw-typebars"></div>
+                        </div>
+                        
+                        <div class="tw-keyboard-area">
+                            <div class="tw-key-row" style="padding-left: 0;">
+                                <div class="tw-key">Q</div><div class="tw-key">W</div><div class="tw-key">E</div><div class="tw-key">R</div><div class="tw-key">T</div><div class="tw-key">Y</div><div class="tw-key">U</div><div class="tw-key">I</div><div class="tw-key">O</div><div class="tw-key">P</div>
+                            </div>
+                            <div class="tw-key-row" style="padding-left: 15px;">
+                                <div class="tw-key">A</div><div class="tw-key">S</div><div class="tw-key">D</div><div class="tw-key">F</div><div class="tw-key">G</div><div class="tw-key">H</div><div class="tw-key">J</div><div class="tw-key">K</div><div class="tw-key">L</div>
+                            </div>
+                            <div class="tw-key-row" style="padding-left: 30px;">
+                                <div class="tw-key">Z</div><div class="tw-key">X</div><div class="tw-key">C</div><div class="tw-key">V</div><div class="tw-key">B</div><div class="tw-key">N</div><div class="tw-key">M</div><div class="tw-key">,</div>
+                            </div>
+                            <div class="tw-key-row">
+                                <div class="tw-spacebar"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Lab Workstation UI -->
