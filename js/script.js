@@ -349,7 +349,7 @@ window.addEventListener("keydown", (e) => {
 
                 showDialogue("AKBOT-E7", [
                     "Welcome to the Lab! This is where ideas become reality.",
-                    "Accessing the mainframe... Project archives are now online."
+                    "Let me boot up one of these terminals so you can check out his projects."
                 ], () => {
                     if (interiorBg) interiorBg.style.filter = "brightness(0.4) blur(8px)";
                     if (intContent) intContent.style.display = 'flex';
@@ -1134,15 +1134,30 @@ function draw() {
 }
 
 // --- 7. GAME LOOP ---
-function loop() {
-    update();
+const fps = 60;
+const step = 1000 / fps;
+let lastTime = performance.now();
+let accumulator = 0;
+
+function loop(currentTime) {
+    if (!currentTime) currentTime = performance.now();
+    let dt = currentTime - lastTime;
+    if (dt > 250) dt = 250; // cap dt to avoid spiral of death
+    lastTime = currentTime;
+    accumulator += dt;
+
+    while (accumulator >= step) {
+        update();
+        accumulator -= step;
+    }
+    
     draw();
     requestAnimationFrame(loop);
 }
 
 // Start the game!
 loadZone("town", 400, 400);
-loop();
+requestAnimationFrame(loop);
 
 // --- 8. EDIT MODE UI ---
 const debugUI = document.createElement('div');
