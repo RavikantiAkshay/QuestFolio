@@ -34,7 +34,7 @@ const player = {
     x: 400,
     y: 400,
     size: 48,
-    speed: 5,
+    speed: 3,
     hp: 100,
     maxHp: 100,
     attack: 10,
@@ -1233,7 +1233,7 @@ canvas.addEventListener('mousedown', (e) => {
         // Left click to attack
         if (e.button === 0 && !player.isDefending && !isOverlayActive) {
             
-            if (player.comboTimer <= 0 || !player.isAttacking) {
+            if (player.comboTimer <= 0) {
                 player.comboStep = 1; // start at attack 1
             } else {
                 player.comboStep++;
@@ -1244,7 +1244,7 @@ canvas.addEventListener('mousedown', (e) => {
             player.isAttacking = true;
             player.frameX = player.comboStep; 
             player.animTimer = 0;
-            player.comboTimer = 90; // ~1.5s window to click again for next combo
+            player.comboTimer = 60; // 1 second combo window
 
             // Attack hitbox logic
             let attackBox = { x: player.x, y: player.y, w: player.size, h: player.size };
