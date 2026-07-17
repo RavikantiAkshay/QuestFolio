@@ -508,8 +508,7 @@ function loadZone(zoneName, startX, startY) {
             showDialogue("AKBOT-E7", [
                 "Hi there! You've just entered the Town of Akshay.",
                 "Every building you see holds hidden details and information about him.",
-                "Use W, A, S, D to move around and explore the area.",
-                "Left-Click to attack, and hold 'F' to defend if you run into trouble.",
+                "Use W, A, S, D to move around. Left-Click to attack, and hold 'F' to defend if you run into trouble.",
                 "Go on, uncover his story... the more you know, the better it gets!"
             ]);
         }, 500);
