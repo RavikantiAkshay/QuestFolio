@@ -415,10 +415,10 @@ window.addEventListener("keydown", (e) => {
                 }
                 if (scrollWrapContainer) scrollWrapContainer.style.display = 'block'; // make sure scroll wrap is visible again
                 if (document.getElementById('lab-computer-container')) document.getElementById('lab-computer-container').style.display = 'none'; // hide lab computer
+                if (document.getElementById('workshop-container')) document.getElementById('workshop-container').style.display = 'none';
 
                 showDialogue("AKBOT-E7", [
-                    "Welcome to Akshay's Home! Here you'll find the core details of who he is.",
-                    "Take this scroll, it contains everything you need to know."
+                    "Welcome to Akshay's Home! Take this scroll, it contains everything you need to know."
                 ], () => {
                     // On dialogue complete, show the scroll
                     if (interiorBg) interiorBg.style.filter = "brightness(0.5) blur(6px)";
@@ -456,13 +456,13 @@ window.addEventListener("keydown", (e) => {
                     interiorExplore.style.display = 'flex'; // Enable explore in lab
                 }
                 if (document.getElementById('scroll-wrap-container')) document.getElementById('scroll-wrap-container').style.display = 'none';
+                if (document.getElementById('workshop-container')) document.getElementById('workshop-container').style.display = 'none';
                 
                 const labComputer = document.getElementById('lab-computer-container');
                 if (labComputer) labComputer.style.display = 'none'; // hidden during dialogue
 
                 showDialogue("AKBOT-E7", [
-                    "Welcome to the Lab! This is where ideas become reality.",
-                    "Let me boot up one of these terminals so you can check out his projects."
+                    "Welcome to the Lab! Let me boot up one of these terminals so you can check out his projects."
                 ], () => {
                     if (interiorBg) interiorBg.style.filter = "brightness(0.4) blur(8px)";
                     if (intContent) intContent.style.display = 'flex';
@@ -495,8 +495,7 @@ window.addEventListener("keydown", (e) => {
                 if (workshopContainer) workshopContainer.style.display = 'none'; // hidden during dialogue
 
                 showDialogue("AKBOT-E7", [
-                    "Ah, the Workshop.",
-                    "Here you can review active blueprints and stashed concepts."
+                    "Ah, the Workshop. Here you can review active blueprints and stashed concepts."
                 ], () => {
                     if (interiorBg) interiorBg.style.filter = "brightness(0.3) blur(10px)";
                     if (intContent) intContent.style.display = 'flex';
