@@ -192,11 +192,124 @@ if (nextBtn) {
     });
 }
 
+const workshopProjectsData = [
+    {
+        title: "NxtForm",
+        status: "UNDER DEVELOPMENT",
+        desc: "An open-source, full-stack web application that revolutionizes data collection. Build highly customizable forms with a drag-and-drop workspace, or let AI generate professional forms from a simple prompt. Serve your forms in both classic and conversational modes to maximize completion rates.",
+        features: ["Workspace Builder", "AI Form Generator", "Small-Cohort Analytics", "AI Workflow Insights"],
+        tech: "React, Node.js, Express, MongoDB, Groq API",
+        repo: "https://github.com/RavikantiAkshay/NxtForm"
+    },
+    {
+        title: "Placement-Assistant",
+        status: "UNDER DEVELOPMENT",
+        desc: "An open-source, full-stack AI platform that conducts real-time conversational mock interviews. Upload your resume, select your desired role and difficulty, and participate in a highly dynamic voice-to-voice interview. Receive a comprehensive analytics report detailing your technical proficiency, behavioral adherence, and communication skills to help you ace your next real-world interview.",
+        features: ["Voice-to-Voice Interaction", "Resume-Driven Questions", "Comprehensive Analytics", "Intelligent Doubt Solver"],
+        tech: "React 19, Express, MongoDB, Groq AI, Whisper",
+        repo: "https://github.com/RavikantiAkshay/placement-assistant"
+    },
+    {
+        title: "TestCaseGenerator",
+        status: "UNDER DEVELOPMENT",
+        desc: "AI-powered test case generator. Upload a repository, let AI analyze the architecture, and generate comprehensive test suites — unit, integration, API, and edge cases. Features an interactive test workspace where you can view syntax-highlighted test code, edit outputs inline, and request targeted AI regenerations.",
+        features: ["Deep Architecture Analysis", "Context-Aware AI Generation", "Embedding Memory", "Interactive Test Workspace"],
+        tech: "React, Node.js, Express, MongoDB, Groq SDK",
+        repo: "https://github.com/RavikantiAkshay/test-case-generator"
+    },
+    {
+        title: "bEEtcode",
+        status: "STASHED",
+        desc: "A modern, high-fidelity dashboard for practicing Verilog and mastering digital logic design. Features an extensive collection of Verilog problems ranging from Combinational Logic to complex FSMs. Track your coding streaks, daily goals, and topic mastery with real-time evaluation and GitHub-style activity heatmaps.",
+        features: ["Interactive Dashboard", "Monaco Editor (Verilog Syntax)", "Real-time Evaluation", "Progress Tracking"],
+        tech: "Next.js 15, TypeScript, Supabase",
+        reason: "Content Sourcing Constraints — Generating a massive, original suite of Verilog problems is unfeasible for a solo developer, and scraping third-party content violates copyright policies."
+    },
+    {
+        title: "gitmap",
+        status: "STASHED",
+        desc: "Advanced GitHub Profile Analysis & Collaboration Mapping. Provides deep profile analysis, AI-powered collaboration matching, skill trajectory mapping, and personalized growth recommendations for developers. Visualize profiles in a 2D similarity space using UMAP dimensionality reduction.",
+        features: ["Multi-Axis Profile Scoring", "Tech Stack Analysis", "Trajectory Mapping", "UMAP Dimensionality Reduction"],
+        tech: "FastAPI, Python, React, TypeScript",
+        reason: "GitHub API Rate Limits — Frequent token exhaustion restricts the volume of deep profile analyses required for full functionality. Awaiting optimized caching strategies."
+    },
+    {
+        title: "studybot",
+        status: "STASHED",
+        desc: "StudyRoom is an AI studying platform designed to ruthlessly enforce contextual learning and aggressively combat the forgetting curve. Organizes knowledge into constrained 'Rooms' and links them via a persistent Memory Lake that tracks and optimizes your cognitive retention across all subjects.",
+        features: ["Smart Compartmentalization", "Memory Lake Tracker", "Cross-Room Intelligence", "Cognitive Diagnostics"],
+        tech: "React, Express, Node.js, Groq/Gemini",
+        reason: "Scalability & LLM Token Quotas — The continuous nature of the Memory Lake demands high-frequency LLM interactions, rapidly exceeding free API limits and restricting massive user scalability."
+    }
+];
+
+let currentWorkshopIdx = 0;
+
+function updateWorkshopBlueprint() {
+    const w = workshopProjectsData[currentWorkshopIdx];
+    const bpTitle = document.getElementById('bp-title');
+    const bpStatus = document.getElementById('bp-proj-status');
+    const bpDesc = document.getElementById('bp-proj-desc');
+    const bpFeat = document.getElementById('bp-proj-features');
+    const bpTech = document.getElementById('bp-proj-tech');
+    const bpPag = document.getElementById('bp-pagination');
+    const bpStashReason = document.getElementById('bp-stash-reason');
+    const bpStashContainer = document.getElementById('bp-stash-reason-container');
+    const bpRepoLink = document.getElementById('bp-repo-link');
+    const bpRepoContainer = document.getElementById('bp-repo-container');
+
+    if(bpTitle) bpTitle.innerText = `Blueprint: ${w.title}`;
+    if(bpStatus) {
+        bpStatus.innerText = `Status: ${w.status}`;
+        bpStatus.style.color = w.status === 'STASHED' ? '#ff9999' : '#ffd700';
+    }
+    
+    if (w.status === 'STASHED') {
+        if(bpStashContainer) bpStashContainer.style.display = 'block';
+        if(bpStashReason) bpStashReason.innerText = w.reason || "Placeholder reason";
+        if(bpRepoContainer) bpRepoContainer.style.display = 'none';
+    } else {
+        if(bpStashContainer) bpStashContainer.style.display = 'none';
+        if(bpRepoContainer) bpRepoContainer.style.display = 'block';
+        if(bpRepoLink) bpRepoLink.href = w.repo || "#";
+    }
+
+    if(bpDesc) bpDesc.innerText = w.desc;
+    if(bpFeat) bpFeat.innerHTML = w.features.map(f => `<li>${f}</li>`).join('');
+    if(bpTech) bpTech.innerHTML = `<strong>Tech Stack:</strong> ${w.tech}`;
+    if(bpPag) bpPag.innerText = `${currentWorkshopIdx + 1} / ${workshopProjectsData.length}`;
+}
+
+const bpPrevBtn = document.getElementById('blueprint-prev');
+const bpNextBtn = document.getElementById('blueprint-next');
+if (bpPrevBtn) {
+    bpPrevBtn.addEventListener('click', () => {
+        currentWorkshopIdx = (currentWorkshopIdx - 1 + workshopProjectsData.length) % workshopProjectsData.length;
+        updateWorkshopBlueprint();
+    });
+}
+if (bpNextBtn) {
+    bpNextBtn.addEventListener('click', () => {
+        currentWorkshopIdx = (currentWorkshopIdx + 1) % workshopProjectsData.length;
+        updateWorkshopBlueprint();
+    });
+}
+
 if (interiorExplore) {
     interiorExplore.addEventListener('click', () => {
         if (scrollWrapContainer) scrollWrapContainer.style.display = 'none'; // hide the parchment
         if (document.getElementById('lab-computer-container')) document.getElementById('lab-computer-container').style.display = 'none'; // hide the computer
-        if (interiorBg) interiorBg.style.filter = "none"; // clear the background blur
+        
+        if (interiorBg) {
+            interiorBg.style.transition = 'filter 0.7s ease';
+            interiorBg.style.filter = "none"; // clear the background blur smoothly
+        }
+        
+        const workshopContainer = document.getElementById('workshop-container');
+        if (workshopContainer) {
+            workshopContainer.style.display = 'none';
+        }
+
         interiorExplore.style.display = 'none'; // hide the explore button itself
         // isOverlayActive remains true, so player can't move. They just see the image.
     });
@@ -361,6 +474,40 @@ window.addEventListener("keydown", (e) => {
 
                 if (dialogueBackdrop) dialogueBackdrop.style.display = 'none';
 
+            } else if (activeInteractable.id === 'workshop') {
+                if (interiorBg) {
+                    interiorBg.style.backgroundImage = "url('assets/images/environments/workshop.jpg')";
+                    interiorBg.style.filter = "none";
+                    interiorBg.style.backgroundSize = "contain";
+                    interiorBg.style.backgroundRepeat = "no-repeat";
+                }
+                const intContent = document.querySelector('.interior-content');
+                if (intContent) intContent.style.display = 'none';
+                if (interiorOverlay) interiorOverlay.style.display = 'block';
+                if (interiorExplore) {
+                    interiorExplore.innerHTML = '<span class="x">🔍</span> Explore Workshop';
+                    interiorExplore.style.display = 'flex';
+                }
+                if (document.getElementById('scroll-wrap-container')) document.getElementById('scroll-wrap-container').style.display = 'none';
+                if (document.getElementById('lab-computer-container')) document.getElementById('lab-computer-container').style.display = 'none';
+                
+                const workshopContainer = document.getElementById('workshop-container');
+                if (workshopContainer) workshopContainer.style.display = 'none'; // hidden during dialogue
+
+                showDialogue("AKBOT-E7", [
+                    "Ah, the Workshop.",
+                    "Here you can review active blueprints and stashed concepts."
+                ], () => {
+                    if (interiorBg) interiorBg.style.filter = "brightness(0.3) blur(10px)";
+                    if (intContent) intContent.style.display = 'flex';
+                    if (workshopContainer) {
+                        workshopContainer.style.display = 'flex';
+                        updateWorkshopBlueprint();
+                    }
+                });
+
+                if (dialogueBackdrop) dialogueBackdrop.style.display = 'none';
+
             } else {
                 document.getElementById('overlayTitle').innerText = activeInteractable.text;
                 overlay.style.display = 'flex';
@@ -368,12 +515,16 @@ window.addEventListener("keydown", (e) => {
         } else if (isOverlayActive && !isDialogueActive) {
             overlay.style.display = 'none';
             if (interiorOverlay) interiorOverlay.style.display = 'none';
+            const workshopContainer = document.getElementById('workshop-container');
+            if (workshopContainer) workshopContainer.style.display = 'none';
             isOverlayActive = false;
         }
     }
     if (e.key === 'Escape' && isOverlayActive && !isDialogueActive) {
         overlay.style.display = 'none';
         if (interiorOverlay) interiorOverlay.style.display = 'none';
+        const workshopContainer = document.getElementById('workshop-container');
+        if (workshopContainer) workshopContainer.style.display = 'none';
         isOverlayActive = false;
     }
     // Uncomment this block to re-enable Edit Modes!

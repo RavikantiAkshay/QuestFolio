@@ -159,7 +159,7 @@ canvas {
     top:24px; right:24px;
     display:flex;
     gap:10px;
-    z-index: 10;
+    z-index: 20;
 }
 
 .interior-btn {
@@ -486,4 +486,300 @@ h1.title {
         flex-direction: column;
         transform: scale(0.7);
     }
+}
+
+/* --- Workshop UI (Drafting Table) --- */
+.drafting-table {
+    position: relative;
+    width: 90%;
+    max-width: 1200px;
+    height: 85%;
+    margin: auto;
+    background: linear-gradient(135deg, #4e342e 0%, #3e2723 50%, #212121 100%);
+    border: 15px solid #2e1a11;
+    border-radius: 8px;
+    box-shadow: 
+        0 20px 60px rgba(0,0,0,0.8),
+        inset 0 0 50px rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Decorative Tools */
+.dt-ruler {
+    position: absolute;
+    top: 50px;
+    left: 30px;
+    width: 40px;
+    height: 60%;
+    background-color: #dcdcdc;
+    background-image: 
+        repeating-linear-gradient(to bottom, transparent, transparent 9px, #424242 9px, #424242 10px),
+        repeating-linear-gradient(to bottom, transparent, transparent 49px, #111 49px, #111 50px),
+        linear-gradient(to right, #e0e0e0, #ffffff 20%, #e0e0e0 80%, #9e9e9e);
+    background-size: 15px 100%, 25px 100%, 100% 100%;
+    background-position: right top, right top, center;
+    background-repeat: no-repeat;
+    border: 1px solid #757575;
+    border-radius: 2px;
+    box-shadow: 3px 5px 15px rgba(0,0,0,0.6);
+    transform: rotate(-1deg);
+    z-index: 4; /* On top of blueprint */
+}
+
+.dt-pencil {
+    position: absolute;
+    bottom: 50px;
+    right: 40px;
+    width: 200px;
+    height: 12px;
+    background: #f1c40f; 
+    border-top: 2px solid #f39c12;
+    border-bottom: 2px solid #e67e22;
+    box-shadow: 3px 5px 10px rgba(0,0,0,0.6);
+    transform: rotate(-25deg);
+    z-index: 4;
+}
+.dt-pencil::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -20px;
+    border-right: 20px solid #e2c08d; 
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+}
+.dt-pencil::after {
+    content: '';
+    position: absolute;
+    top: 3px; left: -20px;
+    border-right: 8px solid #2c3e50; 
+    border-top: 3px solid transparent;
+    border-bottom: 3px solid transparent;
+}
+
+.dt-coffee-stain {
+    position: absolute;
+    top: 50px;
+    right: 60px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 5px solid rgba(101, 67, 33, 0.4);
+    background: transparent;
+    box-shadow: inset 0 0 15px rgba(101, 67, 33, 0.2);
+    z-index: 1; /* Keep stain on wood */
+}
+
+.dt-protractor {
+    position: absolute;
+    bottom: 40px;
+    left: 80px;
+    width: 160px;
+    height: 80px;
+    border-radius: 80px 80px 0 0;
+    background: rgba(200, 220, 255, 0.15);
+    background-image: repeating-conic-gradient(
+        from 270deg at 50% 100%,
+        rgba(255,255,255,0.4) 0deg,
+        rgba(255,255,255,0.4) 1deg,
+        transparent 1deg,
+        transparent 5deg
+    );
+    border: 2px solid rgba(255,255,255,0.3);
+    border-bottom: 3px solid rgba(255,255,255,0.5);
+    box-shadow: 2px 5px 15px rgba(0,0,0,0.4);
+    transform: rotate(15deg);
+    backdrop-filter: blur(2px);
+    z-index: 4;
+}
+.dt-protractor::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 80px; height: 40px;
+    border-radius: 40px 40px 0 0;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-bottom: none;
+    background: transparent;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.dt-setsquare {
+    position: absolute;
+    top: 250px;
+    left: 60px;
+    width: 120px;
+    height: 120px;
+    background: rgba(220, 230, 255, 0.2);
+    backdrop-filter: blur(2px);
+    clip-path: polygon(
+        0% 0%, 
+        0% 100%, 
+        100% 100%, 
+        60% 100%, 
+        55% 75%, 
+        25% 75%, 
+        25% 45%, 
+        55% 75%, 
+        60% 100%, 
+        0% 0%
+    );
+    transform: rotate(35deg);
+    z-index: 4;
+    filter: drop-shadow(3px 5px 5px rgba(0,0,0,0.5));
+}
+
+.dt-graphite-dust {
+    position: absolute;
+    bottom: 30px;
+    right: 80px;
+    width: 100px;
+    height: 60px;
+    background-image: radial-gradient(circle, rgba(20,20,20,0.8) 1px, transparent 1.5px);
+    background-size: 8px 10px;
+    background-position: 0 0, 4px 5px;
+    opacity: 0.5;
+    z-index: 4;
+    transform: rotate(-15deg);
+    border-radius: 50%;
+    filter: blur(0.5px);
+}
+
+.dt-sticky {
+    position: absolute;
+    top: 250px;
+    right: 40px;
+    width: 80px;
+    height: 80px;
+    background: #f1c40f;
+    background-image: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%);
+    box-shadow: 3px 5px 10px rgba(0,0,0,0.4);
+    transform: rotate(8deg);
+    border-bottom-right-radius: 20px 5px;
+    z-index: 4;
+}
+.dt-sticky::after {
+    content: 'TODO:\A Refactor';
+    white-space: pre;
+    font-family: 'Permanent Marker', 'Comic Sans MS', cursive, sans-serif;
+    color: #2c3e50;
+    font-size: 14px;
+    font-weight: bold;
+    position: absolute;
+    top: 15px; left: 10px;
+    transform: rotate(-5deg);
+}
+
+.dt-eraser {
+    position: absolute;
+    bottom: 110px;
+    right: 40px;
+    width: 60px;
+    height: 30px;
+    background: #e7e7e7;
+    border-radius: 4px;
+    box-shadow: 
+        inset -5px -5px 10px rgba(0,0,0,0.1),
+        3px 5px 8px rgba(0,0,0,0.5);
+    transform: rotate(50deg);
+    z-index: 4;
+}
+.dt-eraser::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 40px; height: 100%;
+    background: #3498db;
+    border-radius: 4px 0 0 4px;
+    box-shadow: inset -2px 0 5px rgba(0,0,0,0.2);
+}
+
+.blueprint-paper {
+    position: relative;
+    width: 65%;
+    height: 85%;
+    background-color: #004b87;
+    background-image: 
+        linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px);
+    background-size: 20px 20px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 
+        0 0 10px rgba(0, 75, 135, 0.8),
+        inset 0 0 40px rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    padding: 40px;
+    color: #ffffff;
+    font-family: 'Share Tech Mono', 'Courier New', Courier, monospace;
+    letter-spacing: 0.5px;
+    z-index: 3;
+}
+
+.bp-tape {
+    position: absolute;
+    width: 80px;
+    height: 25px;
+    background: rgba(245, 245, 220, 0.75);
+    box-shadow: 1px 2px 5px rgba(0,0,0,0.3);
+    z-index: 10;
+    background-image: repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+}
+.bp-tape-tl {
+    top: -10px; left: -25px;
+    transform: rotate(-35deg);
+}
+.bp-tape-br {
+    bottom: -10px; right: -25px;
+    transform: rotate(-35deg);
+};
+
+.blueprint-nav {
+    background: rgba(0, 75, 135, 0.8);
+    border: 2px solid #fff;
+    color: #fff;
+    font-size: 24px;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.2s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 20px;
+    z-index: 3;
+}
+.blueprint-nav:hover { background: rgba(0, 100, 180, 1); transform: scale(1.1); }
+.blueprint-nav:active { transform: scale(0.95); }
+
+.bp-title {
+    font-size: 28px;
+    letter-spacing: 2px;
+    border-bottom: 2px dashed #fff;
+    padding-bottom: 10px;
+    margin-top: 0;
+    margin-bottom: 5px;
+    text-align: center;
+}
+.bp-project {
+    padding: 0 15px;
+    margin-bottom: 15px;
+}
+.bp-proj-name { margin: 0 0 5px; font-size: 22px; }
+.bp-proj-status { color: #ffd700; font-size: 16px; margin-bottom: 10px; }
+.bp-proj-desc { font-size: 16px; margin-bottom: 15px; line-height: 1.4; }
+.bp-proj-features { font-size: 15px; margin-bottom: 15px; padding-left: 20px; line-height: 1.4; }
+.bp-proj-features li { margin-bottom: 5px; }
+.bp-proj-tech { font-size: 15px; font-weight: bold; }
+
+.bp-pagination {
+    margin-top: auto;
+    text-align: center;
+    font-size: 16px;
+    opacity: 0.8;
+    padding-top: 10px;
 }
