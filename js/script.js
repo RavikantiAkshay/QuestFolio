@@ -63,17 +63,17 @@ const keys = {};
 
 const interactables = {
     "town": [
-        { "x": 896, "y": 304, "w": 48, "h": 48, "id": "lab", "text": "Lab (Projects)" },
-        { "x": 280, "y": 408, "w": 40, "h": 48, "id": "home", "text": "Enter Home" },
+        { "x": 896, "y": 304, "w": 48, "h": 48, "id": "lab", "text": "Lab" },
+        { "x": 280, "y": 408, "w": 40, "h": 48, "id": "home", "text": "Home" },
         { "x": 904, "y": 656, "w": 48, "h": 56, "id": "workshop", "text": "Workshop" }
     ],
     "school": [
-        { "x": 224, "y": 536, "w": 64, "h": 56, "id": "school", "text": "School (Education)" },
-        { "x": 616, "y": 576, "w": 64, "h": 80, "id": "library", "text": "Library (Skills)" },
-        { "x": 1008, "y": 624, "w": 56, "h": 48, "id": "post", "text": "Post Office (Contact)" }
+        { "x": 224, "y": 536, "w": 64, "h": 56, "id": "school", "text": "School" },
+        { "x": 616, "y": 576, "w": 64, "h": 80, "id": "library", "text": "Library" },
+        { "x": 1008, "y": 624, "w": 56, "h": 48, "id": "post", "text": "Post Office" }
     ],
     "castle": [
-        { "x": 600, "y": 368, "w": 88, "h": 72, "id": "boss", "text": "Boss Room (Resume)" }
+        { "x": 600, "y": 368, "w": 88, "h": 72, "id": "boss", "text": "Boss Room" }
     ]
 };
 
@@ -86,11 +86,119 @@ const interiorBg = document.getElementById('interior-bg');
 const interiorTitle = document.getElementById('interior-title');
 const interiorBody = document.getElementById('interior-body');
 const interiorClose = document.getElementById('interior-close');
+const interiorExplore = document.getElementById('interior-explore');
+const scrollWrapContainer = document.getElementById('scroll-wrap-container');
 
 if (interiorClose) {
     interiorClose.addEventListener('click', () => {
         if (interiorOverlay) interiorOverlay.style.display = 'none';
         isOverlayActive = false;
+    });
+}
+
+// Lab Project Data & Logic
+const projectsData = [
+    {
+        title: "BHILAEE LABS",
+        tech: ["Next.js 15", "React 19", "Supabase", "KaTeX", "Chart.js"],
+        shortDesc: "A structured, interactive virtual laboratory platform designed for EE students at IIT Bhilai. Provides digitized experiment guides with theory, circuit diagrams, and math.",
+        features: ["Digitized interactive lab guides", "Viva Voce flashcards", "Mathematical rendering (KaTeX)", "Data visualization (Chart.js)", "One-click access to circuit simulator"],
+        github: "https://github.com/RavikantiAkshay/bhilaee-labs",
+        live: "https://labs.bhilaee.openlake.in",
+        image: "assets/images/environments/lab.jpg"
+    },
+    {
+        title: "BHILAEE SIMULATOR",
+        tech: ["Vanilla JS", "HTML/CSS", "SVG Canvas", "Canvas API"],
+        shortDesc: "A powerful browser-based circuit simulator built with zero dependencies. Supports DC, AC, and transient analysis with real-time oscilloscope visualization.",
+        features: ["Supports DC, AC, and transient analysis", "Modified Nodal Analysis (MNA) solver", "Real-time oscilloscope visualization", "Pre-built experiment templates"],
+        github: "https://github.com/RavikantiAkshay/bhilaee-simulator",
+        live: "https://simulator.bhilaee.openlake.in",
+        image: "assets/images/environments/lab.jpg"
+    },
+    {
+        title: "CODE TRANSLATOR",
+        tech: ["React 19", "Node.js", "Express", "Groq LLaMA-3"],
+        shortDesc: "An elite full-stack utility leveraging the Groq engine to seamlessly translate, optimize, analyze, and explain code within a high-performance monochrome workspace.",
+        features: ["High-fidelity Monaco editor", "Visual diff viewer", "Algorithmic complexity analysis", "Performance optimization tuning", "Google OAuth SSO integration"],
+        github: "https://github.com/RavikantiAkshay/code-translator",
+        live: "https://code-translator-tau.vercel.app/",
+        image: "assets/images/environments/lab.jpg"
+    },
+    {
+        title: "RESUME ANALYSER",
+        tech: ["React", "Express", "MongoDB", "Groq AI"],
+        shortDesc: "An open-source web application to build, optimize, and analyze resumes using AI. Features a live-preview builder and deep ATS compatibility scoring.",
+        features: ["Live-preview PDF building", "One-click STAR bullet point generation", "Keyword-by-keyword JD match scoring", "Missing skills detection", "Action verb analysis"],
+        github: "https://github.com/RavikantiAkshay/resume-analyzer",
+        live: "https://resume-analyzer-kappa-fawn.vercel.app/",
+        image: "assets/images/environments/lab.jpg"
+    },
+    {
+        title: "CODE REVIEWER",
+        tech: ["Python", "FastAPI", "Node.js", "Groq API"],
+        shortDesc: "An AI-powered tool that combines static analysis with LLM insights to provide comprehensive, actionable code reviews for Python and JavaScript projects.",
+        features: ["Flake8 & ESLint static analysis", "LLM-powered deeper insights", "Supports ZIP upload or Git cloning", "Configurable rulesets (PEP8, OWASP)", "Intelligent issue deduplication"],
+        github: "https://github.com/RavikantiAkshay/code-review-assistant",
+        live: "https://code-review-assistant-chi.vercel.app/",
+        image: "assets/images/environments/lab.jpg"
+    }
+];
+
+let currentProjectIdx = 0;
+
+function updateLabComputer() {
+    const p = projectsData[currentProjectIdx];
+    const pTitle = document.getElementById('project-title');
+    const pTech = document.getElementById('project-tech');
+    const pDesc = document.getElementById('project-description');
+    const pFeat = document.getElementById('project-features');
+    const pGit = document.getElementById('project-github');
+    const pLive = document.getElementById('project-live');
+    const pPrev = document.getElementById('project-preview');
+
+    if(pTitle) pTitle.innerText = p.title;
+    if(pTech) pTech.innerHTML = p.tech.map(t => `<li>> ${t}</li>`).join('');
+    if(pDesc) pDesc.innerText = p.shortDesc;
+    if(pFeat) pFeat.innerHTML = p.features.map(f => `<li style="margin-bottom:6px;">- ${f}</li>`).join('');
+    if(pGit) pGit.href = p.github;
+    if(pLive) pLive.href = p.live;
+    if(pPrev) {
+        if(p.live && p.live !== "#") {
+            pPrev.innerHTML = `
+                <div style="position:absolute; top:0; left:0; width:200%; height:200%; transform:scale(0.5); transform-origin:top left;">
+                    <iframe src="${p.live}" style="width:100%; height:100%; border:none; background:#fff;"></iframe>
+                </div>
+            `;
+        } else {
+            pPrev.innerHTML = `<img src="${p.image}" style="width:100%; height:100%; object-fit:cover; border-radius:4px;" onerror="this.style.display='none'">`;
+        }
+    }
+}
+
+const prevBtn = document.getElementById('prev-project-btn');
+const nextBtn = document.getElementById('next-project-btn');
+
+if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+        currentProjectIdx = (currentProjectIdx - 1 + projectsData.length) % projectsData.length;
+        updateLabComputer();
+    });
+}
+if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+        currentProjectIdx = (currentProjectIdx + 1) % projectsData.length;
+        updateLabComputer();
+    });
+}
+
+if (interiorExplore) {
+    interiorExplore.addEventListener('click', () => {
+        if (scrollWrapContainer) scrollWrapContainer.style.display = 'none'; // hide the parchment
+        if (document.getElementById('lab-computer-container')) document.getElementById('lab-computer-container').style.display = 'none'; // hide the computer
+        if (interiorBg) interiorBg.style.filter = "none"; // clear the background blur
+        interiorExplore.style.display = 'none'; // hide the explore button itself
+        // isOverlayActive remains true, so player can't move. They just see the image.
     });
 }
 
@@ -188,10 +296,15 @@ window.addEventListener("keydown", (e) => {
                 const intContent = document.querySelector('.interior-content');
                 if (intContent) intContent.style.display = 'none'; // hide scroll initially
                 if (interiorOverlay) interiorOverlay.style.display = 'block';
+                if (interiorExplore) {
+                    interiorExplore.innerHTML = '<span class="x">🔍</span> Explore Home';
+                    interiorExplore.style.display = 'flex'; // make sure explore button is visible again
+                }
+                if (scrollWrapContainer) scrollWrapContainer.style.display = 'block'; // make sure scroll wrap is visible again
+                if (document.getElementById('lab-computer-container')) document.getElementById('lab-computer-container').style.display = 'none'; // hide lab computer
 
                 showDialogue("AKBOT-E7", [
-                    "Welcome to Akshay's Home!",
-                    "Here you'll find the core details of who he is.",
+                    "Welcome to Akshay's Home! Here you'll find the core details of who he is.",
                     "Take this scroll, it contains everything you need to know."
                 ], () => {
                     // On dialogue complete, show the scroll
@@ -213,6 +326,39 @@ window.addEventListener("keydown", (e) => {
                 });
                 
                 // CRITICAL: Hide the dark backdrop so the interior image is bright and clear during dialogue!
+                if (dialogueBackdrop) dialogueBackdrop.style.display = 'none';
+
+            } else if (activeInteractable.id === 'lab') {
+                if (interiorBg) {
+                    interiorBg.style.backgroundImage = "url('assets/images/environments/lab.jpg')";
+                    interiorBg.style.filter = "none";
+                    interiorBg.style.backgroundSize = "contain";
+                    interiorBg.style.backgroundRepeat = "no-repeat";
+                }
+                const intContent = document.querySelector('.interior-content');
+                if (intContent) intContent.style.display = 'none';
+                if (interiorOverlay) interiorOverlay.style.display = 'block';
+                if (interiorExplore) {
+                    interiorExplore.innerHTML = '<span class="x">🔍</span> Explore Lab';
+                    interiorExplore.style.display = 'flex'; // Enable explore in lab
+                }
+                if (document.getElementById('scroll-wrap-container')) document.getElementById('scroll-wrap-container').style.display = 'none';
+                
+                const labComputer = document.getElementById('lab-computer-container');
+                if (labComputer) labComputer.style.display = 'none'; // hidden during dialogue
+
+                showDialogue("AKBOT-E7", [
+                    "Welcome to the Lab! This is where ideas become reality.",
+                    "Accessing the mainframe... Project archives are now online."
+                ], () => {
+                    if (interiorBg) interiorBg.style.filter = "brightness(0.4) blur(8px)";
+                    if (intContent) intContent.style.display = 'flex';
+                    if (labComputer) {
+                        labComputer.style.display = 'flex';
+                        updateLabComputer();
+                    }
+                });
+
                 if (dialogueBackdrop) dialogueBackdrop.style.display = 'none';
 
             } else {
@@ -973,8 +1119,8 @@ function draw() {
         
         ctx.lineWidth = 3;
         ctx.strokeStyle = "black";
-        ctx.strokeText(`[E] Enter ${activeInteractable.text}`, player.x + player.size/2, player.y - 15 - pulse);
-        ctx.fillText(`[E] Enter ${activeInteractable.text}`, player.x + player.size/2, player.y - 15 - pulse);
+        ctx.strokeText(`Press [E] to enter ${activeInteractable.text}`, player.x + player.size/2, player.y - 15 - pulse);
+        ctx.fillText(`Press [E] to enter ${activeInteractable.text}`, player.x + player.size/2, player.y - 15 - pulse);
     }
 
     // Draw Interaction zones in edit mode
