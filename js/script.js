@@ -577,9 +577,11 @@ window.addEventListener("keydown", (e) => {
                 if (dialogueBackdrop) dialogueBackdrop.style.display = 'none';
             } else if (activeInteractable.id === 'school') {
                 if (interiorBg) {
-                    interiorBg.style.backgroundImage = "none";
-                    interiorBg.style.backgroundColor = "#222"; 
+                    interiorBg.style.backgroundImage = "url('assets/images/environments/school.png')";
+                    interiorBg.style.backgroundColor = "transparent"; 
                     interiorBg.style.filter = "none";
+                    interiorBg.style.backgroundSize = "contain";
+                    interiorBg.style.backgroundRepeat = "no-repeat";
                 }
                 const intContent = document.querySelector('.interior-content');
                 if (intContent) intContent.style.display = 'none';
