@@ -68,8 +68,8 @@ const interactables = {
         { "x": 904, "y": 656, "w": 48, "h": 56, "id": "workshop", "text": "Workshop" }
     ],
     "school": [
-        { "x": 224, "y": 536, "w": 64, "h": 56, "id": "school", "text": "School" },
-        { "x": 616, "y": 576, "w": 64, "h": 80, "id": "library", "text": "Library" },
+        { "x": 224, "y": 536, "w": 64, "h": 56, "id": "library", "text": "Library" },
+        { "x": 616, "y": 576, "w": 64, "h": 80, "id": "school", "text": "School" },
         { "x": 1008, "y": 624, "w": 56, "h": 48, "id": "post", "text": "Post Office" }
     ],
     "castle": [
@@ -94,6 +94,69 @@ if (interiorClose) {
         if (interiorOverlay) interiorOverlay.style.display = 'none';
         isOverlayActive = false;
     });
+}
+
+// School Education Data
+const educationData = [
+    { title: "Class X", details: "Secondary Education" },
+    { title: "Class 12", details: "Higher Secondary Education" },
+    { title: "B.Tech", details: "Computer Science and Engineering" }
+];
+
+let currentEduSlide = 0;
+let isEduAnimating = false;
+
+function updateSchoolBoard() {
+    const slider = document.getElementById('board-slider');
+    if (!slider) return;
+    slider.innerHTML = "";
+    educationData.forEach(edu => {
+        const slide = document.createElement('div');
+        slide.className = 'board-slide';
+        slide.innerHTML = `
+            <h2 class="board-title">${edu.title}</h2>
+            <div class="board-detail">${edu.details}</div>
+        `;
+        slider.appendChild(slide);
+    });
+
+    currentEduSlide = 0;
+    slider.style.transform = `translateY(0%)`;
+}
+
+// Ensure the scroll listener is attached after DOM load
+document.addEventListener('DOMContentLoaded', () => {
+    const boardContainer = document.getElementById('school-board-container');
+    if (boardContainer) {
+        boardContainer.addEventListener('wheel', (e) => {
+            if (boardContainer.style.display === 'none') return;
+            e.preventDefault();
+            if (isEduAnimating) return;
+            
+            if (e.deltaY > 0) {
+                // Scroll down -> next slide
+                if (currentEduSlide < educationData.length - 1) {
+                    currentEduSlide++;
+                    animateEduSlide();
+                }
+            } else if (e.deltaY < 0) {
+                // Scroll up -> prev slide
+                if (currentEduSlide > 0) {
+                    currentEduSlide--;
+                    animateEduSlide();
+                }
+            }
+        });
+    }
+});
+
+function animateEduSlide() {
+    isEduAnimating = true;
+    const slider = document.getElementById('board-slider');
+    slider.style.transform = `translateY(-${currentEduSlide * 100}%)`;
+    setTimeout(() => {
+        isEduAnimating = false;
+    }, 1200);
 }
 
 // Lab Project Data & Logic
@@ -300,6 +363,7 @@ if (interiorExplore) {
         if (scrollWrapContainer) scrollWrapContainer.style.display = 'none'; // hide the parchment
         if (document.getElementById('typewriter-wrap-container')) document.getElementById('typewriter-wrap-container').style.display = 'none'; // hide the typewriter
         if (document.getElementById('lab-computer-container')) document.getElementById('lab-computer-container').style.display = 'none'; // hide the computer
+        if (document.getElementById('school-board-container')) document.getElementById('school-board-container').style.display = 'none'; // hide the school board
         
         if (interiorBg) {
             interiorBg.style.transition = 'filter 0.7s ease';
@@ -418,6 +482,7 @@ window.addEventListener("keydown", (e) => {
                 if (typewriterWrapContainer) typewriterWrapContainer.style.display = 'block';
                 if (document.getElementById('lab-computer-container')) document.getElementById('lab-computer-container').style.display = 'none'; // hide lab computer
                 if (document.getElementById('workshop-container')) document.getElementById('workshop-container').style.display = 'none';
+                if (document.getElementById('school-board-container')) document.getElementById('school-board-container').style.display = 'none';
 
                 showDialogue("AKBOT-E7", [
                     "Welcome to Akshay's Home! Oh, look... a page is still stuck in his old typewriter. Let's see what it says."
@@ -459,6 +524,7 @@ window.addEventListener("keydown", (e) => {
                 }
                 if (document.getElementById('typewriter-wrap-container')) document.getElementById('typewriter-wrap-container').style.display = 'none';
                 if (document.getElementById('workshop-container')) document.getElementById('workshop-container').style.display = 'none';
+                if (document.getElementById('school-board-container')) document.getElementById('school-board-container').style.display = 'none';
                 
                 const labComputer = document.getElementById('lab-computer-container');
                 if (labComputer) labComputer.style.display = 'none'; // hidden during dialogue
@@ -492,6 +558,7 @@ window.addEventListener("keydown", (e) => {
                 }
                 if (document.getElementById('typewriter-wrap-container')) document.getElementById('typewriter-wrap-container').style.display = 'none';
                 if (document.getElementById('lab-computer-container')) document.getElementById('lab-computer-container').style.display = 'none';
+                if (document.getElementById('school-board-container')) document.getElementById('school-board-container').style.display = 'none';
                 
                 const workshopContainer = document.getElementById('workshop-container');
                 if (workshopContainer) workshopContainer.style.display = 'none'; // hidden during dialogue
@@ -508,6 +575,38 @@ window.addEventListener("keydown", (e) => {
                 });
 
                 if (dialogueBackdrop) dialogueBackdrop.style.display = 'none';
+            } else if (activeInteractable.id === 'school') {
+                if (interiorBg) {
+                    interiorBg.style.backgroundImage = "none";
+                    interiorBg.style.backgroundColor = "#222"; 
+                    interiorBg.style.filter = "none";
+                }
+                const intContent = document.querySelector('.interior-content');
+                if (intContent) intContent.style.display = 'none';
+                if (interiorOverlay) interiorOverlay.style.display = 'block';
+                if (interiorExplore) {
+                    interiorExplore.innerHTML = '<span class="x">🔍</span> Explore School';
+                    interiorExplore.style.display = 'flex';
+                }
+                if (document.getElementById('typewriter-wrap-container')) document.getElementById('typewriter-wrap-container').style.display = 'none';
+                if (document.getElementById('lab-computer-container')) document.getElementById('lab-computer-container').style.display = 'none';
+                if (document.getElementById('workshop-container')) document.getElementById('workshop-container').style.display = 'none';
+                
+                const schoolBoard = document.getElementById('school-board-container');
+                if (schoolBoard) schoolBoard.style.display = 'none'; 
+
+                showDialogue("AKBOT-E7", [
+                    "Welcome to the School! Let's take a look at his education history on the chalkboard."
+                ], () => {
+                    if (interiorBg) interiorBg.style.filter = "brightness(0.5) blur(4px)";
+                    if (intContent) intContent.style.display = 'flex';
+                    if (schoolBoard) {
+                        schoolBoard.style.display = 'flex';
+                        updateSchoolBoard();
+                    }
+                });
+
+                if (dialogueBackdrop) dialogueBackdrop.style.display = 'none';
 
             } else {
                 document.getElementById('overlayTitle').innerText = activeInteractable.text;
@@ -518,6 +617,8 @@ window.addEventListener("keydown", (e) => {
             if (interiorOverlay) interiorOverlay.style.display = 'none';
             const workshopContainer = document.getElementById('workshop-container');
             if (workshopContainer) workshopContainer.style.display = 'none';
+            const schoolBoard = document.getElementById('school-board-container');
+            if (schoolBoard) schoolBoard.style.display = 'none';
             isOverlayActive = false;
         }
     }
@@ -526,6 +627,8 @@ window.addEventListener("keydown", (e) => {
         if (interiorOverlay) interiorOverlay.style.display = 'none';
         const workshopContainer = document.getElementById('workshop-container');
         if (workshopContainer) workshopContainer.style.display = 'none';
+        const schoolBoard = document.getElementById('school-board-container');
+        if (schoolBoard) schoolBoard.style.display = 'none';
         isOverlayActive = false;
     }
     // Uncomment this block to re-enable Edit Modes!

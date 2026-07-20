@@ -926,3 +926,139 @@ canvas {
     opacity: 0.8;
     padding-top: 10px;
 }
+
+/* ========================================================================= */
+/* SCHOOL INTERIOR - CHALKBOARD */
+/* ========================================================================= */
+.school-board {
+    position: relative;
+    width: 700px;
+    height: 480px;
+    display: flex;
+    flex-direction: column;
+    filter: drop-shadow(5px 15px 15px rgba(0,0,0,0.6));
+}
+
+.board-frame {
+    /* Wood frame matching the flat vector style */
+    background: #8b5a33;
+    border: 3px solid #3d2616;
+    padding: 18px;
+    border-radius: 4px;
+    height: 100%;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.board-surface {
+    background: #2d5641; 
+    border: 3px solid #1a3326; /* Inner dark border */
+    height: 100%;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+    box-sizing: border-box;
+    /* Add the flat oval smudges */
+    background-image: 
+        /* Smudges */
+        radial-gradient(ellipse at 25% 20%, rgba(255,255,255,0.06) 0%, transparent 15%),
+        radial-gradient(ellipse at 70% 25%, rgba(255,255,255,0.05) 0%, transparent 12%),
+        radial-gradient(ellipse at 20% 65%, rgba(255,255,255,0.07) 0%, transparent 10%),
+        radial-gradient(ellipse at 45% 50%, rgba(255,255,255,0.08) 0%, transparent 15%),
+        radial-gradient(ellipse at 80% 60%, rgba(255,255,255,0.06) 0%, transparent 10%);
+}
+
+.board-slider {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.board-slide {
+    height: 100%;
+    width: 100%;
+    flex-shrink: 0;
+    padding: 30px 40px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.board-title {
+    font-family: 'Caveat', 'Comic Sans MS', cursive, sans-serif;
+    color: #f7f9f7;
+    text-align: center;
+    font-size: 64px;
+    margin: 0 0 10px 0;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    opacity: 0.95;
+    transform: rotate(-1deg); /* Slight handwriting tilt */
+}
+
+.board-detail {
+    font-family: 'Caveat', 'Comic Sans MS', cursive, sans-serif;
+    color: #d1e8d1;
+    font-size: 38px;
+    text-align: center;
+    margin-top: 5px;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+    opacity: 0.9;
+    transform: rotate(0.5deg);
+}
+
+.chalk-ledge {
+    position: absolute;
+    bottom: -18px;
+    left: -20px;
+    right: -20px;
+    height: 18px;
+    background: #a06941;
+    border: 3px solid #3d2616;
+    border-radius: 4px;
+    display: flex;
+    align-items: flex-end; /* Align chalk to bottom of tray */
+    padding: 0 40px 4px 40px; 
+    gap: 10px;
+    z-index: 3;
+    /* Add subtle inner shadow on bottom */
+    box-shadow: inset 0 -3px 0 rgba(0,0,0,0.15), 0 5px 10px rgba(0,0,0,0.4);
+}
+
+.chalk-shadow {
+    position: absolute;
+    bottom: 2px;
+    width: 32px;
+    height: 8px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 50%;
+}
+
+.chalk-piece {
+    width: 32px;
+    height: 8px;
+    border-radius: 4px;
+    position: relative;
+    z-index: 2;
+    margin-bottom: 2px;
+}
+.chalk-white { background: #fdfdfd; }
+.chalk-pink { background: #f4c0ce; }
+
+.eraser {
+    width: 65px;
+    height: 20px;
+    background: #e7675f;
+    border: 2px solid #3d2616;
+    border-bottom: 6px solid #4d4d4d;
+    margin-left: auto; /* Push to right */
+    border-radius: 2px;
+    position: relative;
+    z-index: 2;
+    box-sizing: border-box;
+}
