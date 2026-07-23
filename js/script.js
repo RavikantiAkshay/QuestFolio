@@ -581,6 +581,7 @@ window.addEventListener("keydown", (e) => {
                 if (document.getElementById('workshop-container')) document.getElementById('workshop-container').style.display = 'none';
                 if (document.getElementById('school-board-container')) document.getElementById('school-board-container').style.display = 'none';
                 if (document.getElementById('library-rack-container')) document.getElementById('library-rack-container').style.display = 'none';
+                if (document.getElementById('post-office-container')) document.getElementById('post-office-container').style.display = 'none';
 
                 showDialogue("AKBOT-E7", [
                     "Welcome to Akshay's Home! Oh, look... a page is still stuck in his old typewriter. Let's see what it says."
@@ -624,6 +625,7 @@ window.addEventListener("keydown", (e) => {
                 if (document.getElementById('workshop-container')) document.getElementById('workshop-container').style.display = 'none';
                 if (document.getElementById('school-board-container')) document.getElementById('school-board-container').style.display = 'none';
                 if (document.getElementById('library-rack-container')) document.getElementById('library-rack-container').style.display = 'none';                
+                if (document.getElementById('post-office-container')) document.getElementById('post-office-container').style.display = 'none';
                 const labComputer = document.getElementById('lab-computer-container');
                 if (labComputer) labComputer.style.display = 'none'; // hidden during dialogue
 
@@ -658,6 +660,7 @@ window.addEventListener("keydown", (e) => {
                 if (document.getElementById('lab-computer-container')) document.getElementById('lab-computer-container').style.display = 'none';
                 if (document.getElementById('school-board-container')) document.getElementById('school-board-container').style.display = 'none';
                 if (document.getElementById('library-rack-container')) document.getElementById('library-rack-container').style.display = 'none';                
+                if (document.getElementById('post-office-container')) document.getElementById('post-office-container').style.display = 'none';
                 const workshopContainer = document.getElementById('workshop-container');
                 if (workshopContainer) workshopContainer.style.display = 'none'; // hidden during dialogue
 
@@ -691,6 +694,8 @@ window.addEventListener("keydown", (e) => {
                 if (document.getElementById('typewriter-wrap-container')) document.getElementById('typewriter-wrap-container').style.display = 'none';
                 if (document.getElementById('lab-computer-container')) document.getElementById('lab-computer-container').style.display = 'none';
                 if (document.getElementById('workshop-container')) document.getElementById('workshop-container').style.display = 'none';
+                if (document.getElementById('library-rack-container')) document.getElementById('library-rack-container').style.display = 'none';
+                if (document.getElementById('post-office-container')) document.getElementById('post-office-container').style.display = 'none';
                 
                 const schoolBoard = document.getElementById('school-board-container');
                 if (schoolBoard) schoolBoard.style.display = 'none'; 
@@ -727,6 +732,7 @@ window.addEventListener("keydown", (e) => {
                 if (document.getElementById('lab-computer-container')) document.getElementById('lab-computer-container').style.display = 'none';
                 if (document.getElementById('workshop-container')) document.getElementById('workshop-container').style.display = 'none';
                 if (document.getElementById('school-board-container')) document.getElementById('school-board-container').style.display = 'none';
+                if (document.getElementById('post-office-container')) document.getElementById('post-office-container').style.display = 'none';
 
                 const libraryRack = document.getElementById('library-rack-container');
                 if (libraryRack) libraryRack.style.display = 'none';
@@ -739,6 +745,42 @@ window.addEventListener("keydown", (e) => {
                     if (libraryRack) {
                         libraryRack.style.display = 'flex';
                         renderBookRacks();
+                    }
+                });
+
+                if (dialogueBackdrop) dialogueBackdrop.style.display = 'none';
+
+            } else if (activeInteractable.id === 'post') {
+                if (interiorBg) {
+                    interiorBg.style.backgroundImage = "url('assets/images/environments/post.png'), url('assets/images/environments/library.png')";
+                    interiorBg.style.backgroundColor = "#2b1e16";
+                    interiorBg.style.filter = "none";
+                    interiorBg.style.backgroundSize = "contain";
+                    interiorBg.style.backgroundRepeat = "no-repeat";
+                }
+                const intContent = document.querySelector('.interior-content');
+                if (intContent) intContent.style.display = 'none';
+                if (interiorOverlay) interiorOverlay.style.display = 'block';
+                if (interiorExplore) {
+                    interiorExplore.innerHTML = '<span class="x">🔍</span> Explore Post Office';
+                    interiorExplore.style.display = 'flex';
+                }
+                if (document.getElementById('typewriter-wrap-container')) document.getElementById('typewriter-wrap-container').style.display = 'none';
+                if (document.getElementById('lab-computer-container')) document.getElementById('lab-computer-container').style.display = 'none';
+                if (document.getElementById('workshop-container')) document.getElementById('workshop-container').style.display = 'none';
+                if (document.getElementById('school-board-container')) document.getElementById('school-board-container').style.display = 'none';
+                if (document.getElementById('library-rack-container')) document.getElementById('library-rack-container').style.display = 'none';
+
+                const postOffice = document.getElementById('post-office-container');
+                if (postOffice) postOffice.style.display = 'none';
+
+                showDialogue("AKBOT-E7", [
+                    "Welcome to the Post Office! Here is Akshay's personal letter and contact directory. Feel free to reach out!"
+                ], () => {
+                    if (interiorBg) interiorBg.style.filter = "brightness(0.4) blur(6px)";
+                    if (intContent) intContent.style.display = 'flex';
+                    if (postOffice) {
+                        postOffice.style.display = 'flex';
                     }
                 });
 
@@ -757,6 +799,8 @@ window.addEventListener("keydown", (e) => {
             if (schoolBoard) schoolBoard.style.display = 'none';
             const libraryRack = document.getElementById('library-rack-container');
             if (libraryRack) libraryRack.style.display = 'none';
+            const postOffice = document.getElementById('post-office-container');
+            if (postOffice) postOffice.style.display = 'none';
             isOverlayActive = false;
         }
     }
@@ -769,6 +813,8 @@ window.addEventListener("keydown", (e) => {
         if (schoolBoard) schoolBoard.style.display = 'none';
         const libraryRack = document.getElementById('library-rack-container');
         if (libraryRack) libraryRack.style.display = 'none';
+        const postOffice = document.getElementById('post-office-container');
+        if (postOffice) postOffice.style.display = 'none';
         isOverlayActive = false;
     }
     // Uncomment this block to re-enable Edit Modes!

@@ -1359,3 +1359,316 @@ canvas {
 .skill-book[data-color="slate"] {
     background: linear-gradient(170deg, #5d6d7e 0%, #2c3e50 100%);
 }
+
+/* ==========================================
+   POST OFFICE INTERIOR (ENVELOPE & LETTER UI)
+   ========================================== */
+
+/* ==========================================
+   POST OFFICE INTERIOR (OPEN ENVELOPE & FULLY VISIBLE LETTER UI)
+   ========================================== */
+
+.postal-desk {
+    position: relative;
+    width: 820px;
+    max-width: 95%;
+    max-height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px;
+    padding: 100px 20px 40px 20px;
+}
+
+.open-envelope {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Top Triangular Open Flap (Pointing Upwards) */
+.envelope-top-triangle {
+    position: absolute;
+    top: -150px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 440px solid transparent;
+    border-right: 440px solid transparent;
+    border-bottom: 170px solid #b88246;
+    filter: drop-shadow(0 -5px 12px rgba(0, 0, 0, 0.5));
+    z-index: 1;
+}
+
+.airmail-border-top {
+    position: absolute;
+    top: 130px;
+    left: -440px;
+    width: 880px;
+    height: 12px;
+    background: repeating-linear-gradient(
+        -45deg,
+        #c0392b 0px,
+        #c0392b 16px,
+        #f4ece1 16px,
+        #f4ece1 26px,
+        #2980b9 26px,
+        #2980b9 42px,
+        #f4ece1 42px,
+        #f4ece1 52px
+    );
+    opacity: 0.9;
+}
+
+/* Envelope Kraft Backing Frame behind letter - Taller & Wider */
+.envelope-inner-back {
+    position: absolute;
+    top: -35px;
+    left: -35px;
+    right: -35px;
+    bottom: -35px;
+    background: radial-gradient(circle at 50% 30%, #cca06e, #8f602e);
+    border-radius: 16px;
+    border: 3px solid #6e441d;
+    box-shadow: 
+        0 25px 55px rgba(0, 0, 0, 0.8),
+        0 8px 24px rgba(0, 0, 0, 0.5),
+        inset 0 0 60px rgba(110, 68, 29, 0.3);
+    z-index: 1;
+}
+
+/* Green Metallic Paperclip */
+.envelope-paperclip {
+    position: absolute;
+    top: -18px;
+    left: 40px;
+    z-index: 10;
+    width: 18px;
+    height: 52px;
+    border: 3.5px solid #27ae60;
+    border-radius: 12px;
+    transform: rotate(-6deg);
+    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.4);
+    background: transparent;
+    pointer-events: none;
+}
+
+.envelope-paperclip::after {
+    content: '';
+    position: absolute;
+    top: 9px;
+    left: 1px;
+    right: 1px;
+    bottom: 9px;
+    border: 2.5px solid #27ae60;
+    border-radius: 8px;
+}
+
+/* The Letter Paper (100% Fully Visible on Top) */
+.postal-letter {
+    position: relative;
+    z-index: 5;
+    width: 100%;
+    background: #fffdf9;
+    border: 1px solid #d8ccba;
+    border-radius: 8px;
+    padding: 24px 30px;
+    transform: rotate(-0.5deg);
+    box-shadow: 
+        0 12px 28px rgba(0, 0, 0, 0.38),
+        0 2px 8px rgba(0, 0, 0, 0.22);
+    font-family: 'Share Tech Mono', monospace;
+    color: #2c221e;
+}
+
+/* Circular Postmark Stamp on envelope frame corner */
+.postmark-stamp {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.9;
+    pointer-events: none;
+    transform: rotate(-6deg);
+    z-index: 2;
+}
+
+.stamp-circle {
+    width: 68px;
+    height: 68px;
+    border: 2.5px dashed #3d281a;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 8px;
+    font-weight: bold;
+    color: #3d281a;
+    text-transform: uppercase;
+    line-height: 1.2;
+    letter-spacing: 0.5px;
+}
+
+.stamp-lines {
+    width: 45px;
+    height: 36px;
+    background: repeating-linear-gradient(
+        0deg,
+        #3d281a 0px,
+        #3d281a 2px,
+        transparent 2px,
+        transparent 6px
+    );
+    border-radius: 3px;
+    opacity: 0.75;
+}
+
+/* Wax Seal Badge on envelope frame corner */
+.wax-seal {
+    position: absolute;
+    bottom: -15px;
+    left: 25px;
+    width: 56px;
+    height: 56px;
+    background: radial-gradient(circle at 35% 35%, #e74c3c, #84251b);
+    border-radius: 50%;
+    box-shadow: 
+        0 6px 14px rgba(0, 0, 0, 0.5),
+        inset 0 -4px 7px rgba(0, 0, 0, 0.5),
+        inset 0 4px 7px rgba(255, 255, 255, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Permanent Marker', cursive, sans-serif;
+    font-size: 26px;
+    color: #fadbd8;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+    border: 2px solid #78281f;
+    transform: rotate(-10deg);
+    z-index: 6;
+}
+
+.letter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.letter-title {
+    font-family: 'Special Elite', cursive, monospace;
+    font-size: 24px;
+    color: #3b281c;
+    margin: 0;
+    letter-spacing: 0.5px;
+}
+
+.letter-date {
+    font-size: 12px;
+    color: #7f6c5d;
+    font-style: italic;
+}
+
+.letter-divider {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(90deg, #dcd0c0 0%, #8c6d46 50%, #dcd0c0 100%);
+    margin: 12px 0 16px 0;
+}
+
+.letter-message {
+    font-family: 'Caveat', cursive, sans-serif;
+    font-size: 22px;
+    line-height: 1.4;
+    color: #2b1e16;
+    margin: 0 0 20px 0;
+}
+
+.letter-contacts-title {
+    font-family: 'Special Elite', cursive, monospace;
+    font-size: 13px;
+    font-weight: bold;
+    color: #8c6d46;
+    letter-spacing: 1.5px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+}
+
+/* 2x2 Grid of Interactive Contact Cards */
+.postal-contacts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+.postal-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #f7f3ed;
+    border: 1.5px solid #d4c5b3;
+    border-radius: 6px;
+    padding: 12px 16px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.postal-card:hover {
+    background: #ffffff;
+    border-color: #8c6d46;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 14px rgba(140, 109, 70, 0.25);
+}
+
+.card-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.card-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.card-label {
+    font-size: 10px;
+    font-weight: bold;
+    color: #8c6d46;
+    letter-spacing: 1px;
+}
+
+.card-val {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    font-weight: bold;
+    color: #2c221e;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.postal-card:hover .card-val {
+    color: #a04000;
+}
+
+@media (max-width: 650px) {
+    .postal-contacts-grid {
+        grid-template-columns: 1fr;
+    }
+    .letter-title {
+        font-size: 20px;
+    }
+    .letter-message {
+        font-size: 18px;
+    }
+}
