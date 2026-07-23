@@ -98,9 +98,24 @@ if (interiorClose) {
 
 // School Education Data
 const educationData = [
-    { title: "Class X", details: "Secondary Education" },
-    { title: "Class 12", details: "Higher Secondary Education" },
-    { title: "B.Tech", details: "Computer Science and Engineering" }
+    { 
+        title: "B.Tech", 
+        institution: "Indian Institute of Technology Bhilai",
+        desc: "Electrical Engineering",
+        score: "2023 – 2027 | CGPA: 8.92/10"
+    },
+    { 
+        title: "Class 12", 
+        institution: "Narayana Junior College, Patancheru",
+        desc: "Telangana State Board of Intermediate Education",
+        score: "2021 – 2023 | 99%"
+    },
+    { 
+        title: "Class X", 
+        institution: "Bhashyam Blooms, Maheshwaram",
+        desc: "Board of Secondary Education (BSE Telangana)",
+        score: "2020 – 2021 | 95% (10 CGPA)"
+    }
 ];
 
 let currentEduSlide = 0;
@@ -114,8 +129,10 @@ function updateSchoolBoard() {
         const slide = document.createElement('div');
         slide.className = 'board-slide';
         slide.innerHTML = `
-            <h2 class="board-title">${edu.title}</h2>
-            <div class="board-detail">${edu.details}</div>
+            <h2 class="board-title" style="margin-bottom: 20px;">${edu.title}</h2>
+            <div class="board-detail" style="font-size: 36px; color: #fff; margin-bottom: 5px;">${edu.institution}</div>
+            <div class="board-detail" style="font-size: 28px; margin-bottom: 10px;">${edu.desc}</div>
+            <div class="board-detail" style="font-size: 26px; color: #f4c0ce;">${edu.score}</div>
         `;
         slider.appendChild(slide);
     });
@@ -157,6 +174,85 @@ function animateEduSlide() {
     setTimeout(() => {
         isEduAnimating = false;
     }, 1200);
+}
+
+// Library Skills Data — 6 categories, split across 2 racks (3 shelves each)
+const skillCategories = [
+    // Rack 1 (left)
+    {
+        label: "Languages",
+        color: "blue",
+        skills: ["Python", "JavaScript", "C/C++", "Java", "TypeScript"]
+    },
+    {
+        label: "Frontend",
+        color: "green",
+        skills: ["React", "Next.js", "HTML5", "CSS3", "Tailwind"]
+    },
+    {
+        label: "Backend",
+        color: "purple",
+        skills: ["Node.js", "Express", "Django", "Flask", "REST APIs"]
+    },
+    // Rack 2 (right)
+    {
+        label: "Databases",
+        color: "orange",
+        skills: ["MongoDB", "PostgreSQL", "MySQL", "Firebase", "Redis"]
+    },
+    {
+        label: "Tools & DevOps",
+        color: "teal",
+        skills: ["Git", "Docker", "Linux", "VS Code", "Postman"]
+    },
+    {
+        label: "AI & Cloud",
+        color: "navy",
+        skills: ["TensorFlow", "OpenAI", "AWS", "Vercel", "Pandas"]
+    }
+];
+
+const bookColors = ["red", "blue", "green", "purple", "orange", "teal", "navy", "rose", "gold", "slate"];
+
+function renderBookRacks() {
+    const leftRack = document.getElementById('book-rack-left');
+    const rightRack = document.getElementById('book-rack-right');
+    if (!leftRack || !rightRack) return;
+
+    leftRack.innerHTML = '';
+    rightRack.innerHTML = '';
+
+    skillCategories.forEach((cat, catIdx) => {
+        const shelf = document.createElement('div');
+        shelf.className = 'rack-shelf';
+
+        const label = document.createElement('div');
+        label.className = 'shelf-label';
+        label.textContent = cat.label;
+        shelf.appendChild(label);
+
+        const booksRow = document.createElement('div');
+        booksRow.className = 'shelf-books';
+
+        cat.skills.forEach((skill, skillIdx) => {
+            const book = document.createElement('div');
+            book.className = 'skill-book';
+            // Cycle through colors for variety
+            const colorIdx = (catIdx * 3 + skillIdx) % bookColors.length;
+            book.setAttribute('data-color', bookColors[colorIdx]);
+            book.textContent = skill;
+            booksRow.appendChild(book);
+        });
+
+        shelf.appendChild(booksRow);
+
+        // First 3 categories go to left rack, last 3 to right
+        if (catIdx < 3) {
+            leftRack.appendChild(shelf);
+        } else {
+            rightRack.appendChild(shelf);
+        }
+    });
 }
 
 // Lab Project Data & Logic
@@ -364,6 +460,7 @@ if (interiorExplore) {
         if (document.getElementById('typewriter-wrap-container')) document.getElementById('typewriter-wrap-container').style.display = 'none'; // hide the typewriter
         if (document.getElementById('lab-computer-container')) document.getElementById('lab-computer-container').style.display = 'none'; // hide the computer
         if (document.getElementById('school-board-container')) document.getElementById('school-board-container').style.display = 'none'; // hide the school board
+        if (document.getElementById('library-rack-container')) document.getElementById('library-rack-container').style.display = 'none'; // hide the library racks
         
         if (interiorBg) {
             interiorBg.style.transition = 'filter 0.7s ease';
@@ -483,6 +580,7 @@ window.addEventListener("keydown", (e) => {
                 if (document.getElementById('lab-computer-container')) document.getElementById('lab-computer-container').style.display = 'none'; // hide lab computer
                 if (document.getElementById('workshop-container')) document.getElementById('workshop-container').style.display = 'none';
                 if (document.getElementById('school-board-container')) document.getElementById('school-board-container').style.display = 'none';
+                if (document.getElementById('library-rack-container')) document.getElementById('library-rack-container').style.display = 'none';
 
                 showDialogue("AKBOT-E7", [
                     "Welcome to Akshay's Home! Oh, look... a page is still stuck in his old typewriter. Let's see what it says."
@@ -525,7 +623,7 @@ window.addEventListener("keydown", (e) => {
                 if (document.getElementById('typewriter-wrap-container')) document.getElementById('typewriter-wrap-container').style.display = 'none';
                 if (document.getElementById('workshop-container')) document.getElementById('workshop-container').style.display = 'none';
                 if (document.getElementById('school-board-container')) document.getElementById('school-board-container').style.display = 'none';
-                
+                if (document.getElementById('library-rack-container')) document.getElementById('library-rack-container').style.display = 'none';                
                 const labComputer = document.getElementById('lab-computer-container');
                 if (labComputer) labComputer.style.display = 'none'; // hidden during dialogue
 
@@ -559,7 +657,7 @@ window.addEventListener("keydown", (e) => {
                 if (document.getElementById('typewriter-wrap-container')) document.getElementById('typewriter-wrap-container').style.display = 'none';
                 if (document.getElementById('lab-computer-container')) document.getElementById('lab-computer-container').style.display = 'none';
                 if (document.getElementById('school-board-container')) document.getElementById('school-board-container').style.display = 'none';
-                
+                if (document.getElementById('library-rack-container')) document.getElementById('library-rack-container').style.display = 'none';                
                 const workshopContainer = document.getElementById('workshop-container');
                 if (workshopContainer) workshopContainer.style.display = 'none'; // hidden during dialogue
 
@@ -610,6 +708,42 @@ window.addEventListener("keydown", (e) => {
 
                 if (dialogueBackdrop) dialogueBackdrop.style.display = 'none';
 
+            } else if (activeInteractable.id === 'library') {
+                if (interiorBg) {
+                    interiorBg.style.backgroundImage = "url('assets/images/environments/library.png')";
+                    interiorBg.style.backgroundColor = "transparent";
+                    interiorBg.style.filter = "none";
+                    interiorBg.style.backgroundSize = "contain";
+                    interiorBg.style.backgroundRepeat = "no-repeat";
+                }
+                const intContent = document.querySelector('.interior-content');
+                if (intContent) intContent.style.display = 'none';
+                if (interiorOverlay) interiorOverlay.style.display = 'block';
+                if (interiorExplore) {
+                    interiorExplore.innerHTML = '<span class="x">🔍</span> Explore Library';
+                    interiorExplore.style.display = 'flex';
+                }
+                if (document.getElementById('typewriter-wrap-container')) document.getElementById('typewriter-wrap-container').style.display = 'none';
+                if (document.getElementById('lab-computer-container')) document.getElementById('lab-computer-container').style.display = 'none';
+                if (document.getElementById('workshop-container')) document.getElementById('workshop-container').style.display = 'none';
+                if (document.getElementById('school-board-container')) document.getElementById('school-board-container').style.display = 'none';
+
+                const libraryRack = document.getElementById('library-rack-container');
+                if (libraryRack) libraryRack.style.display = 'none';
+
+                showDialogue("AKBOT-E7", [
+                    "Welcome to the Library! Each book on these shelves represents a skill Akshay has picked up. Take a look!"
+                ], () => {
+                    if (interiorBg) interiorBg.style.filter = "brightness(0.5) blur(4px)";
+                    if (intContent) intContent.style.display = 'flex';
+                    if (libraryRack) {
+                        libraryRack.style.display = 'flex';
+                        renderBookRacks();
+                    }
+                });
+
+                if (dialogueBackdrop) dialogueBackdrop.style.display = 'none';
+
             } else {
                 document.getElementById('overlayTitle').innerText = activeInteractable.text;
                 overlay.style.display = 'flex';
@@ -621,6 +755,8 @@ window.addEventListener("keydown", (e) => {
             if (workshopContainer) workshopContainer.style.display = 'none';
             const schoolBoard = document.getElementById('school-board-container');
             if (schoolBoard) schoolBoard.style.display = 'none';
+            const libraryRack = document.getElementById('library-rack-container');
+            if (libraryRack) libraryRack.style.display = 'none';
             isOverlayActive = false;
         }
     }
@@ -631,6 +767,8 @@ window.addEventListener("keydown", (e) => {
         if (workshopContainer) workshopContainer.style.display = 'none';
         const schoolBoard = document.getElementById('school-board-container');
         if (schoolBoard) schoolBoard.style.display = 'none';
+        const libraryRack = document.getElementById('library-rack-container');
+        if (libraryRack) libraryRack.style.display = 'none';
         isOverlayActive = false;
     }
     // Uncomment this block to re-enable Edit Modes!
