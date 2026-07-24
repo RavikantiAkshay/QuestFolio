@@ -89,10 +89,87 @@ const interiorClose = document.getElementById('interior-close');
 const interiorExplore = document.getElementById('interior-explore');
 const scrollWrapContainer = document.getElementById('scroll-wrap-container');
 
+let isExploringInterior = false;
+
 if (interiorClose) {
     interiorClose.addEventListener('click', () => {
         if (interiorOverlay) interiorOverlay.style.display = 'none';
         isOverlayActive = false;
+        isExploringInterior = false;
+    });
+}
+
+if (interiorExplore) {
+    interiorExplore.addEventListener('click', () => {
+        isExploringInterior = !isExploringInterior;
+
+        const containers = [
+            'typewriter-wrap-container',
+            'lab-computer-container',
+            'workshop-container',
+            'school-board-container',
+            'library-rack-container',
+            'post-office-container'
+        ];
+
+        if (isExploringInterior) {
+            // Hide UI containers and remove blur filter to reveal high-res interior room image
+            containers.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
+            if (interiorBg) interiorBg.style.filter = 'none';
+
+            if (activeInteractable) {
+                if (activeInteractable.id === 'post') {
+                    interiorExplore.innerHTML = '<span class="x">✉️</span> View Letter';
+                } else if (activeInteractable.id === 'school') {
+                    interiorExplore.innerHTML = '<span class="x">📋</span> View Board';
+                } else if (activeInteractable.id === 'library') {
+                    interiorExplore.innerHTML = '<span class="x">📚</span> View Books';
+                } else if (activeInteractable.id === 'lab') {
+                    interiorExplore.innerHTML = '<span class="x">💻</span> View Terminal';
+                } else if (activeInteractable.id === 'workshop') {
+                    interiorExplore.innerHTML = '<span class="x">🛠️</span> View Projects';
+                } else {
+                    interiorExplore.innerHTML = '<span class="x">📜</span> View Details';
+                }
+            }
+        } else {
+            // Restore UI container and re-apply ambient background blur/brightness
+            if (activeInteractable) {
+                if (interiorBg) {
+                    if (activeInteractable.id === 'post') interiorBg.style.filter = "brightness(0.4) blur(6px)";
+                    else interiorBg.style.filter = "brightness(0.5) blur(4px)";
+                }
+
+                if (activeInteractable.id === 'post') {
+                    const postOffice = document.getElementById('post-office-container');
+                    if (postOffice) postOffice.style.display = 'flex';
+                    interiorExplore.innerHTML = '<span class="x">🔍</span> Explore Post Office';
+                } else if (activeInteractable.id === 'school') {
+                    const schoolBoard = document.getElementById('school-board-container');
+                    if (schoolBoard) schoolBoard.style.display = 'flex';
+                    interiorExplore.innerHTML = '<span class="x">🔍</span> Explore School';
+                } else if (activeInteractable.id === 'library') {
+                    const libraryRack = document.getElementById('library-rack-container');
+                    if (libraryRack) libraryRack.style.display = 'flex';
+                    interiorExplore.innerHTML = '<span class="x">🔍</span> Explore Library';
+                } else if (activeInteractable.id === 'lab') {
+                    const labComputer = document.getElementById('lab-computer-container');
+                    if (labComputer) labComputer.style.display = 'flex';
+                    interiorExplore.innerHTML = '<span class="x">🔍</span> Explore Lab';
+                } else if (activeInteractable.id === 'workshop') {
+                    const workshop = document.getElementById('workshop-container');
+                    if (workshop) workshop.style.display = 'flex';
+                    interiorExplore.innerHTML = '<span class="x">🔍</span> Explore Workshop';
+                } else if (activeInteractable.id === 'home') {
+                    const typewriter = document.getElementById('typewriter-wrap-container');
+                    if (typewriter) typewriter.style.display = 'flex';
+                    interiorExplore.innerHTML = '<span class="x">🔍</span> Explore Home';
+                }
+            }
+        }
     });
 }
 
@@ -560,6 +637,7 @@ window.addEventListener("keydown", (e) => {
     if (e.key.toLowerCase() === 'e') {
         if (!isOverlayActive && activeInteractable) {
             isOverlayActive = true;
+            isExploringInterior = false;
             
             if (activeInteractable.id === 'home') {
                 if (interiorBg) {
@@ -752,8 +830,8 @@ window.addEventListener("keydown", (e) => {
 
             } else if (activeInteractable.id === 'post') {
                 if (interiorBg) {
-                    interiorBg.style.backgroundImage = "url('assets/images/environments/post.png'), url('assets/images/environments/library.png')";
-                    interiorBg.style.backgroundColor = "#2b1e16";
+                    interiorBg.style.backgroundImage = "url('assets/images/environments/post.png')";
+                    interiorBg.style.backgroundColor = "transparent";
                     interiorBg.style.filter = "none";
                     interiorBg.style.backgroundSize = "contain";
                     interiorBg.style.backgroundRepeat = "no-repeat";

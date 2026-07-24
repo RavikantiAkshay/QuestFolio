@@ -171,7 +171,7 @@ canvas {
     right: 24px;
     display: flex;
     gap: 10px;
-    z-index: 20;
+    z-index: 100;
 }
 
 .interior-btn {
