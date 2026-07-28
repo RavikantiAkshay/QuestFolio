@@ -1,10 +1,10 @@
 <div align="center">
 
-# 🗡️ Oak Village — An Interactive RPG Adventure
+# 🗡️ QuestFolio — An Interactive RPG Adventure
 
 **Explore a handcrafted pixel-art world. Discover stories hidden inside every building.**
 
-[![Play Now](https://img.shields.io/badge/▶_Play_Now-Visit_Oak_Village-2ea44f?style=for-the-badge&logo=googlechrome&logoColor=white)](https://ravikantiakshay.github.io/my-game/)
+[![Play Now](https://img.shields.io/badge/▶_Play_Now-Visit_QuestFolio-2ea44f?style=for-the-badge&logo=googlechrome&logoColor=white)](https://ravikantiakshay.github.io/my-game/)
 [![GitHub Stars](https://img.shields.io/github/stars/RavikantiAkshay/my-game?style=for-the-badge&logo=github)](https://github.com/RavikantiAkshay/my-game)
 
 *A top-down RPG experience where every building you enter reveals a chapter of a developer's journey — from the cozy Home typewriter to the Lab terminals, the Workshop blueprints, the School chalkboard, the Library bookshelves, and the Post Office mailbox.*
@@ -15,7 +15,7 @@
 
 ## 🌍 What Is This?
 
-Oak Village is a **browser-based, top-down pixel-art RPG** built entirely with vanilla HTML, CSS, and JavaScript — no frameworks, no bundlers, just raw code and canvas rendering.
+QuestFolio is a **browser-based, top-down pixel-art RPG** built entirely with vanilla HTML, CSS, and JavaScript — no frameworks, no bundlers, just raw code and canvas rendering.
 
 You control a character wandering through an interconnected world of villages, schools, and castles. But this isn't your typical RPG — every building you enter is an **interactive experience** that tells a story. The Lab boots up a CRT terminal showcasing real projects. The Library shelves are lined with skill books. The Workshop holds active blueprints and stashed concepts. The School chalkboard displays an education timeline. And the Post Office holds a personal letter with a wax seal.
 
@@ -31,7 +31,7 @@ It's part game, part story, part experience — and it runs entirely in your bro
 | `E` | Interact with buildings / NPCs |
 | `ESC` | Return to the overworld |
 | `Click` | Attack (3-hit combo system) |
-| `Space` | Defend |
+| `F` | Defend |
 
 ---
 
@@ -118,7 +118,7 @@ This entire project is built with **zero dependencies** — no React, no bundler
 ## 📁 Project Structure
 
 ```
-oak-village/
+questfolio/
 ├── index.html                    # Single-page game entry point
 ├── css/
 │   └── style.css                 # All styles — interiors, UI overlays, animations
