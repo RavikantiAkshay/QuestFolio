@@ -42,7 +42,9 @@ const player = {
     isDefending: false,
     comboStep: 0,
     comboTimer: 0,
+    hurtTimer: 0,
     image: new Image(),
+    attackImage: new Image(),
     frameX: 0,
     frameY: 0,
     isMoving: false,
@@ -85,12 +87,25 @@ let currentSpeechBubble = null;
 let speechBubbleSequence = null;
 let speechBubbleIndex = 0;
 
+let bossFightActive = false;
+let bossSpikes = [];
+const spikeImg = new Image();
+spikeImg.src = 'assets/images/fx/spikes.png';
+
 function advanceSpeechBubble() {
     if (!speechBubbleSequence) return;
     if (speechBubbleIndex >= speechBubbleSequence.length) {
         currentSpeechBubble = null;
         speechBubbleSequence = null;
         isOverlayActive = false;
+        
+        // Start Boss Fight
+        bossFightActive = true;
+        const boss = npcs.find(n => n.isBoss);
+        if (boss) {
+            boss.bossAttackTimer = 60; // Start attacking in 1 second
+        }
+        
         return;
     }
     currentSpeechBubble = speechBubbleSequence[speechBubbleIndex];
@@ -1408,6 +1423,9 @@ function update() {
     if (cameraX > mapWidth - canvas.width) cameraX = Math.max(0, mapWidth - canvas.width);
     if (cameraY > mapHeight - canvas.height) cameraY = Math.max(0, mapHeight - canvas.height);
 
+    // Update hurt timer
+    if (player.hurtTimer > 0) player.hurtTimer--;
+
     // --- WIND PARTICLES (LEAVES) ---
     globalTime++;
     if (Math.random() < 0.2) { // 20% chance per frame to spawn leaf
@@ -1431,6 +1449,62 @@ function update() {
         p.wobble += p.wobbleSpeed;
         if (p.y > cameraY + canvas.height + 50 || p.x > cameraX + canvas.width + 50) {
             particles.splice(i, 1);
+        }
+    }
+
+    // --- BOSS FIGHT LOGIC ---
+    if (bossFightActive) {
+        const boss = npcs.find(n => n.isBoss);
+        if (boss && boss.hp > 0) {
+            if (boss.bossAttackTimer > 0) {
+                boss.bossAttackTimer--;
+            } else {
+                // Spawn a spike warning under the player
+                bossSpikes.push({
+                    x: player.x - 10,
+                    y: player.y + player.size - 40, // target near feet
+                    width: 70,
+                    height: 70,
+                    state: 'warning',
+                    timer: 60, // 1 second warning at 60fps
+                    damage: 25
+                });
+                // Randomize next attack between 2 and 4 seconds
+                boss.bossAttackTimer = 120 + Math.random() * 120;
+            }
+        } else if (!boss || boss.hp <= 0) {
+            bossFightActive = false; // Boss is dead
+        }
+    }
+
+    // Update Spikes
+    for (let i = bossSpikes.length - 1; i >= 0; i--) {
+        let spike = bossSpikes[i];
+        spike.timer--;
+        if (spike.state === 'warning' && spike.timer <= 0) {
+            spike.state = 'active';
+            spike.timer = 20; // 0.33s active
+            screenShake = 10; // small shake
+            
+            // Check collision with player
+            let spikeBox = { x: spike.x, y: spike.y, w: spike.width, h: spike.height };
+            let playerBox = { x: player.x, y: player.y, w: player.size, h: player.size };
+            // A bit of leniency on collision (hitbox slightly smaller)
+            spikeBox.x += 15; spikeBox.y += 15; spikeBox.w -= 30; spikeBox.h -= 30;
+            
+            if (rectIntersect(spikeBox, playerBox)) {
+                // Deal damage if not defending
+                if (!player.isDefending) {
+                    player.hp -= spike.damage;
+                    if (player.hp < 0) player.hp = 0;
+                    player.hurtTimer = 30; // Flash red for half a second
+                }
+            }
+        } else if (spike.state === 'active' && spike.timer <= 0) {
+            spike.state = 'fading';
+            spike.timer = 15;
+        } else if (spike.state === 'fading' && spike.timer <= 0) {
+            bossSpikes.splice(i, 1);
         }
     }
 
@@ -1632,6 +1706,12 @@ function draw() {
             displayHeight = player.size * (fH / fW);
         }
 
+        ctx.save();
+        if (player.hurtTimer > 0) {
+            // Flash white/red when hurt
+            ctx.filter = (Math.floor(Date.now() / 100) % 2 === 0) ? "brightness(2) sepia(1) hue-rotate(-50deg) saturate(5)" : "none";
+        }
+
         ctx.drawImage(
             currentImg,
             sX, sY, fW, fH,
@@ -1639,6 +1719,7 @@ function draw() {
             player.y - (displayHeight - player.size), // align bottom of sprite to collision box
             displayWidth, displayHeight
         );
+        ctx.restore();
     } else {
         // Fallback if image not loaded
         ctx.fillStyle = "red";
@@ -1748,6 +1829,82 @@ function draw() {
             ctx.fillRect(door.x, door.y, door.w, door.h);
         });
     }
+
+    // Draw Boss Spikes
+    bossSpikes.forEach(spike => {
+        ctx.save();
+        if (spike.state === 'warning') {
+            // Draw a pulsating red zone
+            const pulse = (Math.sin(Date.now() / 150) + 1) / 2;
+            ctx.fillStyle = `rgba(255, 0, 0, ${0.15 + pulse * 0.25})`;
+            ctx.beginPath();
+            // Draw an ellipse on the ground
+            ctx.ellipse(spike.x + spike.width/2, spike.y + spike.height/2, spike.width/2, spike.height/3, 0, 0, Math.PI*2);
+            ctx.fill();
+            
+            // Draw an expanding ring
+            ctx.strokeStyle = "rgba(255, 0, 0, 0.8)";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            const ringSize = spike.width/2 * (1 - spike.timer/60);
+            ctx.ellipse(spike.x + spike.width/2, spike.y + spike.height/2, ringSize, ringSize * 0.66, 0, 0, Math.PI*2);
+            ctx.stroke();
+            
+        } else if (spike.state === 'active' || spike.state === 'fading') {
+            if (spike.state === 'fading') {
+                ctx.globalAlpha = spike.timer / 15;
+            }
+            if (spikeImg.complete && spikeImg.width > 0) {
+                // Draw spike image
+                ctx.drawImage(spikeImg, spike.x - 10, spike.y - 20, spike.width + 20, spike.height + 20);
+            } else {
+                // Draw a grid of upright metallic spikes
+                const rows = 4;
+                const cols = 5;
+                const spikeBaseWidth = 8;
+                const spikeHeight = 18;
+                
+                // Draw cracked earth base
+                const cx = spike.x + spike.width / 2;
+                const cy = spike.y + spike.height / 2;
+                ctx.fillStyle = "#4a3b2c";
+                ctx.beginPath();
+                ctx.ellipse(cx, cy + 5, spike.width * 0.45, spike.height * 0.35, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Draw grid of spikes from back to front
+                for (let r = 0; r < rows; r++) {
+                    const py = spike.y + 20 + (r * 12);
+                    for (let c = 0; c < cols; c++) {
+                        const px = spike.x + 10 + (c * 12);
+                        
+                        // Spike base rim
+                        ctx.fillStyle = "#33383d";
+                        ctx.beginPath();
+                        ctx.ellipse(px + spikeBaseWidth/2, py, spikeBaseWidth/2 + 1, 3, 0, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Left side (highlight)
+                        ctx.fillStyle = "#9ca5b0";
+                        ctx.beginPath();
+                        ctx.moveTo(px, py);
+                        ctx.lineTo(px + spikeBaseWidth/2, py - spikeHeight);
+                        ctx.lineTo(px + spikeBaseWidth/2, py + 2);
+                        ctx.fill();
+                        
+                        // Right side (shadow)
+                        ctx.fillStyle = "#5c656d";
+                        ctx.beginPath();
+                        ctx.moveTo(px + spikeBaseWidth/2, py - spikeHeight);
+                        ctx.lineTo(px + spikeBaseWidth, py);
+                        ctx.lineTo(px + spikeBaseWidth/2, py + 2);
+                        ctx.fill();
+                    }
+                }
+            }
+        }
+        ctx.restore();
+    });
 
     // Draw Speech Bubble
     if (currentSpeechBubble) {
