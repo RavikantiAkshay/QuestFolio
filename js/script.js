@@ -898,7 +898,7 @@ window.addEventListener("keydown", (e) => {
                 isOverlayActive = true; // Freeze game during dialogue
 
                 showDialogue("AKBOT-E7", [
-                    "WARNING: HIGH ENERGY DETECTED. You have awakened the Guardian! Prepare yourself for a challenge..."
+                    "Oh no, it seems like you have awakened the Guardian! Prepare yourself for a challenge..."
                 ], () => {
                     // Start screen shake
                     screenShake = 40;
@@ -946,9 +946,9 @@ window.addEventListener("keydown", (e) => {
                         speechBubbleSequence = [
                             { entity: bossNpc, text: "Ah... so you've finally arrived." },
                             { entity: player, text: "Wait... who are you?" },
-                            { entity: bossNpc, text: "I've watched you traverse the town, the school, the labs..." },
-                            { entity: player, text: "I just want to explore the portfolio!" },
-                            { entity: bossNpc, text: "But this is the end of the road. Let's see what you've got!" }
+                            { entity: bossNpc, text: "I am the Guardian of this town, and I have seen you traversing all around..." },
+                            { entity: player, text: "I just wanted to explore the town and get to know the creator a little." },
+                            { entity: bossNpc, text: "You have seen enough! Defeat me and prove your worth!" }
                         ];
                         speechBubbleIndex = 0;
                         advanceSpeechBubble();
@@ -1442,6 +1442,10 @@ function update() {
             if (npc.deathTimer > 0) {
                 npc.deathTimer--;
             } else {
+                if (npc.isBoss) {
+                    npcs.splice(i, 1);
+                    continue;
+                }
                 // Wait for respawn instead of removing
                 if (npc.respawnTimer === undefined) {
                     npc.respawnTimer = 300; // 5 seconds (60fps * 5)
