@@ -73,12 +73,29 @@ const interactables = {
         { "x": 1008, "y": 624, "w": 56, "h": 48, "id": "post", "text": "Post Office" }
     ],
     "castle": [
-        { "x": 600, "y": 368, "w": 88, "h": 72, "id": "boss", "text": "Boss Room" }
+        { "x": 600, "y": 368, "w": 88, "h": 72, "id": "boss", "text": "???" }
     ]
 };
 
 let activeInteractable = null;
 let isOverlayActive = false;
+
+let screenShake = 0;
+let currentSpeechBubble = null;
+let speechBubbleSequence = null;
+let speechBubbleIndex = 0;
+
+function advanceSpeechBubble() {
+    if (!speechBubbleSequence) return;
+    if (speechBubbleIndex >= speechBubbleSequence.length) {
+        currentSpeechBubble = null;
+        speechBubbleSequence = null;
+        isOverlayActive = false;
+        return;
+    }
+    currentSpeechBubble = speechBubbleSequence[speechBubbleIndex];
+    speechBubbleIndex++;
+}
 
 // Interior System
 const interiorOverlay = document.getElementById('interior-overlay');
@@ -875,6 +892,69 @@ window.addEventListener("keydown", (e) => {
 
                 if (dialogueBackdrop) dialogueBackdrop.style.display = 'none';
 
+            } else if (activeInteractable.id === 'boss') {
+                if (dialogueBackdrop) dialogueBackdrop.style.display = 'none';
+
+                isOverlayActive = true; // Freeze game during dialogue
+
+                showDialogue("AKBOT-E7", [
+                    "WARNING: HIGH ENERGY DETECTED. You have awakened the Guardian! Prepare yourself for a challenge..."
+                ], () => {
+                    // Start screen shake
+                    screenShake = 40;
+                    
+                    // Position Player on the road facing right
+                    player.x = 580; 
+                    player.y = 632;
+                    player.frameY = 3; // Right
+                    player.isMoving = false;
+
+                    // Load Boss Image
+                    const bossImg = new Image();
+                    bossImg.src = 'assets/images/characters/boss.png';
+
+                    // Spawn Boss on the road facing left
+                    const bossNpc = {
+                        x: 680,
+                        y: 600,
+                        size: 80, // Bigger than player
+                        speed: 0,
+                        hp: 500,
+                        maxHp: 500,
+                        frameX: 0, // Idle
+                        frameY: 1, // Left
+                        isMoving: false,
+                        animTimer: 0,
+                        directionTimer: 999999, // Prevent random movement
+                        isBoss: true,
+                        image: bossImg
+                    };
+
+                    // Clear other NPCs and add Boss
+                    npcs = [bossNpc];
+                    
+                    // Update Camera to center on the encounter
+                    cameraX = player.x + (player.size / 2) - (canvas.width / 2);
+                    cameraY = player.y + (player.size / 2) - (canvas.height / 2);
+                    if (cameraX < 0) cameraX = 0;
+                    if (cameraY < 0) cameraY = 0;
+                    if (cameraX > mapWidth - canvas.width) cameraX = Math.max(0, mapWidth - canvas.width);
+                    if (cameraY > mapHeight - canvas.height) cameraY = Math.max(0, mapHeight - canvas.height);
+
+                    // Wait a bit for screen shake, then start speech bubbles
+                    setTimeout(() => {
+                        speechBubbleSequence = [
+                            { entity: bossNpc, text: "Ah... so you've finally arrived." },
+                            { entity: player, text: "Wait... who are you?" },
+                            { entity: bossNpc, text: "I've watched you traverse the town, the school, the labs..." },
+                            { entity: player, text: "I just want to explore the portfolio!" },
+                            { entity: bossNpc, text: "But this is the end of the road. Let's see what you've got!" }
+                        ];
+                        speechBubbleIndex = 0;
+                        advanceSpeechBubble();
+                    }, 800);
+                });
+
             } else {
                 document.getElementById('overlayTitle').innerText = activeInteractable.text;
                 overlay.style.display = 'flex';
@@ -1450,6 +1530,11 @@ function draw() {
     ctx.save();
     ctx.translate(-cameraX, -cameraY);
 
+    if (screenShake > 0) {
+        ctx.translate(Math.random() * screenShake - screenShake/2, Math.random() * screenShake - screenShake/2);
+        screenShake--;
+    }
+
     let zoneConfig = world[currentZone];
 
     // Draw the Map blocks or Static Background
@@ -1660,6 +1745,74 @@ function draw() {
         });
     }
 
+    // Draw Speech Bubble
+    if (currentSpeechBubble) {
+        const entity = currentSpeechBubble.entity;
+        const text = currentSpeechBubble.text;
+        
+        ctx.save();
+        ctx.font = "bold 14px sans-serif";
+        const padding = 10;
+        
+        // Basic text wrapping
+        const words = text.split(' ');
+        let line = '';
+        const lines = [];
+        const maxWidth = 180;
+        
+        for (let n = 0; n < words.length; n++) {
+            const testLine = line + words[n] + ' ';
+            const metrics = ctx.measureText(testLine);
+            if (metrics.width > maxWidth && n > 0) {
+                lines.push(line);
+                line = words[n] + ' ';
+            } else {
+                line = testLine;
+            }
+        }
+        lines.push(line);
+        
+        const textHeight = 16;
+        const bubbleHeight = lines.length * textHeight + padding * 2;
+        const metricsLongest = ctx.measureText(lines.reduce((a, b) => a.length > b.length ? a : b));
+        const bubbleWidth = Math.max(50, metricsLongest.width) + padding * 2;
+        
+        const bx = entity.x + entity.size / 2 - bubbleWidth / 2;
+        const by = entity.y - bubbleHeight - 15;
+        
+        // Draw bubble background
+        ctx.fillStyle = "white";
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        if (ctx.roundRect) {
+            ctx.roundRect(bx, by, bubbleWidth, bubbleHeight, 8);
+        } else {
+            ctx.fillRect(bx, by, bubbleWidth, bubbleHeight);
+            ctx.strokeRect(bx, by, bubbleWidth, bubbleHeight);
+        }
+        ctx.fill();
+        ctx.stroke();
+        
+        // Draw tail
+        ctx.beginPath();
+        ctx.moveTo(bx + bubbleWidth/2 - 8, by + bubbleHeight);
+        ctx.lineTo(bx + bubbleWidth/2 + 8, by + bubbleHeight);
+        ctx.lineTo(bx + bubbleWidth/2, by + bubbleHeight + 12);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        
+        // Draw text
+        ctx.fillStyle = "black";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "top";
+        for (let i = 0; i < lines.length; i++) {
+            ctx.fillText(lines[i], bx + padding, by + padding + i * textHeight);
+        }
+        ctx.restore();
+    }
+
     ctx.restore();
 }
 
@@ -1759,6 +1912,8 @@ canvas.addEventListener('mousedown', (e) => {
         undoStack.push(JSON.stringify(collisionData));
         if (undoStack.length > 20) undoStack.shift();
         redoStack = [];
+    } else if (currentSpeechBubble) {
+        advanceSpeechBubble();
     } else {
         // Left click to attack
         if (e.button === 0 && !player.isDefending && !isOverlayActive) {
