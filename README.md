@@ -44,7 +44,7 @@ The game world is split into **three interconnected zones**, each with its own t
 
 - **Home** — Enter the cozy log cabin. A typewriter sits on the desk with a page still stuck in it, revealing a personal introduction.
 - **Lab** — A high-tech research facility. Boot up the CRT monitor to browse through live project demos — complete with embedded iframes, feature lists, and direct links to GitHub repos and deployed apps.
-- **Workshop** — A blacksmith-style forge. Review active blueprints for projects under development and stashed concepts that were shelved (with honest reasons why).
+- **Workshop** — A blacksmith-style forge. Review active blueprints for projects in progress and stashed concepts that were shelved (with honest reasons why).
 
 ### 🏫 School Zone
 > *A sprawling academy campus with a bell tower, classrooms, and a headmaster's office.*

@@ -431,7 +431,7 @@ if (nextBtn) {
 const workshopProjectsData = [
     {
         title: "NxtForm",
-        status: "UNDER DEVELOPMENT",
+        status: "IN PROGRESS",
         desc: "An open-source, full-stack web application that revolutionizes data collection. Build highly customizable forms with a drag-and-drop workspace, or let AI generate professional forms from a simple prompt. Serve your forms in both classic and conversational modes to maximize completion rates.",
         features: ["Workspace Builder", "AI Form Generator", "Small-Cohort Analytics", "AI Workflow Insights"],
         tech: "React, Node.js, Express, MongoDB, Groq API",
@@ -439,7 +439,7 @@ const workshopProjectsData = [
     },
     {
         title: "Placement-Assistant",
-        status: "UNDER DEVELOPMENT",
+        status: "IN PROGRESS",
         desc: "An open-source, full-stack AI platform that conducts real-time conversational mock interviews. Upload your resume, select your desired role and difficulty, and participate in a highly dynamic voice-to-voice interview. Receive a comprehensive analytics report detailing your technical proficiency, behavioral adherence, and communication skills to help you ace your next real-world interview.",
         features: ["Voice-to-Voice Interaction", "Resume-Driven Questions", "Comprehensive Analytics", "Intelligent Doubt Solver"],
         tech: "React 19, Express, MongoDB, Groq AI, Whisper",
@@ -447,7 +447,7 @@ const workshopProjectsData = [
     },
     {
         title: "TestCaseGenerator",
-        status: "UNDER DEVELOPMENT",
+        status: "IN PROGRESS",
         desc: "AI-powered test case generator. Upload a repository, let AI analyze the architecture, and generate comprehensive test suites — unit, integration, API, and edge cases. Features an interactive test workspace where you can view syntax-highlighted test code, edit outputs inline, and request targeted AI regenerations.",
         features: ["Deep Architecture Analysis", "Context-Aware AI Generation", "Embedding Memory", "Interactive Test Workspace"],
         tech: "React, Node.js, Express, MongoDB, Groq SDK",
