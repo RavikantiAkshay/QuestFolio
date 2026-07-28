@@ -948,7 +948,7 @@ window.addEventListener("keydown", (e) => {
                             { entity: player, text: "Wait... who are you?" },
                             { entity: bossNpc, text: "I am the Guardian of this town, and I have seen you traversing all around..." },
                             { entity: player, text: "I just wanted to explore the town and get to know the creator a little." },
-                            { entity: bossNpc, text: "You have seen enough! Defeat me and prove your worth!" }
+                            { entity: bossNpc, text: "You have done well to make it this far. But before you take another step, you must defeat me and prove your worth!" }
                         ];
                         speechBubbleIndex = 0;
                         advanceSpeechBubble();
