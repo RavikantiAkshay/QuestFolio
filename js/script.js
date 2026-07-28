@@ -383,6 +383,21 @@ const projectsData = [
 
 let currentProjectIdx = 0;
 
+window.loadLabIframe = function(liveUrl) {
+    const pPrev = document.getElementById('project-preview');
+    if(!pPrev) return;
+    
+    pPrev.innerHTML = `
+        <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#0a0a0a; color:#0f0; font-family:'Share Tech Mono';">
+            <div class="pixel-loader"></div>
+            <p class="blink-text" style="margin-top:20px; font-size:1.2rem;">> ESTABLISHING CONNECTION...</p>
+        </div>
+        <div id="iframe-container" style="position:absolute; top:0; left:0; width:200%; height:200%; transform:scale(0.5); transform-origin:top left; opacity:0; transition:opacity 0.5s;">
+            <iframe src="${liveUrl}" style="width:100%; height:100%; border:none; background:#fff;" onload="document.getElementById('iframe-container').style.opacity='1';"></iframe>
+        </div>
+    `;
+};
+
 function updateLabComputer() {
     const p = projectsData[currentProjectIdx];
     const pTitle = document.getElementById('project-title');
@@ -401,13 +416,9 @@ function updateLabComputer() {
     if(pLive) pLive.href = p.live;
     if(pPrev) {
         if(p.live && p.live !== "#") {
-            pPrev.innerHTML = `
-                <div style="position:absolute; top:0; left:0; width:200%; height:200%; transform:scale(0.5); transform-origin:top left;">
-                    <iframe src="${p.live}" style="width:100%; height:100%; border:none; background:#fff;"></iframe>
-                </div>
-            `;
+            window.loadLabIframe(p.live);
         } else {
-            pPrev.innerHTML = `<img src="${p.image}" style="width:100%; height:100%; object-fit:cover; border-radius:4px;" onerror="this.style.display='none'">`;
+            pPrev.innerHTML = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#0a0a0a; color:#555; border-radius:4px;">NO PREVIEW AVAILABLE</div>`;
         }
     }
 }

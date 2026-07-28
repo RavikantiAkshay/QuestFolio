@@ -1672,3 +1672,32 @@ canvas {
         font-size: 18px;
     }
 }
+
+/* Retro Pixel Loading Animation */
+.pixel-loader {
+    width: 150px;
+    height: 20px;
+    border: 3px solid #0f0;
+    position: relative;
+    padding: 2px;
+}
+
+.pixel-loader::after {
+    content: '';
+    display: block;
+    height: 100%;
+    background: #0f0;
+    animation: pixel-fill 2.5s steps(15) infinite;
+}
+
+@keyframes pixel-fill {
+    0% { width: 0%; }
+    100% { width: 100%; }
+}
+
+.blink-text {
+    animation: blink 1s step-end infinite;
+}
+@keyframes blink {
+    50% { opacity: 0; }
+}
