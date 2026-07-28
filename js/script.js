@@ -58,7 +58,7 @@ player.attackImage.src = "assets/images/characters/main-character-attack.png";
 
 // You can tweak these or remove this block since we handle it dynamically now
 const playerSpriteConfig = {
-    scale: 1.0 
+    scale: 1.0
 };
 
 const keys = {};
@@ -98,14 +98,14 @@ function advanceSpeechBubble() {
         currentSpeechBubble = null;
         speechBubbleSequence = null;
         isOverlayActive = false;
-        
+
         // Start Boss Fight
         bossFightActive = true;
         const boss = npcs.find(n => n.isBoss);
         if (boss) {
             boss.bossAttackTimer = 60; // Start attacking in 1 second
         }
-        
+
         return;
     }
     currentSpeechBubble = speechBubbleSequence[speechBubbleIndex];
@@ -207,20 +207,20 @@ if (interiorExplore) {
 
 // School Education Data
 const educationData = [
-    { 
-        title: "B.Tech", 
+    {
+        title: "B.Tech",
         institution: "Indian Institute of Technology Bhilai",
         desc: "Electrical Engineering",
         score: "2023 – 2027 | CGPA: 8.92/10"
     },
-    { 
-        title: "Class 12", 
+    {
+        title: "Class 12",
         institution: "Narayana Junior College, Patancheru",
         desc: "Telangana State Board of Intermediate Education",
         score: "2021 – 2023 | 99%"
     },
-    { 
-        title: "Class X", 
+    {
+        title: "Class X",
         institution: "Bhashyam Blooms, Maheshwaram",
         desc: "Board of Secondary Education (BSE Telangana)",
         score: "2020 – 2021 | 95% (10 CGPA)"
@@ -258,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (boardContainer.style.display === 'none') return;
             e.preventDefault();
             if (isEduAnimating) return;
-            
+
             if (e.deltaY > 0) {
                 // Scroll down -> next slide
                 if (currentEduSlide < educationData.length - 1) {
@@ -415,10 +415,10 @@ const projectsData = [
 
 let currentProjectIdx = 0;
 
-window.loadLabIframe = function(liveUrl) {
+window.loadLabIframe = function (liveUrl) {
     const pPrev = document.getElementById('project-preview');
-    if(!pPrev) return;
-    
+    if (!pPrev) return;
+
     pPrev.innerHTML = `
         <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#0a0a0a; color:#0f0; font-family:'Share Tech Mono';">
             <div class="pixel-loader"></div>
@@ -440,14 +440,14 @@ function updateLabComputer() {
     const pLive = document.getElementById('project-live');
     const pPrev = document.getElementById('project-preview');
 
-    if(pTitle) pTitle.innerText = p.title;
-    if(pTech) pTech.innerHTML = p.tech.map(t => `<li>> ${t}</li>`).join('');
-    if(pDesc) pDesc.innerText = p.shortDesc;
-    if(pFeat) pFeat.innerHTML = p.features.map(f => `<li style="margin-bottom:6px;">- ${f}</li>`).join('');
-    if(pGit) pGit.href = p.github;
-    if(pLive) pLive.href = p.live;
-    if(pPrev) {
-        if(p.live && p.live !== "#") {
+    if (pTitle) pTitle.innerText = p.title;
+    if (pTech) pTech.innerHTML = p.tech.map(t => `<li>> ${t}</li>`).join('');
+    if (pDesc) pDesc.innerText = p.shortDesc;
+    if (pFeat) pFeat.innerHTML = p.features.map(f => `<li style="margin-bottom:6px;">- ${f}</li>`).join('');
+    if (pGit) pGit.href = p.github;
+    if (pLive) pLive.href = p.live;
+    if (pPrev) {
+        if (p.live && p.live !== "#") {
             window.loadLabIframe(p.live);
         } else {
             pPrev.innerHTML = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#0a0a0a; color:#555; border-radius:4px;">NO PREVIEW AVAILABLE</div>`;
@@ -537,26 +537,26 @@ function updateWorkshopBlueprint() {
     const bpRepoLink = document.getElementById('bp-repo-link');
     const bpRepoContainer = document.getElementById('bp-repo-container');
 
-    if(bpTitle) bpTitle.innerText = `Blueprint: ${w.title}`;
-    if(bpStatus) {
+    if (bpTitle) bpTitle.innerText = `Blueprint: ${w.title}`;
+    if (bpStatus) {
         bpStatus.innerText = `Status: ${w.status}`;
         bpStatus.style.color = w.status === 'STASHED' ? '#ff9999' : '#ffd700';
     }
-    
+
     if (w.status === 'STASHED') {
-        if(bpStashContainer) bpStashContainer.style.display = 'block';
-        if(bpStashReason) bpStashReason.innerText = w.reason || "Placeholder reason";
-        if(bpRepoContainer) bpRepoContainer.style.display = 'none';
+        if (bpStashContainer) bpStashContainer.style.display = 'block';
+        if (bpStashReason) bpStashReason.innerText = w.reason || "Placeholder reason";
+        if (bpRepoContainer) bpRepoContainer.style.display = 'none';
     } else {
-        if(bpStashContainer) bpStashContainer.style.display = 'none';
-        if(bpRepoContainer) bpRepoContainer.style.display = 'block';
-        if(bpRepoLink) bpRepoLink.href = w.repo || "#";
+        if (bpStashContainer) bpStashContainer.style.display = 'none';
+        if (bpRepoContainer) bpRepoContainer.style.display = 'block';
+        if (bpRepoLink) bpRepoLink.href = w.repo || "#";
     }
 
-    if(bpDesc) bpDesc.innerText = w.desc;
-    if(bpFeat) bpFeat.innerHTML = w.features.map(f => `<li>${f}</li>`).join('');
-    if(bpTech) bpTech.innerHTML = `<strong>Tech Stack:</strong> ${w.tech}`;
-    if(bpPag) bpPag.innerText = `${currentWorkshopIdx + 1} / ${workshopProjectsData.length}`;
+    if (bpDesc) bpDesc.innerText = w.desc;
+    if (bpFeat) bpFeat.innerHTML = w.features.map(f => `<li>${f}</li>`).join('');
+    if (bpTech) bpTech.innerHTML = `<strong>Tech Stack:</strong> ${w.tech}`;
+    if (bpPag) bpPag.innerText = `${currentWorkshopIdx + 1} / ${workshopProjectsData.length}`;
 }
 
 const bpPrevBtn = document.getElementById('blueprint-prev');
@@ -581,12 +581,12 @@ if (interiorExplore) {
         if (document.getElementById('lab-computer-container')) document.getElementById('lab-computer-container').style.display = 'none'; // hide the computer
         if (document.getElementById('school-board-container')) document.getElementById('school-board-container').style.display = 'none'; // hide the school board
         if (document.getElementById('library-rack-container')) document.getElementById('library-rack-container').style.display = 'none'; // hide the library racks
-        
+
         if (interiorBg) {
             interiorBg.style.transition = 'filter 0.7s ease';
             interiorBg.style.filter = "none"; // clear the background blur smoothly
         }
-        
+
         const workshopContainer = document.getElementById('workshop-container');
         if (workshopContainer) {
             workshopContainer.style.display = 'none';
@@ -681,7 +681,7 @@ window.addEventListener("keydown", (e) => {
         if (!isOverlayActive && activeInteractable) {
             isOverlayActive = true;
             isExploringInterior = false;
-            
+
             if (activeInteractable.id === 'home') {
                 if (interiorBg) {
                     interiorBg.style.backgroundImage = "url('assets/images/environments/home.jpg')";
@@ -724,7 +724,7 @@ window.addEventListener("keydown", (e) => {
                     `;
                     if (intContent) intContent.style.display = 'flex';
                 });
-                
+
                 // CRITICAL: Hide the dark backdrop so the interior image is bright and clear during dialogue!
                 if (dialogueBackdrop) dialogueBackdrop.style.display = 'none';
 
@@ -745,7 +745,7 @@ window.addEventListener("keydown", (e) => {
                 if (document.getElementById('typewriter-wrap-container')) document.getElementById('typewriter-wrap-container').style.display = 'none';
                 if (document.getElementById('workshop-container')) document.getElementById('workshop-container').style.display = 'none';
                 if (document.getElementById('school-board-container')) document.getElementById('school-board-container').style.display = 'none';
-                if (document.getElementById('library-rack-container')) document.getElementById('library-rack-container').style.display = 'none';                
+                if (document.getElementById('library-rack-container')) document.getElementById('library-rack-container').style.display = 'none';
                 if (document.getElementById('post-office-container')) document.getElementById('post-office-container').style.display = 'none';
                 const labComputer = document.getElementById('lab-computer-container');
                 if (labComputer) labComputer.style.display = 'none'; // hidden during dialogue
@@ -780,7 +780,7 @@ window.addEventListener("keydown", (e) => {
                 if (document.getElementById('typewriter-wrap-container')) document.getElementById('typewriter-wrap-container').style.display = 'none';
                 if (document.getElementById('lab-computer-container')) document.getElementById('lab-computer-container').style.display = 'none';
                 if (document.getElementById('school-board-container')) document.getElementById('school-board-container').style.display = 'none';
-                if (document.getElementById('library-rack-container')) document.getElementById('library-rack-container').style.display = 'none';                
+                if (document.getElementById('library-rack-container')) document.getElementById('library-rack-container').style.display = 'none';
                 if (document.getElementById('post-office-container')) document.getElementById('post-office-container').style.display = 'none';
                 const workshopContainer = document.getElementById('workshop-container');
                 if (workshopContainer) workshopContainer.style.display = 'none'; // hidden during dialogue
@@ -800,7 +800,7 @@ window.addEventListener("keydown", (e) => {
             } else if (activeInteractable.id === 'school') {
                 if (interiorBg) {
                     interiorBg.style.backgroundImage = "url('assets/images/environments/school.png')";
-                    interiorBg.style.backgroundColor = "transparent"; 
+                    interiorBg.style.backgroundColor = "transparent";
                     interiorBg.style.filter = "none";
                     interiorBg.style.backgroundSize = "contain";
                     interiorBg.style.backgroundRepeat = "no-repeat";
@@ -817,9 +817,9 @@ window.addEventListener("keydown", (e) => {
                 if (document.getElementById('workshop-container')) document.getElementById('workshop-container').style.display = 'none';
                 if (document.getElementById('library-rack-container')) document.getElementById('library-rack-container').style.display = 'none';
                 if (document.getElementById('post-office-container')) document.getElementById('post-office-container').style.display = 'none';
-                
+
                 const schoolBoard = document.getElementById('school-board-container');
-                if (schoolBoard) schoolBoard.style.display = 'none'; 
+                if (schoolBoard) schoolBoard.style.display = 'none';
 
                 showDialogue("AKBOT-E7", [
                     "Welcome to the School! Let's take a look at his education history on the chalkboard."
@@ -917,16 +917,18 @@ window.addEventListener("keydown", (e) => {
                 ], () => {
                     // Start screen shake
                     screenShake = 40;
-                    
+
                     // Position Player on the road facing right
-                    player.x = 580; 
+                    player.x = 580;
                     player.y = 632;
                     player.frameY = 3; // Right
                     player.isMoving = false;
 
-                    // Load Boss Image
+                    // Load Boss Images
                     const bossImg = new Image();
                     bossImg.src = 'assets/images/characters/boss.png';
+                    const bossAttackImg = new Image();
+                    bossAttackImg.src = 'assets/images/characters/boss-attack-2.png';
 
                     // Spawn Boss on the road facing left
                     const bossNpc = {
@@ -939,15 +941,19 @@ window.addEventListener("keydown", (e) => {
                         frameX: 0, // Idle
                         frameY: 1, // Left
                         isMoving: false,
+                        isAttacking: false,
+                        isCharging: false,
+                        attackFrame: 0,
                         animTimer: 0,
                         directionTimer: 999999, // Prevent random movement
                         isBoss: true,
-                        image: bossImg
+                        image: bossImg,
+                        attackImage: bossAttackImg
                     };
 
                     // Clear other NPCs and add Boss
                     npcs = [bossNpc];
-                    
+
                     // Update Camera to center on the encounter
                     cameraX = player.x + (player.size / 2) - (canvas.width / 2);
                     cameraY = player.y + (player.size / 2) - (canvas.height / 2);
@@ -1019,25 +1025,25 @@ window.addEventListener("keydown", (e) => {
         coordUI.style.display = 'none'; // Not needed anymore
     }
     */
-    
+
     if (!editMode) return;
 
     if (e.key.toLowerCase() === 'p') {
         let doors = [];
-        let visited = Array.from({length: doorPaintData.length}, () => Array(doorPaintData[0].length).fill(false));
+        let visited = Array.from({ length: doorPaintData.length }, () => Array(doorPaintData[0].length).fill(false));
         for (let r = 0; r < doorPaintData.length; r++) {
             for (let c = 0; c < doorPaintData[0].length; c++) {
                 if (doorPaintData[r][c] === 1 && !visited[r][c]) {
                     let minR = r, maxR = r, minC = c, maxC = c;
                     let queue = [[r, c]];
                     visited[r][c] = true;
-                    while(queue.length > 0) {
+                    while (queue.length > 0) {
                         let [cr, cc] = queue.shift();
                         minR = Math.min(minR, cr);
                         maxR = Math.max(maxR, cr);
                         minC = Math.min(minC, cc);
                         maxC = Math.max(maxC, cc);
-                        let dirs = [[0,1], [1,0], [0,-1], [-1,0]];
+                        let dirs = [[0, 1], [1, 0], [0, -1], [-1, 0]];
                         for (let d of dirs) {
                             let nr = cr + d[0];
                             let nc = cc + d[1];
@@ -1169,7 +1175,7 @@ function loadZone(zoneName, startX, startY) {
 
     if (zoneConfig.type !== "static" && currentMapData.length > 0) {
         resize(); // Update the canvas bounds based on the new map size
-        
+
         const collisionRows = mapHeight / collisionSize;
         const collisionCols = mapWidth / collisionSize;
         undoStack = [];
@@ -1182,7 +1188,7 @@ function loadZone(zoneName, startX, startY) {
             castle: typeof collision_castle_data !== 'undefined' ? collision_castle_data : null
         };
 
-        doorPaintData = Array.from({length: collisionRows}, () => Array(collisionCols).fill(0));
+        doorPaintData = Array.from({ length: collisionRows }, () => Array(collisionCols).fill(0));
 
         const savedCollision = localStorage.getItem('collision_' + zoneName);
         if (savedCollision) {
@@ -1192,12 +1198,12 @@ function loadZone(zoneName, startX, startY) {
             } else if (hardcodedMap[zoneName]) {
                 collisionData = hardcodedMap[zoneName].map(r => [...r]);
             } else {
-                collisionData = Array.from({length: collisionRows}, () => Array(collisionCols).fill(0));
+                collisionData = Array.from({ length: collisionRows }, () => Array(collisionCols).fill(0));
             }
         } else if (hardcodedMap[zoneName]) {
             collisionData = hardcodedMap[zoneName].map(r => [...r]);
         } else {
-            collisionData = Array.from({length: collisionRows}, () => Array(collisionCols).fill(0));
+            collisionData = Array.from({ length: collisionRows }, () => Array(collisionCols).fill(0));
         }
     }
 
@@ -1217,7 +1223,7 @@ function loadZone(zoneName, startX, startY) {
                     spawnY = Math.random() * (mapHeight - 100) + 50;
                     attempts++;
                 } while (!isWalkable(spawnX, spawnY, 48) && attempts < 100);
-                
+
                 npcs.push({
                     x: spawnX,
                     y: spawnY,
@@ -1267,10 +1273,10 @@ function loadZone(zoneName, startX, startY) {
 
 // --- 5. UPDATE LOGIC & ZONE TRANSITIONS ---
 function rectIntersect(r1, r2) {
-    return !(r2.x >= r1.x + r1.w || 
-             r2.x + r2.w <= r1.x || 
-             r2.y >= r1.y + r1.h || 
-             r2.y + r2.h <= r1.y);
+    return !(r2.x >= r1.x + r1.w ||
+        r2.x + r2.w <= r1.x ||
+        r2.y >= r1.y + r1.h ||
+        r2.y + r2.h <= r1.y);
 }
 
 function isWalkable(nextX, nextY, entitySize = player.size, ignoreEntity = null) {
@@ -1280,7 +1286,7 @@ function isWalkable(nextX, nextY, entitySize = player.size, ignoreEntity = null)
     const marginX = 12;
     const marginTop = 24; // Character head/shoulders don't collide
     const marginBot = 4;
-    
+
     // 1. Check Map Collision
     const left = Math.floor((nextX + marginX) / collisionSize);
     const right = Math.floor((nextX + entitySize - marginX) / collisionSize);
@@ -1358,21 +1364,21 @@ function update() {
     // Sprint logic: double speed if Shift is held
     const currentSpeed = keys["shift"] ? player.speed * 2 : player.speed;
 
-    if (keys["arrowup"] || keys["w"]) { 
-        if (isWalkable(player.x, player.y - currentSpeed, player.size, player)) player.y -= currentSpeed; 
-        player.frameY = 2; player.isMoving = true; 
+    if (keys["arrowup"] || keys["w"]) {
+        if (isWalkable(player.x, player.y - currentSpeed, player.size, player)) player.y -= currentSpeed;
+        player.frameY = 2; player.isMoving = true;
     }
-    else if (keys["arrowdown"] || keys["s"]) { 
-        if (isWalkable(player.x, player.y + currentSpeed, player.size, player)) player.y += currentSpeed; 
-        player.frameY = 0; player.isMoving = true; 
+    else if (keys["arrowdown"] || keys["s"]) {
+        if (isWalkable(player.x, player.y + currentSpeed, player.size, player)) player.y += currentSpeed;
+        player.frameY = 0; player.isMoving = true;
     }
-    else if (keys["arrowleft"] || keys["a"]) { 
-        if (isWalkable(player.x - currentSpeed, player.y, player.size, player)) player.x -= currentSpeed; 
-        player.frameY = 1; player.isMoving = true; 
+    else if (keys["arrowleft"] || keys["a"]) {
+        if (isWalkable(player.x - currentSpeed, player.y, player.size, player)) player.x -= currentSpeed;
+        player.frameY = 1; player.isMoving = true;
     }
-    else if (keys["arrowright"] || keys["d"]) { 
-        if (isWalkable(player.x + currentSpeed, player.y, player.size, player)) player.x += currentSpeed; 
-        player.frameY = 3; player.isMoving = true; 
+    else if (keys["arrowright"] || keys["d"]) {
+        if (isWalkable(player.x + currentSpeed, player.y, player.size, player)) player.x += currentSpeed;
+        player.frameY = 3; player.isMoving = true;
     }
 
     // Decrement combo window timer
@@ -1397,7 +1403,7 @@ function update() {
         if (player.isAttacking) {
             player.animTimer++;
             // Hold the attack frame for a short duration to show the attack
-            if (player.animTimer >= 10) { 
+            if (player.animTimer >= 10) {
                 player.isAttacking = false;
             }
         } else if (player.isMoving) {
@@ -1406,7 +1412,7 @@ function update() {
             const animSpeedLimit = keys["shift"] ? 4 : 8;
             if (player.animTimer >= animSpeedLimit) { // change frame based on speed
                 // Since we use the original walk sprite when moving, we need 4 frames for the walk cycle
-                player.frameX = (player.frameX + 1) % 4; 
+                player.frameX = (player.frameX + 1) % 4;
                 player.animTimer = 0;
             }
         } else {
@@ -1456,9 +1462,49 @@ function update() {
     if (bossFightActive) {
         const boss = npcs.find(n => n.isBoss);
         if (boss && boss.hp > 0) {
+
+            let dx = player.x - boss.x;
+            let dy = player.y - boss.y;
+
+            // Boss looks at player
+            if (Math.abs(dx) > Math.abs(dy)) {
+                boss.frameY = dx > 0 ? 3 : 1;
+            } else {
+                boss.frameY = dy > 0 ? 0 : 2;
+            }
+
+            // Boss movement AI
+            if (!boss.isAttacking && !boss.isCharging) {
+                let dist = Math.hypot(dx, dy);
+                let moving = false;
+                if (dist > 180) { // move closer
+                    boss.x += (dx / dist) * 1.5;
+                    boss.y += (dy / dist) * 1.5;
+                    moving = true;
+                } else if (dist < 100) { // step back
+                    boss.x -= (dx / dist) * 1.5;
+                    boss.y -= (dy / dist) * 1.5;
+                    moving = true;
+                }
+
+                if (moving) {
+                    boss.animTimer++;
+                    if (boss.animTimer >= 12) {
+                        boss.frameX = (boss.frameX + 1) % 4;
+                        boss.animTimer = 0;
+                    }
+                } else {
+                    boss.frameX = 0;
+                }
+            } else {
+                boss.frameX = 0; // stop walking animation if attacking or charging
+            }
+
             if (boss.bossAttackTimer > 0) {
                 boss.bossAttackTimer--;
-            } else {
+            } else if (!boss.isAttacking && !boss.isCharging) {
+                boss.isCharging = true; // start charging (static old image)
+
                 // Spawn a spike warning under the player
                 bossSpikes.push({
                     x: player.x - 10,
@@ -1485,13 +1531,24 @@ function update() {
             spike.state = 'active';
             spike.timer = 20; // 0.33s active
             screenShake = 10; // small shake
-            
+
+            const boss = npcs.find(n => n.isBoss);
+            if (boss && boss.isCharging) {
+                boss.isCharging = false;
+                boss.isAttacking = true;
+                if (boss.frameY === 1) {
+                    boss.attackFrame = 0; // 3rd frame for left-facing
+                } else {
+                    boss.attackFrame = 1; // 2nd frame for all others
+                }
+            }
+
             // Check collision with player
             let spikeBox = { x: spike.x, y: spike.y, w: spike.width, h: spike.height };
             let playerBox = { x: player.x, y: player.y, w: player.size, h: player.size };
             // A bit of leniency on collision (hitbox slightly smaller)
             spikeBox.x += 15; spikeBox.y += 15; spikeBox.w -= 30; spikeBox.h -= 30;
-            
+
             if (rectIntersect(spikeBox, playerBox)) {
                 // Deal damage if not defending
                 if (!player.isDefending) {
@@ -1503,6 +1560,11 @@ function update() {
         } else if (spike.state === 'active' && spike.timer <= 0) {
             spike.state = 'fading';
             spike.timer = 15;
+
+            const boss = npcs.find(n => n.isBoss);
+            if (boss && boss.isAttacking) {
+                boss.isAttacking = false; // back to normal
+            }
         } else if (spike.state === 'fading' && spike.timer <= 0) {
             bossSpikes.splice(i, 1);
         }
@@ -1524,7 +1586,7 @@ function update() {
                 if (npc.respawnTimer === undefined) {
                     npc.respawnTimer = 300; // 5 seconds (60fps * 5)
                 }
-                
+
                 if (npc.respawnTimer > 0) {
                     npc.respawnTimer--;
                 } else {
@@ -1536,7 +1598,7 @@ function update() {
                         spawnY = Math.random() * mapHeight;
                         attempts++;
                     } while (!isWalkable(spawnX, spawnY, npc.size, npc) && attempts < 100);
-                    
+
                     if (attempts < 100) {
                         npc.x = spawnX;
                         npc.y = spawnY;
@@ -1609,7 +1671,7 @@ function draw() {
     ctx.translate(-cameraX, -cameraY);
 
     if (screenShake > 0) {
-        ctx.translate(Math.random() * screenShake - screenShake/2, Math.random() * screenShake - screenShake/2);
+        ctx.translate(Math.random() * screenShake - screenShake / 2, Math.random() * screenShake - screenShake / 2);
         screenShake--;
     }
 
@@ -1640,7 +1702,7 @@ function draw() {
                 );
             }
         }
-        
+
         // Draw collision debug overlay
         if (editMode && collisionData.length > 0) {
             ctx.fillStyle = "rgba(0, 0, 255, 0.6)"; // Blue for doors
@@ -1667,7 +1729,7 @@ function draw() {
     const currentImg = useAttackSprite ? player.attackImage : player.image;
     if (currentImg.complete && currentImg.width > 0) {
         let fW, fH, sX, sY, displayWidth, displayHeight;
-        
+
         if (useAttackSprite) {
             // Centers of the irregular sprite frames in sample7.png
             const attackCentersX = [88, 250, 414, 555, 707, 872]; // 0:stand, 1:att1, 2:att2, 3:att3, 4:def, 5:att4
@@ -1692,7 +1754,7 @@ function draw() {
             if (mappedRow === 3 && player.frameX === 3) {
                 sX += 15; // Shift the capture window 15 pixels to the right
             }
-            
+
             // Slightly reduced scale to prevent the character from looking too big
             displayWidth = player.size * 1.2;
             displayHeight = player.size * 1.2;
@@ -1730,7 +1792,7 @@ function draw() {
     npcs.forEach(npc => {
         if (npc.image && npc.image.complete && npc.image.width > 0) {
             ctx.save();
-            
+
             // Death animation: fade out and float up
             if (npc.hp <= 0) {
                 const progress = npc.deathTimer / 30; // Goes from 1.0 down to 0.0
@@ -1739,28 +1801,43 @@ function draw() {
                 ctx.translate(0, -floatOffset);
             }
 
-            const offsetX = 190;
-            const offsetY = 50;
-            const frameWidth = 160;
-            const frameHeight = 214;
-            const displayWidth = npc.size;
-            const displayHeight = npc.size * (frameHeight / frameWidth);
+            let drawImg = npc.image;
+            let fW = 160;
+            let fH = 214;
+            let sX = 190 + (npc.frameX * fW);
+            let sY = 50 + (npc.frameY * fH);
             
+            let drawXOffset = 0;
+
+            if (npc.isBoss && npc.isAttacking && npc.attackImage && npc.attackImage.complete && npc.attackImage.width > 0) {
+                drawImg = npc.attackImage;
+                sX = 190 + (npc.attackFrame * fW);
+                sY = 50 + (npc.frameY * fH);
+                
+                // Fix for left-facing hand clipping and right-side artifacts
+                if (npc.frameY === 1) {
+                    sX -= 30; // Shift capture window left to include the hand (sX becomes 160)
+                    fW = 175;  // Reduce width slightly to chop off the next frame's artifacts
+                    drawXOffset = -30 * (npc.size / 160); // Shift draw position left so body stays anchored
+                }
+            }
+            
+            const displayWidth = npc.size * (fW / 160);
+            const displayHeight = npc.size * (fH / 160);
+
             // Draw a tiny shadow
             ctx.fillStyle = "rgba(0,0,0,0.3)";
             ctx.beginPath();
-            ctx.ellipse(npc.x + npc.size/2, npc.y + npc.size - 4, npc.size/3, npc.size/6, 0, 0, Math.PI * 2);
+            ctx.ellipse(npc.x + npc.size / 2, npc.y + npc.size - 4, npc.size / 3, npc.size / 6, 0, 0, Math.PI * 2);
             ctx.fill();
 
             ctx.drawImage(
-                npc.image,
-                offsetX + (npc.frameX * frameWidth),
-                offsetY + (npc.frameY * frameHeight),
-                frameWidth, frameHeight,
-                npc.x, npc.y - (displayHeight - npc.size),
+                drawImg,
+                sX, sY, fW, fH,
+                npc.x + drawXOffset, npc.y - (displayHeight - npc.size),
                 displayWidth, displayHeight
             );
-            
+
             ctx.restore();
         }
     });
@@ -1782,7 +1859,7 @@ function draw() {
         const hpPercent = Math.max(0, entity.hp / entity.maxHp);
         // Position just above the character's head
         const bx = entity.x + (entity.size / 2) - (barWidth / 2);
-        const by = entity.y - 25; 
+        const by = entity.y - 25;
 
         ctx.fillStyle = "black";
         ctx.fillRect(bx - 1, by - 1, barWidth + 2, barHeight + 2);
@@ -1815,11 +1892,11 @@ function draw() {
         ctx.fillStyle = "white";
         ctx.font = "bold 16px sans-serif";
         ctx.textAlign = "center";
-        
+
         ctx.lineWidth = 3;
         ctx.strokeStyle = "black";
-        ctx.strokeText(`Press [E] to enter ${activeInteractable.text}`, player.x + player.size/2, player.y - 15 - pulse);
-        ctx.fillText(`Press [E] to enter ${activeInteractable.text}`, player.x + player.size/2, player.y - 15 - pulse);
+        ctx.strokeText(`Press [E] to enter ${activeInteractable.text}`, player.x + player.size / 2, player.y - 15 - pulse);
+        ctx.fillText(`Press [E] to enter ${activeInteractable.text}`, player.x + player.size / 2, player.y - 15 - pulse);
     }
 
     // Draw Interaction zones in edit mode
@@ -1839,17 +1916,17 @@ function draw() {
             ctx.fillStyle = `rgba(255, 0, 0, ${0.15 + pulse * 0.25})`;
             ctx.beginPath();
             // Draw an ellipse on the ground
-            ctx.ellipse(spike.x + spike.width/2, spike.y + spike.height/2, spike.width/2, spike.height/3, 0, 0, Math.PI*2);
+            ctx.ellipse(spike.x + spike.width / 2, spike.y + spike.height / 2, spike.width / 2, spike.height / 3, 0, 0, Math.PI * 2);
             ctx.fill();
-            
+
             // Draw an expanding ring
             ctx.strokeStyle = "rgba(255, 0, 0, 0.8)";
             ctx.lineWidth = 2;
             ctx.beginPath();
-            const ringSize = spike.width/2 * (1 - spike.timer/60);
-            ctx.ellipse(spike.x + spike.width/2, spike.y + spike.height/2, ringSize, ringSize * 0.66, 0, 0, Math.PI*2);
+            const ringSize = spike.width / 2 * (1 - spike.timer / 60);
+            ctx.ellipse(spike.x + spike.width / 2, spike.y + spike.height / 2, ringSize, ringSize * 0.66, 0, 0, Math.PI * 2);
             ctx.stroke();
-            
+
         } else if (spike.state === 'active' || spike.state === 'fading') {
             if (spike.state === 'fading') {
                 ctx.globalAlpha = spike.timer / 15;
@@ -1863,7 +1940,7 @@ function draw() {
                 const cols = 5;
                 const spikeBaseWidth = 8;
                 const spikeHeight = 18;
-                
+
                 // Draw cracked earth base
                 const cx = spike.x + spike.width / 2;
                 const cy = spike.y + spike.height / 2;
@@ -1877,27 +1954,27 @@ function draw() {
                     const py = spike.y + 20 + (r * 12);
                     for (let c = 0; c < cols; c++) {
                         const px = spike.x + 10 + (c * 12);
-                        
+
                         // Spike base rim
                         ctx.fillStyle = "#33383d";
                         ctx.beginPath();
-                        ctx.ellipse(px + spikeBaseWidth/2, py, spikeBaseWidth/2 + 1, 3, 0, 0, Math.PI * 2);
+                        ctx.ellipse(px + spikeBaseWidth / 2, py, spikeBaseWidth / 2 + 1, 3, 0, 0, Math.PI * 2);
                         ctx.fill();
-                        
+
                         // Left side (highlight)
                         ctx.fillStyle = "#9ca5b0";
                         ctx.beginPath();
                         ctx.moveTo(px, py);
-                        ctx.lineTo(px + spikeBaseWidth/2, py - spikeHeight);
-                        ctx.lineTo(px + spikeBaseWidth/2, py + 2);
+                        ctx.lineTo(px + spikeBaseWidth / 2, py - spikeHeight);
+                        ctx.lineTo(px + spikeBaseWidth / 2, py + 2);
                         ctx.fill();
-                        
+
                         // Right side (shadow)
                         ctx.fillStyle = "#5c656d";
                         ctx.beginPath();
-                        ctx.moveTo(px + spikeBaseWidth/2, py - spikeHeight);
+                        ctx.moveTo(px + spikeBaseWidth / 2, py - spikeHeight);
                         ctx.lineTo(px + spikeBaseWidth, py);
-                        ctx.lineTo(px + spikeBaseWidth/2, py + 2);
+                        ctx.lineTo(px + spikeBaseWidth / 2, py + 2);
                         ctx.fill();
                     }
                 }
@@ -1910,17 +1987,17 @@ function draw() {
     if (currentSpeechBubble) {
         const entity = currentSpeechBubble.entity;
         const text = currentSpeechBubble.text;
-        
+
         ctx.save();
         ctx.font = "bold 14px sans-serif";
         const padding = 10;
-        
+
         // Basic text wrapping
         const words = text.split(' ');
         let line = '';
         const lines = [];
         const maxWidth = 180;
-        
+
         for (let n = 0; n < words.length; n++) {
             const testLine = line + words[n] + ' ';
             const metrics = ctx.measureText(testLine);
@@ -1932,15 +2009,15 @@ function draw() {
             }
         }
         lines.push(line);
-        
+
         const textHeight = 16;
         const bubbleHeight = lines.length * textHeight + padding * 2;
         const metricsLongest = ctx.measureText(lines.reduce((a, b) => a.length > b.length ? a : b));
         const bubbleWidth = Math.max(50, metricsLongest.width) + padding * 2;
-        
+
         const bx = entity.x + entity.size / 2 - bubbleWidth / 2;
         const by = entity.y - bubbleHeight - 15;
-        
+
         // Draw bubble background
         ctx.fillStyle = "white";
         ctx.strokeStyle = "black";
@@ -1954,16 +2031,16 @@ function draw() {
         }
         ctx.fill();
         ctx.stroke();
-        
+
         // Draw tail
         ctx.beginPath();
-        ctx.moveTo(bx + bubbleWidth/2 - 8, by + bubbleHeight);
-        ctx.lineTo(bx + bubbleWidth/2 + 8, by + bubbleHeight);
-        ctx.lineTo(bx + bubbleWidth/2, by + bubbleHeight + 12);
+        ctx.moveTo(bx + bubbleWidth / 2 - 8, by + bubbleHeight);
+        ctx.lineTo(bx + bubbleWidth / 2 + 8, by + bubbleHeight);
+        ctx.lineTo(bx + bubbleWidth / 2, by + bubbleHeight + 12);
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
-        
+
         // Draw text
         ctx.fillStyle = "black";
         ctx.textAlign = "left";
@@ -1994,7 +2071,7 @@ function loop(currentTime) {
         update();
         accumulator -= step;
     }
-    
+
     draw();
     requestAnimationFrame(loop);
 }
@@ -2068,7 +2145,7 @@ function handleMouse(e) {
     }
 }
 
-canvas.addEventListener('mousedown', (e) => { 
+canvas.addEventListener('mousedown', (e) => {
     if (editMode) {
         undoStack.push(JSON.stringify(collisionData));
         if (undoStack.length > 20) undoStack.shift();
@@ -2078,7 +2155,7 @@ canvas.addEventListener('mousedown', (e) => {
     } else {
         // Left click to attack
         if (e.button === 0 && !player.isDefending && !isOverlayActive) {
-            
+
             if (player.comboTimer <= 0) {
                 player.comboStep = 1; // start at attack 1
             } else {
@@ -2088,14 +2165,14 @@ canvas.addEventListener('mousedown', (e) => {
             }
 
             player.isAttacking = true;
-            player.frameX = player.comboStep; 
+            player.frameX = player.comboStep;
             player.animTimer = 0;
             player.comboTimer = 60; // 1 second combo window
 
             // Attack hitbox logic
             let attackBox = { x: player.x, y: player.y, w: player.size, h: player.size };
             const range = 15; // Shorter attack range for fists (previously 40)
-            
+
             if (player.frameY === 2) { attackBox.y -= range; attackBox.h += range; } // up
             if (player.frameY === 0) { attackBox.y += range; attackBox.h += range; } // down
             if (player.frameY === 1) { attackBox.x -= range; attackBox.w += range; } // left
@@ -2116,10 +2193,10 @@ canvas.addEventListener('mousedown', (e) => {
             });
         }
     }
-    isDragging = true; 
-    handleMouse(e); 
+    isDragging = true;
+    handleMouse(e);
 });
-canvas.addEventListener('mousemove', (e) => { 
+canvas.addEventListener('mousemove', (e) => {
     if (editMode) {
         const clickX = e.clientX / scale;
         const clickY = e.clientY / scale;
@@ -2129,13 +2206,13 @@ canvas.addEventListener('mousemove', (e) => {
         if (cY < 0) cY = 0;
         if (cX > mapWidth - canvas.width) cX = Math.max(0, mapWidth - canvas.width);
         if (cY > mapHeight - canvas.height) cY = Math.max(0, mapHeight - canvas.height);
-        
+
         const worldX = Math.floor(clickX + cX);
         const worldY = Math.floor(clickY + cY);
         // Display top-left corner coordinates for a 64x64 box centered on mouse
         coordUI.innerText = `Door Hover Coordinates:\nx: ${worldX - 32}, y: ${worldY - 32}`;
     }
-    if (isDragging) handleMouse(e); 
+    if (isDragging) handleMouse(e);
 });
 canvas.addEventListener('mouseup', () => { isDragging = false; });
 canvas.addEventListener('mouseleave', () => { isDragging = false; });
