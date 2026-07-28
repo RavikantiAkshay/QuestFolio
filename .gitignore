@@ -8,10 +8,9 @@
 *.svg
 *.ico
 
-!assets/images/characters/main-character.png
-!assets/images/characters/main-character-attack.png
-!assets/images/characters/akbot-e7.png
-!assets/images/characters/npc*.png
+!assets/images/characters/*
+!assets/images/environments/*
+!assets/images/tilesets/*
 
 # OS generated files
 .DS_Store
