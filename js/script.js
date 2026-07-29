@@ -94,7 +94,7 @@ spikeImg.src = 'assets/images/fx/spikes.png';
 const fireImg = new Image();
 fireImg.src = 'assets/images/fx/fire.png';
 const fireVerticalImg = new Image();
-fireVerticalImg.src = 'assets/images/fx/fire_vertical.png';
+fireVerticalImg.src = 'assets/images/fx/fire_vertical_1.png';
 
 function advanceSpeechBubble() {
     if (!speechBubbleSequence) return;
@@ -2007,22 +2007,26 @@ function draw() {
             if (spike.type === 'fire') {
                 if (spike.orientation === 'vertical' && fireVerticalImg.complete && fireVerticalImg.width > 0) {
                     const targetWidth = 180;
-                    const scaleX = targetWidth / fireVerticalImg.width;
-                    const scaleY = spike.height / fireVerticalImg.height;
-                    const scale = Math.max(scaleX, scaleY);
-                    
+                    const scale = targetWidth / fireVerticalImg.width;
                     const drawWidth = fireVerticalImg.width * scale;
                     const drawHeight = fireVerticalImg.height * scale;
                     
                     const dx = spike.x + (spike.width / 2) - (drawWidth / 2);
-                    const dy = spike.y + (spike.height / 2) - (drawHeight / 2);
                     
                     ctx.save();
                     ctx.beginPath();
                     ctx.rect(spike.x, spike.y, spike.width, spike.height);
                     ctx.clip();
                     
-                    ctx.drawImage(fireVerticalImg, dx, dy, drawWidth, drawHeight);
+                    // Draw multiple overlapping copies to reduce vertical spacing
+                    const stepY = drawHeight * 0.35; // 65% overlap
+                    const numCopies = Math.ceil(spike.height / stepY) + 1;
+                    
+                    for (let i = 0; i <= numCopies; i++) {
+                        let dy = spike.y + (i * stepY) - (drawHeight * 0.2);
+                        ctx.drawImage(fireVerticalImg, dx, dy, drawWidth, drawHeight);
+                    }
+                    
                     ctx.restore();
                 } else if (spike.orientation !== 'vertical' && fireImg.complete && fireImg.width > 0) {
                     const targetHeight = 180;
