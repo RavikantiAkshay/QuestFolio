@@ -2667,6 +2667,25 @@ async function initDiary() {
 
         pageFlip.loadFromHTML(document.querySelectorAll('.diary-page'));
         pageFlipInstance = pageFlip;
+
+        let isFlipping = false;
+        document.getElementById('diary-overlay').addEventListener('wheel', (e) => {
+            if (isFlipping || !pageFlipInstance) return;
+            
+            if (Math.abs(e.deltaY) > 30) {
+                isFlipping = true;
+                if (e.deltaY > 0) {
+                    pageFlipInstance.flipNext();
+                } else {
+                    pageFlipInstance.flipPrev();
+                }
+                
+                // Debounce to prevent multiple pages flipping at once
+                setTimeout(() => {
+                    isFlipping = false;
+                }, 800);
+            }
+        });
     }, 100);
 }
 
