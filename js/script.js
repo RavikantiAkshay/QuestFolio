@@ -2428,9 +2428,10 @@ async function initDiary() {
         
         data.trips.forEach((trip, index) => {
             const placesArray = trip.places ? [...new Set(trip.places.map(p => p.name))] : [];
+            const columnStyle = placesArray.length > 10 ? 'column-count: 2; column-gap: 15px;' : '';
             const placesHtml = placesArray.length > 0 
-                ? `<ul style="list-style-type: square; padding-left: 20px; margin: 5px 0 0 0; font-size: 13px; line-height: 1.2; column-count: 2; column-gap: 15px;">` + placesArray.map(p => `<li style="break-inside: avoid-column;">${p}</li>`).join('') + `</ul>`
-                : '<div style="font-size: 13px; margin-top: 5px;">No places recorded</div>';
+                ? `<ul style="list-style-type: square; padding-left: 20px; margin: 5px 0 0 0; font-size: 12px; line-height: 1.3; ${columnStyle}">` + placesArray.map(p => `<li style="break-inside: avoid-column;">${p}</li>`).join('') + `</ul>`
+                : '<div style="font-size: 12px; margin-top: 5px;">No places recorded</div>';
 
             const coverHtml = trip.coverImage ? `<img src="${trip.coverImage}" class="diary-img" alt="${trip.title}" style="width: 100%; height: 160px; object-fit: cover; margin: 10px 0; border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">` : '';
             
@@ -2441,7 +2442,7 @@ async function initDiary() {
                         <div style="font-family: 'Share Tech Mono', monospace; font-size: 14px; color: #666; margin-bottom: 10px;">Year: ${trip.startDate.split('-')[0]} | Group: ${trip.group || 'Solo'}</div>
                         ${coverHtml}
                         <div style="margin-bottom: 10px; flex: 1; display: flex; flex-direction: column;">
-                            <strong style="font-size: 16px;">Places Visited:</strong> 
+                            <strong style="font-size: 14px;">Places Visited:</strong> 
                             ${placesHtml}
                         </div>
                         <div style="font-family: 'Share Tech Mono', monospace; font-size: 12px; text-align: right; margin-top: auto;">${index + 1}</div>
