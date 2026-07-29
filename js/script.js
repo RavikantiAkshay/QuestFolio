@@ -2423,7 +2423,7 @@ async function initDiary() {
     `;
 
     try {
-        const res = await fetch('trips.json');
+        const res = await fetch('assets/trips.json');
         const data = await res.json();
         
         const totalTrips = data.trips.length;
