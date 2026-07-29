@@ -961,7 +961,7 @@ window.addEventListener("keydown", (e) => {
                         attackImage: bossAttackImg,
                         phase: 1,
                         attackCount: 0,
-                        maxPhase1Attacks: Math.floor(Math.random() * 3) + 6,
+                        maxPhase1Attacks: 8,
                         isTransitioning: false
                     };
 
@@ -1537,19 +1537,34 @@ function update() {
                 boss.attackCount++;
 
                 if (boss.phase === 1) {
-                    // Spawn a spike warning under the player
-                    bossSpikes.push({
-                        x: player.x - 10,
-                        y: player.y + player.size - 40, // target near feet
-                        width: 70,
-                        height: 70,
-                        state: 'warning',
-                        timer: 60, // 1 second warning at 60fps
-                        damage: 25,
-                        type: 'spike'
-                    });
-                    // Randomize next attack between 2 and 4 seconds
-                    boss.bossAttackTimer = 120 + Math.random() * 120;
+                    let numSpikes = 1;
+                    if (boss.attackCount >= 5 || boss.hp <= boss.maxHp * 0.85) {
+                        numSpikes = 2 + Math.floor(Math.random() * 2); // 2 or 3 spikes
+                    }
+                    
+                    for (let s = 0; s < numSpikes; s++) {
+                        let offsetX = 0;
+                        let offsetY = 0;
+                        if (s > 0) {
+                            offsetX = (Math.random() > 0.5 ? 1 : -1) * (40 + Math.random() * 60);
+                            offsetY = (Math.random() > 0.5 ? 1 : -1) * (40 + Math.random() * 60);
+                        }
+                        
+                        bossSpikes.push({
+                            x: player.x - 10 + offsetX,
+                            y: player.y + player.size - 40 + offsetY, // target near feet
+                            width: 70,
+                            height: 70,
+                            state: 'warning',
+                            timer: 60, // 1 second warning at 60fps
+                            damage: 25,
+                            type: 'spike'
+                        });
+                    }
+                    
+                    // Attack timer (speed) decreases for 1-4, and repeats trend for 5-8
+                    let speedIndex = (boss.attackCount - 1) % 4; 
+                    boss.bossAttackTimer = 140 - (speedIndex * 20);
                 } else if (boss.phase === 2) {
                     const isHorizontal = (boss.attackCount % 2 === 0);
                     
