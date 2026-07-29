@@ -111,6 +111,7 @@ function advanceSpeechBubble() {
             if (boss.isTransitioning) {
                 boss.phase = 2;
                 boss.isTransitioning = false;
+                boss.attackCount = 0;
                 boss.bossAttackTimer = 40; // Quick attack after dialogue
             }
         }
@@ -1566,9 +1567,13 @@ function update() {
                     let speedIndex = (boss.attackCount - 1) % 4; 
                     boss.bossAttackTimer = 140 - (speedIndex * 20);
                 } else if (boss.phase === 2) {
-                    const isHorizontal = (boss.attackCount % 2 === 0);
+                    let isCross = false;
                     
-                    if (isHorizontal) {
+                    if (boss.attackCount >= 5 || boss.hp <= boss.maxHp * 0.55) {
+                        isCross = true;
+                    }
+                    
+                    if (isCross) {
                         bossSpikes.push({
                             x: player.x - 150 + (player.size / 2),
                             y: player.y + player.size - 30,
@@ -1580,7 +1585,6 @@ function update() {
                             type: 'fire',
                             orientation: 'horizontal'
                         });
-                    } else {
                         bossSpikes.push({
                             x: player.x + (player.size / 2) - 30,
                             y: player.y - 150,
@@ -1592,9 +1596,39 @@ function update() {
                             type: 'fire',
                             orientation: 'vertical'
                         });
+                    } else {
+                        const isHorizontal = (boss.attackCount % 2 === 0);
+                        
+                        if (isHorizontal) {
+                            bossSpikes.push({
+                                x: player.x - 150 + (player.size / 2),
+                                y: player.y + player.size - 30,
+                                width: 300,
+                                height: 60,
+                                state: 'warning',
+                                timer: 50,
+                                damage: 35,
+                                type: 'fire',
+                                orientation: 'horizontal'
+                            });
+                        } else {
+                            bossSpikes.push({
+                                x: player.x + (player.size / 2) - 30,
+                                y: player.y - 150,
+                                width: 60,
+                                height: 300,
+                                state: 'warning',
+                                timer: 50,
+                                damage: 35,
+                                type: 'fire',
+                                orientation: 'vertical'
+                            });
+                        }
                     }
-                    // Faster attacks in phase 2
-                    boss.bossAttackTimer = 90 + Math.random() * 90; 
+                    
+                    // Same speed trend as phase 1, but maybe slightly faster base speed since it's fire
+                    let speedIndex = (boss.attackCount - 1) % 4; 
+                    boss.bossAttackTimer = 120 - (speedIndex * 20);
                 }
             }
         } else if (!boss || boss.hp <= 0) {
