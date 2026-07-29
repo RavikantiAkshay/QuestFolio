@@ -1548,31 +1548,17 @@ function update() {
                     // Randomize next attack between 2 and 4 seconds
                     boss.bossAttackTimer = 120 + Math.random() * 120;
                 } else if (boss.phase === 2) {
-                    // Fire stripe: randomly horizontal or vertical
-                    const isHorizontal = Math.random() > 0.5;
-                    if (isHorizontal) {
-                        bossSpikes.push({
-                            x: player.x - 400,
-                            y: player.y + player.size - 30,
-                            width: 800 + player.size, // Very long horizontal stripe
-                            height: 60,
-                            state: 'warning',
-                            timer: 50, // Slightly faster warning
-                            damage: 35,
-                            type: 'fire'
-                        });
-                    } else {
-                        bossSpikes.push({
-                            x: player.x - 10,
-                            y: player.y - 400,
-                            width: 60,
-                            height: 800 + player.size, // Very long vertical stripe
-                            state: 'warning',
-                            timer: 50, // Slightly faster warning
-                            damage: 35,
-                            type: 'fire'
-                        });
-                    }
+                    // Fire stripe: horizontal only for now, width 600
+                    bossSpikes.push({
+                        x: player.x - 300 + (player.size / 2),
+                        y: player.y + player.size - 30,
+                        width: 600, // Covers most of the road
+                        height: 60,
+                        state: 'warning',
+                        timer: 50, // Slightly faster warning
+                        damage: 35,
+                        type: 'fire'
+                    });
                     // Faster attacks in phase 2
                     boss.bossAttackTimer = 90 + Math.random() * 90; 
                 }
@@ -2001,7 +1987,24 @@ function draw() {
             
             if (spike.type === 'fire') {
                 if (fireImg.complete && fireImg.width > 0) {
-                    ctx.drawImage(fireImg, spike.x, spike.y - 40, spike.width, spike.height + 40);
+                    // Maintain aspect ratio to prevent vertical squishing ("sandwich" effect)
+                    const drawHeight = 100; // Desired height of the fire visual
+                    const scale = drawHeight / fireImg.height;
+                    const tileWidth = fireImg.width * scale;
+                    
+                    const numTiles = Math.ceil(spike.width / tileWidth);
+                    for (let t = 0; t < numTiles; t++) {
+                        let remainingWidth = spike.width - (t * tileWidth);
+                        let currentDrawWidth = Math.min(tileWidth, remainingWidth);
+                        let sourceWidth = currentDrawWidth / scale;
+                        
+                        ctx.drawImage(
+                            fireImg, 
+                            0, 0, sourceWidth, fireImg.height, 
+                            spike.x + (t * tileWidth), spike.y - (drawHeight - spike.height), 
+                            currentDrawWidth, drawHeight
+                        );
+                    }
                 } else {
                     ctx.fillStyle = "rgba(255, 100, 0, 0.8)";
                     ctx.fillRect(spike.x, spike.y, spike.width, spike.height);
