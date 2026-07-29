@@ -695,7 +695,7 @@ window.addEventListener("keydown", (e) => {
 
             if (activeInteractable.id === 'home') {
                 if (interiorBg) {
-                    interiorBg.style.backgroundImage = "url('assets/images/environments/home.jpg')";
+                    interiorBg.style.backgroundImage = "url('assets/images/environments/home.png')";
                     interiorBg.style.filter = "none"; // clear image during dialogue
                     interiorBg.style.backgroundSize = "contain";
                     interiorBg.style.backgroundRepeat = "no-repeat";
