@@ -1,17 +1,3 @@
-# Images
-*.png
-*.jpg
-*.jpeg
-*.gif
-*.bmp
-*.webp
-*.svg
-*.ico
-
-!assets/images/characters/*
-!assets/images/environments/*
-!assets/images/tilesets/*
-
 # OS generated files
 .DS_Store
 .DS_Store?
