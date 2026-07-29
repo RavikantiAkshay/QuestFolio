@@ -5,7 +5,9 @@
     <title>QuestFolio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Permanent+Marker&family=Special+Elite&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Permanent+Marker&family=Special+Elite&family=Caveat:wght@400;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="css/style.css?v=2">
     <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -13,7 +15,7 @@
 
 <body>
     <canvas id="gameCanvas" width="800" height="800"></canvas>
-    
+
     <!-- Dialogue System Overlay -->
     <div id="dialogue-backdrop"></div>
     <div id="dialogue-box" class="dialogue-box" style="display: none;">
@@ -41,7 +43,7 @@
                         <!-- Dynamic content goes here -->
                     </div>
                 </div>
-                
+
                 <div class="typewriter-machine">
                     <div class="tw-roller-area">
                         <div class="tw-knob left"></div>
@@ -51,21 +53,45 @@
                         </div>
                         <div class="tw-knob right"></div>
                     </div>
-                    
+
                     <div class="tw-chassis">
                         <div class="tw-center-hump">
                             <div class="tw-typebars"></div>
                         </div>
-                        
+
                         <div class="tw-keyboard-area">
                             <div class="tw-key-row" style="padding-left: 0;">
-                                <div class="tw-key">Q</div><div class="tw-key">W</div><div class="tw-key">E</div><div class="tw-key">R</div><div class="tw-key">T</div><div class="tw-key">Y</div><div class="tw-key">U</div><div class="tw-key">I</div><div class="tw-key">O</div><div class="tw-key">P</div>
+                                <div class="tw-key">Q</div>
+                                <div class="tw-key">W</div>
+                                <div class="tw-key">E</div>
+                                <div class="tw-key">R</div>
+                                <div class="tw-key">T</div>
+                                <div class="tw-key">Y</div>
+                                <div class="tw-key">U</div>
+                                <div class="tw-key">I</div>
+                                <div class="tw-key">O</div>
+                                <div class="tw-key">P</div>
                             </div>
                             <div class="tw-key-row" style="padding-left: 15px;">
-                                <div class="tw-key">A</div><div class="tw-key">S</div><div class="tw-key">D</div><div class="tw-key">F</div><div class="tw-key">G</div><div class="tw-key">H</div><div class="tw-key">J</div><div class="tw-key">K</div><div class="tw-key">L</div>
+                                <div class="tw-key">A</div>
+                                <div class="tw-key">S</div>
+                                <div class="tw-key">D</div>
+                                <div class="tw-key">F</div>
+                                <div class="tw-key">G</div>
+                                <div class="tw-key">H</div>
+                                <div class="tw-key">J</div>
+                                <div class="tw-key">K</div>
+                                <div class="tw-key">L</div>
                             </div>
                             <div class="tw-key-row" style="padding-left: 30px;">
-                                <div class="tw-key">Z</div><div class="tw-key">X</div><div class="tw-key">C</div><div class="tw-key">V</div><div class="tw-key">B</div><div class="tw-key">N</div><div class="tw-key">M</div><div class="tw-key">,</div>
+                                <div class="tw-key">Z</div>
+                                <div class="tw-key">X</div>
+                                <div class="tw-key">C</div>
+                                <div class="tw-key">V</div>
+                                <div class="tw-key">B</div>
+                                <div class="tw-key">N</div>
+                                <div class="tw-key">M</div>
+                                <div class="tw-key">,</div>
                             </div>
                             <div class="tw-key-row">
                                 <div class="tw-spacebar"></div>
@@ -77,16 +103,18 @@
 
             <!-- Lab Workstation UI -->
             <div id="lab-computer-container" style="display: none;">
-                
+
                 <!-- Left: Tablet (Description & Features) -->
                 <div class="device tablet">
                     <div class="device-bezel">
                         <div class="device-screen">
                             <h2 class="terminal-title">DESCRIPTION</h2>
-                            <p id="project-description" class="terminal-text" style="color:#b2d8d8; font-size: 14px;"></p>
-                            <br/>
+                            <p id="project-description" class="terminal-text" style="color:#b2d8d8; font-size: 14px;">
+                            </p>
+                            <br />
                             <h2 class="terminal-title">FEATURES</h2>
-                            <ul id="project-features" class="terminal-list" style="color:#b2d8d8; font-size: 14px; margin-right: 16px;"></ul>
+                            <ul id="project-features" class="terminal-list"
+                                style="color:#b2d8d8; font-size: 14px; margin-right: 16px;"></ul>
                         </div>
                     </div>
                 </div>
@@ -94,11 +122,15 @@
                 <!-- Center: PC Monitor (Preview & Title) -->
                 <div class="monitor-wrapper">
                     <div class="device monitor">
-                        <div class="device-bezel" style="display:flex; flex-direction:column; padding: 12px 0 0 0; overflow: hidden;">
-                            <h2 id="project-title" class="monitor-title" style="text-align:center; color:#7d7465; margin-bottom: 8px; font-size: 14px;">PROJECT TITLE</h2>
+                        <div class="device-bezel"
+                            style="display:flex; flex-direction:column; padding: 12px 0 0 0; overflow: hidden;">
+                            <h2 id="project-title" class="monitor-title"
+                                style="text-align:center; color:#7d7465; margin-bottom: 8px; font-size: 14px;">PROJECT
+                                TITLE</h2>
                             <div class="device-screen" style="flex:1;">
                                 <!-- Project Image Placeholder -->
-                                <div id="project-preview" style="width:100%; height:100%; background:#222; display:flex; align-items:center; justify-content:center; color:#fff; overflow:hidden; position:relative;">
+                                <div id="project-preview"
+                                    style="width:100%; height:100%; background:#222; display:flex; align-items:center; justify-content:center; color:#fff; overflow:hidden; position:relative;">
                                     [ PREVIEW IMAGE ]
                                 </div>
                             </div>
@@ -119,15 +151,20 @@
                             <ul id="project-tech" class="terminal-list" style="margin-bottom: 20px; font-size: 17px;">
                                 <li>Loading...</li>
                             </ul>
-                            
+
                             <div class="terminal-links" style="align-items:center; margin-bottom:10px;">
-                                <a id="project-github" href="#" target="_blank" class="terminal-link" style="color:#a6e22e;">[ GITHUB ]</a>
-                                <a id="project-live" href="#" target="_blank" class="terminal-link" style="color:#a6e22e;">[ LIVE DEMO ]</a>
+                                <a id="project-github" href="#" target="_blank" class="terminal-link"
+                                    style="color:#a6e22e;">[ GITHUB ]</a>
+                                <a id="project-live" href="#" target="_blank" class="terminal-link"
+                                    style="color:#a6e22e;">[ LIVE DEMO ]</a>
                             </div>
 
                             <div style="margin-top:auto; padding-bottom: 16px;">
-                                <h2 class="terminal-title" style="color:#ffb86c; text-align:left; padding-left:16px; margin: 0 0 10px;">ACTIVE BOUNTIES</h2>
-                                <ul class="terminal-list" style="font-size: 14px; color:#baffb3; list-style-type:none; padding-left:16px; margin:0;">
+                                <h2 class="terminal-title"
+                                    style="color:#ffb86c; text-align:left; padding-left:16px; margin: 0 0 10px;">ACTIVE
+                                    BOUNTIES</h2>
+                                <ul class="terminal-list"
+                                    style="font-size: 14px; color:#baffb3; list-style-type:none; padding-left:16px; margin:0;">
                                     <li style="display:flex; justify-content:space-between; padding-right:16px;">
                                         <span>Access Application</span><span style="color:#ffb86c;">+10 🪙</span>
                                     </li>
@@ -147,10 +184,11 @@
                 </div>
 
             </div>
-            
+
             <!-- WORKSHOP INTERIOR (DRAFTING TABLE) -->
-            <div id="workshop-container" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; align-items: center; justify-content: center; background: rgba(0,0,0,0.8);">
-                
+            <div id="workshop-container"
+                style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; align-items: center; justify-content: center; background: rgba(0,0,0,0.8);">
+
                 <div class="drafting-table">
                     <!-- Decorative Tools -->
                     <div class="dt-ruler"></div>
@@ -171,22 +209,26 @@
                         <div class="bp-tape bp-tape-br"></div>
                         <h2 class="bp-title" id="bp-title">Blueprint: Project Name</h2>
                         <div class="bp-project">
-                            <p class="bp-proj-desc" id="bp-proj-desc" style="margin-bottom: 20px; font-size: 1.1em; line-height: 1.4;"></p>
-                            <div class="bp-proj-status" id="bp-proj-status" style="font-weight: bold; font-size: 1.1em;">Status: IN PROGRESS</div>
-                            <div id="bp-stash-reason-container" style="display: none; color: #ffcccc; margin-top: 5px; margin-bottom: 15px; font-style: italic; font-size: 0.95em;">
+                            <p class="bp-proj-desc" id="bp-proj-desc"
+                                style="margin-bottom: 20px; font-size: 1.1em; line-height: 1.4;"></p>
+                            <div class="bp-proj-status" id="bp-proj-status"
+                                style="font-weight: bold; font-size: 1.1em;">Status: IN PROGRESS</div>
+                            <div id="bp-stash-reason-container"
+                                style="display: none; color: #ffcccc; margin-top: 5px; margin-bottom: 15px; font-style: italic; font-size: 0.95em;">
                                 Reason: <span id="bp-stash-reason">Placeholder reason</span>
                             </div>
-                            
+
                             <div style="margin-top: 15px;">
                                 <strong>Features:</strong>
                                 <ul class="bp-proj-features" id="bp-proj-features">
                                 </ul>
                             </div>
-                            
+
                             <div class="bp-proj-tech" id="bp-proj-tech" style="margin-top: 15px;"></div>
-                            
+
                             <div id="bp-repo-container" style="display: none; margin-top: 20px;">
-                                <strong>Repository:</strong> <a id="bp-repo-link" href="#" target="_blank" style="color: #66b2ff; text-decoration: underline;">GitHub Link</a>
+                                <strong>Repository:</strong> <a id="bp-repo-link" href="#" target="_blank"
+                                    style="color: #66b2ff; text-decoration: underline;">GitHub Link</a>
                             </div>
                         </div>
                         <div class="bp-pagination" id="bp-pagination">1 / 6</div>
@@ -198,11 +240,13 @@
             </div>
 
             <!-- SCHOOL INTERIOR (CHALKBOARD) -->
-            <div id="school-board-container" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; align-items: center; justify-content: center; background: rgba(0,0,0,0.7);">
+            <div id="school-board-container"
+                style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; align-items: center; justify-content: center; background: rgba(0,0,0,0.7);">
                 <div class="school-board">
                     <div class="board-frame">
                         <div class="board-surface" id="board-surface" style="overflow: hidden; padding: 0;">
-                            <div class="board-slider" id="board-slider" style="transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1); height: 100%;">
+                            <div class="board-slider" id="board-slider"
+                                style="transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1); height: 100%;">
                                 <!-- Slides injected via JS -->
                             </div>
                         </div>
@@ -214,7 +258,7 @@
                         <div class="chalk-shadow" style="left: 82px;"></div>
                         <div class="chalk-shadow" style="left: 122px;"></div>
                         <div class="chalk-shadow" style="right: 38px; width: 70px;"></div>
-                        
+
                         <div class="chalk-piece chalk-white"></div>
                         <div class="chalk-piece chalk-white"></div>
                         <div class="chalk-piece chalk-pink"></div>
@@ -224,7 +268,8 @@
             </div>
 
             <!-- LIBRARY INTERIOR (BOOK DISPLAY RACKS) -->
-            <div id="library-rack-container" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; align-items: center; justify-content: center; background: rgba(0,0,0,0.7);">
+            <div id="library-rack-container"
+                style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; align-items: center; justify-content: center; background: rgba(0,0,0,0.7);">
                 <div class="library-racks">
                     <div class="book-rack" id="book-rack-left">
                         <!-- 3 shelves injected via JS -->
@@ -236,7 +281,8 @@
             </div>
 
             <!-- POST OFFICE INTERIOR (OPEN ENVELOPE & FULLY VISIBLE LETTER UI) -->
-            <div id="post-office-container" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; align-items: center; justify-content: center; background: rgba(0,0,0,0.85);">
+            <div id="post-office-container"
+                style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; align-items: center; justify-content: center; background: rgba(0,0,0,0.85);">
                 <div class="postal-desk">
                     <div class="open-envelope">
                         <!-- Top Triangular Open Flap (Pointing Upwards) -->
@@ -268,9 +314,11 @@
                             </div>
                             <hr class="letter-divider">
                             <p class="letter-message">
-                                Thank you for taking the time to explore my interactive RPG portfolio world! 
-                                I specialize in building full-stack web applications, AI tools, and dynamic user experiences. 
-                                Whether you have an opportunity, a project idea, or just want to connect—my inbox is always open.
+                                Thank you for taking the time to explore my interactive RPG portfolio world!
+                                I specialize in building full-stack web applications, AI tools, and dynamic user
+                                experiences.
+                                Whether you have an opportunity, a project idea, or just want to connect—my inbox is
+                                always open.
                             </p>
 
                             <div class="letter-contacts-title">CONTACT DIRECTORY</div>
@@ -318,12 +366,16 @@
     </div>
 
     <!-- Diary Overlay -->
-    <div id="diary-overlay" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; align-items: center; justify-content: center; background: rgba(0,0,0,0.85); flex-direction: column;">
-        <button id="diary-close" style="position: absolute; top: 20px; right: 20px; font-size: 20px; padding: 10px 20px; cursor: pointer; background: #333; color: white; border: 2px solid white; font-family: 'Share Tech Mono', monospace; z-index: 110;">✕ CLOSE DIARY</button>
+    <div id="diary-overlay"
+        style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; align-items: center; justify-content: center; background: rgba(0,0,0,0.85); flex-direction: column;">
+        <button id="diary-close"
+            style="position: absolute; top: 20px; right: 20px; font-size: 20px; padding: 10px 20px; cursor: pointer; background: #333; color: white; border: 2px solid white; font-family: 'Share Tech Mono', monospace; z-index: 110;">✕
+            CLOSE DIARY</button>
         <div id="diary-book" class="diary-book" style="width: 800px; height: 550px;">
             <!-- Pages will be injected dynamically -->
         </div>
-        <div style="color: #ccc; margin-top: 20px; font-family: 'Share Tech Mono', monospace;">Drag page corners or click edges to turn pages</div>
+        <div style="color: #ccc; margin-top: 20px; font-family: 'Share Tech Mono', monospace;">Drag page corners or
+            click edges to turn pages</div>
     </div>
 
     <script src="js/data/collisionData.js"></script>
