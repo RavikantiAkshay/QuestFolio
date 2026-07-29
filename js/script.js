@@ -1533,29 +1533,56 @@ function update() {
     // Update hurt timer
     if (player.hurtTimer > 0) player.hurtTimer--;
 
-    // --- WIND PARTICLES (LEAVES) ---
+    // --- WEATHER PARTICLES ---
     globalTime++;
-    if (seasonMode === 2 && Math.random() < 0.2) { // 20% chance per frame to spawn leaf ONLY in Autumn
+    if (seasonMode === 2 && Math.random() < 0.2) { // Autumn Leaves
         particles.push({
+            type: 'leaf',
             x: cameraX - 100 + Math.random() * (canvas.width + 100),
             y: cameraY - 50 - Math.random() * 100,
-            vx: 3 + Math.random() * 3, // Blow right
-            vy: 2 + Math.random() * 2, // Blow down
+            vx: 3 + Math.random() * 3, 
+            vy: 2 + Math.random() * 2, 
             size: 3 + Math.random() * 4,
             color: Math.random() > 0.5 ? '#27ae60' : '#2ecc71',
             wobble: Math.random() * Math.PI * 2,
             wobbleSpeed: 0.05 + Math.random() * 0.1
         });
+    } else if (seasonMode === 1) { // Monsoon Rain
+        for (let i = 0; i < 3; i++) { // Spawn multiple drops per frame
+            particles.push({
+                type: 'rain',
+                x: cameraX - 100 + Math.random() * (canvas.width + 200),
+                y: cameraY - 100 - Math.random() * 50,
+                vx: 1 + Math.random() * 2,
+                vy: 12 + Math.random() * 6,
+                length: 15 + Math.random() * 10,
+                targetY: cameraY + 100 + Math.random() * canvas.height
+            });
+        }
     }
 
     // Update Particles
     for (let i = particles.length - 1; i >= 0; i--) {
         let p = particles[i];
-        p.x += p.vx + Math.sin(p.wobble) * 2;
-        p.y += p.vy;
-        p.wobble += p.wobbleSpeed;
-        if (p.y > cameraY + canvas.height + 50 || p.x > cameraX + canvas.width + 50) {
-            particles.splice(i, 1);
+        if (p.type === 'leaf' || !p.type) {
+            p.x += p.vx + Math.sin(p.wobble) * 2;
+            p.y += p.vy;
+            p.wobble += p.wobbleSpeed;
+            if (p.y > cameraY + canvas.height + 50 || p.x > cameraX + canvas.width + 50) {
+                particles.splice(i, 1);
+            }
+        } else if (p.type === 'rain') {
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.y > p.targetY) {
+                p.type = 'ripple';
+                p.radius = 1;
+                p.alpha = 0.5;
+            }
+        } else if (p.type === 'ripple') {
+            p.radius += 0.8;
+            p.alpha -= 0.03;
+            if (p.alpha <= 0) particles.splice(i, 1);
         }
     }
 
@@ -1902,6 +1929,45 @@ function draw() {
             }
         }
 
+        // --- MONSOON PUDDLES ---
+        if (seasonMode === 1) {
+            ctx.save();
+            ctx.fillStyle = "rgba(40, 60, 80, 0.3)"; // Darkish wet puddles
+            
+            // Use a grid to deterministically place puddles across the world
+            const pGrid = 150;
+            const pStartX = Math.max(0, Math.floor(cameraX / pGrid) * pGrid);
+            const pEndX = Math.min(mapWidth, Math.ceil((cameraX + canvas.width) / pGrid) * pGrid + pGrid);
+            const pStartY = Math.max(0, Math.floor(cameraY / pGrid) * pGrid);
+            const pEndY = Math.min(mapHeight, Math.ceil((cameraY + canvas.height) / pGrid) * pGrid + pGrid);
+            
+            for (let px = pStartX; px < pEndX; px += pGrid) {
+                for (let py = pStartY; py < pEndY; py += pGrid) {
+                    let hash = Math.sin(px * 12.9898 + py * 78.233) * 43758.5453;
+                    let fract = hash - Math.floor(hash);
+                    
+                    if (fract > 0.4) { // 60% chance of a puddle in this cell
+                        let puddleRadiusX = 20 + fract * 50;
+                        let puddleRadiusY = puddleRadiusX * 0.4; // Flat ellipse
+                        let puddleX = px + fract * 100;
+                        let puddleY = py + ((hash * 10) - Math.floor(hash * 10)) * 100;
+                        
+                        ctx.beginPath();
+                        ctx.ellipse(puddleX, puddleY, puddleRadiusX, puddleRadiusY, 0, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Specular highlight
+                        ctx.fillStyle = "rgba(200, 220, 255, 0.15)";
+                        ctx.beginPath();
+                        ctx.ellipse(puddleX, puddleY - 2, puddleRadiusX * 0.7, puddleRadiusY * 0.5, 0, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = "rgba(40, 60, 80, 0.3)"; 
+                    }
+                }
+            }
+            ctx.restore();
+        }
+
         // Draw collision debug overlay
         if (editMode && collisionData.length > 0) {
             ctx.fillStyle = "rgba(0, 0, 255, 0.6)"; // Blue for doors
@@ -2072,17 +2138,31 @@ function draw() {
     drawHealthBar(player, true);
     npcs.forEach(npc => drawHealthBar(npc, false));
 
-    // Draw Wind Particles (Leaves)
+    // Draw Weather Particles
     particles.forEach(p => {
-        ctx.fillStyle = p.color;
-        ctx.beginPath();
-        // Draw a leaf-like shape (oval rotated)
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.wobble);
-        ctx.ellipse(0, 0, p.size, p.size / 2, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
+        if (p.type === 'leaf' || !p.type) {
+            ctx.fillStyle = p.color;
+            ctx.beginPath();
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.wobble);
+            ctx.ellipse(0, 0, p.size, p.size / 2, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        } else if (p.type === 'rain') {
+            ctx.strokeStyle = "rgba(200, 220, 255, 0.6)";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p.x - p.vx, p.y - p.length);
+            ctx.stroke();
+        } else if (p.type === 'ripple') {
+            ctx.strokeStyle = `rgba(200, 220, 255, ${p.alpha})`;
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.ellipse(p.x, p.y, p.radius, p.radius * 0.4, 0, 0, Math.PI * 2);
+            ctx.stroke();
+        }
     });
 
     // Draw Interaction Prompt
@@ -2236,8 +2316,8 @@ function draw() {
         ctx.restore();
     });
 
-    // Draw Night/Lighting Mode
-    if (timeMode > 0 && (!zoneConfig || zoneConfig.type !== "static")) {
+    // Draw Night/Lighting Mode (And Overcast Monsoon)
+    if ((timeMode > 0 || (timeMode === 0 && seasonMode === 1)) && (!zoneConfig || zoneConfig.type !== "static")) {
         // Create offscreen lighting canvas if it doesn't exist
         if (!window.lightingCanvas) {
             window.lightingCanvas = document.createElement('canvas');
@@ -2271,6 +2351,10 @@ function draw() {
             grad.addColorStop(1, `rgba(200, 220, 255, ${0.15 + pulse})`); // Soft pale mist near the ground
 
             lightCtx.fillStyle = grad;
+        } else if (timeMode === 0 && seasonMode === 1) {
+            // Monsoon Daytime: Cloudy Overcast Tint
+            const pulse = Math.sin(Date.now() / 4000) * 0.05;
+            lightCtx.fillStyle = `rgba(70, 80, 100, ${0.45 + pulse})`; // Gray/blue clouds
         } else {
             lightCtx.fillStyle = "rgba(10, 15, 30, 0.97)"; // Darker, moody night tint
         }
