@@ -9,7 +9,7 @@ let currentTileset = new Image();
 let collisionData = [];
 let doorPaintData = [];
 let editMode = false;
-let timeMode = 0; // 0 = day, 1 = evening, 2 = night
+let timeMode = 0; // 0 = day, 1 = evening, 2 = night, 3 = early morning
 let isDragging = false;
 let paintMode = 1;
 let brushRadius = 0; // 0 = 1x1, 1 = 3x3, 2 = 5x5
@@ -764,7 +764,7 @@ window.addEventListener("keydown", (e) => {
     keys[key] = true;
 
     if (key === 'n') {
-        timeMode = (timeMode + 1) % 3;
+        timeMode = (timeMode + 1) % 4;
     }
 
     if (key === 't') {
@@ -2256,6 +2256,14 @@ function draw() {
             grad.addColorStop(0, `rgba(255, 140, 40, ${0.35 + pulse})`); // Bright, warm sun from top-left
             grad.addColorStop(0.5, `rgba(220, 90, 20, ${0.25 + pulse})`); // Mid-town evening orange
             grad.addColorStop(1, `rgba(120, 40, 60, ${0.15 + pulse})`); // Cooler purple/red shadows at bottom-right
+
+            lightCtx.fillStyle = grad;
+        } else if (timeMode === 3) {
+            // Early Morning: Cool, misty pale blue with subtle breathing
+            const pulse = Math.sin(Date.now() / 3000) * 0.03;
+            const grad = lightCtx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            grad.addColorStop(0, `rgba(100, 140, 255, ${0.25 + pulse})`); // Crisp cool blue from above
+            grad.addColorStop(1, `rgba(200, 220, 255, ${0.15 + pulse})`); // Soft pale mist near the ground
 
             lightCtx.fillStyle = grad;
         } else {
