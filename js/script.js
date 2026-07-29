@@ -1559,6 +1559,19 @@ function update() {
                 targetY: cameraY + 100 + Math.random() * canvas.height
             });
         }
+    } else if (seasonMode === 3) { // Winter Snow
+        if (Math.random() < 0.6) { // High chance for dense snow
+            particles.push({
+                type: 'snow',
+                x: cameraX - 200 + Math.random() * (canvas.width + 400),
+                y: cameraY - 50,
+                vx: -1 + Math.random() * 2, // Drift left or right
+                vy: 1 + Math.random() * 2,  // Slow falling
+                size: 1.5 + Math.random() * 2.5, // Flake size
+                wobble: Math.random() * Math.PI * 2,
+                wobbleSpeed: 0.02 + Math.random() * 0.04
+            });
+        }
     }
 
     // Update Particles
@@ -1569,6 +1582,13 @@ function update() {
             p.y += p.vy;
             p.wobble += p.wobbleSpeed;
             if (p.y > cameraY + canvas.height + 50 || p.x > cameraX + canvas.width + 50) {
+                particles.splice(i, 1);
+            }
+        } else if (p.type === 'snow') {
+            p.x += p.vx + Math.sin(p.wobble) * 1.5;
+            p.y += p.vy;
+            p.wobble += p.wobbleSpeed;
+            if (p.y > cameraY + canvas.height + 50 || p.x > cameraX + canvas.width + 50 || p.x < cameraX - 50) {
                 particles.splice(i, 1);
             }
         } else if (p.type === 'rain') {
@@ -2149,6 +2169,11 @@ function draw() {
             ctx.ellipse(0, 0, p.size, p.size / 2, 0, 0, Math.PI * 2);
             ctx.fill();
             ctx.restore();
+        } else if (p.type === 'snow') {
+            ctx.fillStyle = `rgba(255, 255, 255, 0.85)`;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
         } else if (p.type === 'rain') {
             ctx.strokeStyle = "rgba(200, 220, 255, 0.6)";
             ctx.lineWidth = 1;
@@ -2316,8 +2341,8 @@ function draw() {
         ctx.restore();
     });
 
-    // Draw Night/Lighting Mode (And Overcast Monsoon)
-    if ((timeMode > 0 || (timeMode === 0 && seasonMode === 1)) && (!zoneConfig || zoneConfig.type !== "static")) {
+    // Draw Night/Lighting Mode (And Overcast Seasons)
+    if ((timeMode > 0 || (timeMode === 0 && (seasonMode === 1 || seasonMode === 3))) && (!zoneConfig || zoneConfig.type !== "static")) {
         // Create offscreen lighting canvas if it doesn't exist
         if (!window.lightingCanvas) {
             window.lightingCanvas = document.createElement('canvas');
@@ -2355,6 +2380,10 @@ function draw() {
             // Monsoon Daytime: Cloudy Overcast Tint
             const pulse = Math.sin(Date.now() / 4000) * 0.05;
             lightCtx.fillStyle = `rgba(70, 80, 100, ${0.45 + pulse})`; // Gray/blue clouds
+        } else if (timeMode === 0 && seasonMode === 3) {
+            // Winter Daytime: Bright, cold overcast
+            const pulse = Math.sin(Date.now() / 4000) * 0.03;
+            lightCtx.fillStyle = `rgba(200, 210, 230, ${0.15 + pulse})`; // Frosty white/blue tint
         } else {
             lightCtx.fillStyle = "rgba(10, 15, 30, 0.97)"; // Darker, moody night tint
         }
