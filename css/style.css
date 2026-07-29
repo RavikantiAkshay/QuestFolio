@@ -1701,3 +1701,33 @@ canvas {
 @keyframes blink {
     50% { opacity: 0; }
 }
+/* Diary / Book Styles */
+.diary-book {
+    background: transparent;
+}
+
+.diary-page {
+    /* StPageFlip requires the outer container to be completely clean of backgrounds/borders/shadows */
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.diary-page-content {
+    /* All visual styles go on the inner content wrapper */
+    width: 100%;
+    height: 100%;
+    background-color: #fdf6e3;
+    background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
+    overflow: hidden;
+    position: relative;
+    /* Simulate a realistic page lighting, but NO deep inset shadows or linear gradients that break the 3D flip */
+}
+
+/* StPageFlip overrides */
+.stf__wrapper {
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+}
+.stf__block {
+    outline: none;
+}

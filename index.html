@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Permanent+Marker&family=Special+Elite&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css?v=2">
+    <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
 </head>
 
 <body>
@@ -313,6 +314,15 @@
 
             <div class="sparkle"></div>
         </div>
+    </div>
+
+    <!-- Diary Overlay -->
+    <div id="diary-overlay" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; align-items: center; justify-content: center; background: rgba(0,0,0,0.85); flex-direction: column;">
+        <button id="diary-close" style="position: absolute; top: 20px; right: 20px; font-size: 20px; padding: 10px 20px; cursor: pointer; background: #333; color: white; border: 2px solid white; font-family: 'Share Tech Mono', monospace; z-index: 110;">✕ CLOSE DIARY</button>
+        <div id="diary-book" class="diary-book" style="width: 800px; height: 550px;">
+            <!-- Pages will be injected dynamically -->
+        </div>
+        <div style="color: #ccc; margin-top: 20px; font-family: 'Share Tech Mono', monospace;">Drag page corners or click edges to turn pages</div>
     </div>
 
     <script src="js/data/collisionData.js"></script>

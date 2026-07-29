@@ -687,6 +687,10 @@ window.addEventListener("keydown", (e) => {
     let key = e.key.toLowerCase();
     keys[key] = true;
 
+    if (key === 't') {
+        openDiary();
+    }
+
     // Handle Interaction (E key)
     if (key === 'e') {
         if (!isOverlayActive && activeInteractable) {
@@ -2383,3 +2387,113 @@ canvas.addEventListener('mousemove', (e) => {
 });
 canvas.addEventListener('mouseup', () => { isDragging = false; });
 canvas.addEventListener('mouseleave', () => { isDragging = false; });
+
+// --- DIARY SYSTEM (StPageFlip) ---
+let pageFlipInstance = null;
+
+function openDiary() {
+    const overlay = document.getElementById('diary-overlay');
+    overlay.style.display = 'flex';
+    isOverlayActive = true; 
+    
+    if (!pageFlipInstance) {
+        initDiary();
+    }
+}
+
+document.getElementById('diary-close').addEventListener('click', () => {
+    document.getElementById('diary-overlay').style.display = 'none';
+    isOverlayActive = false;
+});
+
+async function initDiary() {
+    const bookContainer = document.getElementById('diary-book');
+    bookContainer.innerHTML = '';
+    
+    // Use the official stpageflip HTML structure: data-density="hard"
+    let html = `
+        <div class="diary-page" data-density="hard">
+            <div class="diary-page-content" style="background-color: #4a3424; color: #e8dcc4; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; border: 2px solid #2a1f15;">
+                <h1 style="font-family: 'Special Elite', cursive; font-size: 48px; text-align: center; padding: 20px; border: 2px solid rgba(232, 220, 196, 0.4);">Travel Diary</h1>
+            </div>
+        </div>
+        <div class="diary-page" data-density="hard">
+            <div class="diary-page-content" style="background-color: #4a3424; border: 2px solid #2a1f15; height: 100%;"></div>
+        </div>
+    `;
+
+    try {
+        const res = await fetch('trips.json');
+        const data = await res.json();
+        
+        data.trips.forEach((trip, index) => {
+            const places = trip.places ? trip.places.map(p => p.name).join(', ') : 'Various places';
+            const coverHtml = trip.coverImage ? `<img src="${trip.coverImage}" class="diary-img" alt="${trip.title}" style="width: 100%; height: 160px; object-fit: cover; margin: 10px 0; border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">` : '';
+            
+            html += `
+                <div class="diary-page">
+                    <div class="diary-page-content" style="background-color: #fdf6e3; height: 100%; padding: 20px; color: #3b3024; font-family: 'Caveat', cursive; overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column;">
+                        <h2 style="font-size: 32px; margin: 0 0 5px 0; border-bottom: 2px solid rgba(0,0,0,0.1); padding-bottom: 5px;">${trip.title}</h2>
+                        <div style="font-family: 'Share Tech Mono', monospace; font-size: 14px; color: #666; margin-bottom: 10px;">Year: ${trip.startDate.split('-')[0]} | Group: ${trip.group || 'Solo'}</div>
+                        ${coverHtml}
+                        <div style="font-size: 22px; margin-bottom: 10px; flex: 1; overflow: hidden;">
+                            <strong>Places:</strong> ${places}
+                        </div>
+                        <div style="font-family: 'Share Tech Mono', monospace; font-size: 12px; text-align: right; margin-top: auto;">${index + 1}</div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        // Add blank page if odd number of internal pages
+        if (data.trips.length % 2 !== 0) {
+            html += `
+                <div class="diary-page">
+                    <div class="diary-page-content" style="background-color: #fdf6e3; height: 100%;"></div>
+                </div>
+            `;
+        }
+
+    } catch (e) {
+        console.error("Failed to load trips.json", e);
+        html += `
+            <div class="diary-page">
+                <div class="diary-page-content" style="background-color: #fdf6e3; height: 100%; padding: 30px;"><p style="font-family: 'Caveat', cursive; font-size: 24px;">Could not load diary entries.</p></div>
+            </div>
+            <div class="diary-page">
+                <div class="diary-page-content" style="background-color: #fdf6e3; height: 100%;"></div>
+            </div>
+        `;
+    }
+
+    html += `
+        <div class="diary-page" data-density="hard">
+            <div class="diary-page-content" style="background-color: #4a3424; border: 2px solid #2a1f15; height: 100%;"></div>
+        </div>
+        <div class="diary-page" data-density="hard">
+            <div class="diary-page-content" style="background-color: #4a3424; border: 2px solid #2a1f15; height: 100%; display: flex; align-items: center; justify-content: center;">
+                <h2 style="font-family: 'Special Elite', cursive; color: #e8dcc4; font-size: 32px;">The End</h2>
+            </div>
+        </div>
+    `;
+
+    bookContainer.innerHTML = html;
+
+    setTimeout(() => {
+        const pageFlip = new St.PageFlip(bookContainer, {
+            width: 400,
+            height: 550,
+            size: "fixed",
+            drawShadow: true,
+            showCover: true,
+            usePortrait: false,
+            mobileScrollSupport: false,
+            useMouseEvents: true, // Re-enable drag & drop since user liked Nodlik demo
+            maxShadowOpacity: 0.5 // Standard shadow
+        });
+
+        pageFlip.loadFromHTML(document.querySelectorAll('.diary-page'));
+        pageFlipInstance = pageFlip;
+    }, 100);
+}
+
