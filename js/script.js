@@ -93,6 +93,8 @@ const spikeImg = new Image();
 spikeImg.src = 'assets/images/fx/spikes.png';
 const fireImg = new Image();
 fireImg.src = 'assets/images/fx/fire.png';
+const fireVerticalImg = new Image();
+fireVerticalImg.src = 'assets/images/fx/fire_vertical.png';
 
 function advanceSpeechBubble() {
     if (!speechBubbleSequence) return;
@@ -1549,17 +1551,33 @@ function update() {
                     // Randomize next attack between 2 and 4 seconds
                     boss.bossAttackTimer = 120 + Math.random() * 120;
                 } else if (boss.phase === 2) {
-                    // Fire stripe: horizontal only for now, width 300 (2 tiles)
-                    bossSpikes.push({
-                        x: player.x - 150 + (player.size / 2),
-                        y: player.y + player.size - 30,
-                        width: 300, // Reduced to show 2 flames
-                        height: 60,
-                        state: 'warning',
-                        timer: 50, // Slightly faster warning
-                        damage: 35,
-                        type: 'fire'
-                    });
+                    const isHorizontal = Math.random() > 0.5;
+                    
+                    if (isHorizontal) {
+                        bossSpikes.push({
+                            x: player.x - 150 + (player.size / 2),
+                            y: player.y + player.size - 30,
+                            width: 300,
+                            height: 60,
+                            state: 'warning',
+                            timer: 50,
+                            damage: 35,
+                            type: 'fire',
+                            orientation: 'horizontal'
+                        });
+                    } else {
+                        bossSpikes.push({
+                            x: player.x + (player.size / 2) - 30,
+                            y: player.y - 150,
+                            width: 60,
+                            height: 300,
+                            state: 'warning',
+                            timer: 50,
+                            damage: 35,
+                            type: 'fire',
+                            orientation: 'vertical'
+                        });
+                    }
                     // Faster attacks in phase 2
                     boss.bossAttackTimer = 90 + Math.random() * 90; 
                 }
@@ -1987,23 +2005,36 @@ function draw() {
             }
             
             if (spike.type === 'fire') {
-                if (fireImg.complete && fireImg.width > 0) {
-                    // Maintain aspect ratio to prevent vertical squishing ("sandwich" effect)
-                    const drawHeight = 100; // Desired height of the fire visual
-                    const scale = drawHeight / fireImg.height;
-                    const tileWidth = fireImg.width * scale;
+                if (spike.orientation === 'vertical' && fireVerticalImg.complete && fireVerticalImg.width > 0) {
+                    const drawWidth = 180;
+                    const scale = drawWidth / fireVerticalImg.width;
+                    const nativeTileHeight = fireVerticalImg.height * scale;
                     
-                    const numTiles = Math.ceil(spike.width / tileWidth);
+                    const numTiles = Math.round(spike.height / nativeTileHeight) || 1;
+                    const tileHeight = spike.height / numTiles;
+                    
                     for (let t = 0; t < numTiles; t++) {
-                        let remainingWidth = spike.width - (t * tileWidth);
-                        let currentDrawWidth = Math.min(tileWidth, remainingWidth);
-                        let sourceWidth = currentDrawWidth / scale;
-                        
+                        ctx.drawImage(
+                            fireVerticalImg,
+                            0, 0, fireVerticalImg.width, fireVerticalImg.height,
+                            spike.x - (drawWidth / 2) + (spike.width / 2), spike.y + (t * tileHeight),
+                            drawWidth, tileHeight
+                        );
+                    }
+                } else if (spike.orientation !== 'vertical' && fireImg.complete && fireImg.width > 0) {
+                    const drawHeight = 180;
+                    const scale = drawHeight / fireImg.height;
+                    const nativeTileWidth = fireImg.width * scale;
+                    
+                    const numTiles = Math.round(spike.width / nativeTileWidth) || 1;
+                    const tileWidth = spike.width / numTiles;
+                    
+                    for (let t = 0; t < numTiles; t++) {
                         ctx.drawImage(
                             fireImg, 
-                            0, 0, sourceWidth, fireImg.height, 
-                            spike.x + (t * tileWidth), spike.y - (drawHeight - spike.height), 
-                            currentDrawWidth, drawHeight
+                            0, 0, fireImg.width, fireImg.height, 
+                            spike.x + (t * tileWidth), spike.y - (drawHeight / 2) + (spike.height / 2), 
+                            tileWidth, drawHeight
                         );
                     }
                 } else {
