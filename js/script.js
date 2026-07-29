@@ -1518,8 +1518,8 @@ function update() {
                 boss.bossAttackTimer--;
             } else if (!boss.isAttacking && !boss.isCharging && !boss.isTransitioning) {
                 
-                // Transition to Phase 2 after surviving enough spikes
-                if (boss.phase === 1 && boss.attackCount >= boss.maxPhase1Attacks) {
+                // Transition to Phase 2 after surviving enough spikes OR if boss loses 30% HP
+                if (boss.phase === 1 && (boss.attackCount >= boss.maxPhase1Attacks || boss.hp <= boss.maxHp * 0.7)) {
                     boss.isTransitioning = true;
                     isOverlayActive = true; // Freeze the game
                     boss.frameX = 0; // Stop moving anim
