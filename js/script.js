@@ -2397,6 +2397,7 @@ function openDiary() {
     isOverlayActive = true; 
     
     if (!pageFlipInstance) {
+        document.getElementById('diary-book').style.opacity = '0';
         initDiary();
     }
 }
@@ -2686,6 +2687,10 @@ async function initDiary() {
                 }, 800);
             }
         });
+
+        // Show the book smoothly after initialization
+        bookContainer.style.transition = 'opacity 0.3s ease';
+        bookContainer.style.opacity = '1';
     }, 100);
 }
 
