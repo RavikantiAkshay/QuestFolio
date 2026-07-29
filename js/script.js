@@ -2426,6 +2426,173 @@ async function initDiary() {
         const res = await fetch('trips.json');
         const data = await res.json();
         
+        const totalTrips = data.trips.length;
+        const yearsCount = {};
+        const monthCount = {};
+        const transportCount = {};
+        const uniquePlaces = new Set();
+        let totalDays = 0;
+        let longestTrip = 0;
+        let shortestTrip = Infinity;
+        let totalDistance = 0;
+        let totalPlacesCount = 0;
+        const tripDates = [];
+
+        // Haversine distance function for accurate KM approximation
+        const getDistance = (lat1, lon1, lat2, lon2) => {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI/180;
+            const dLon = (lon2 - lon1) * Math.PI/180; 
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) * Math.sin(dLon/2) * Math.sin(dLon/2); 
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+        };
+
+        data.trips.forEach(trip => {
+            if (trip.startDate) {
+                const date = new Date(trip.startDate);
+                tripDates.push(date.getTime());
+                const year = date.getFullYear();
+                yearsCount[year] = (yearsCount[year] || 0) + 1;
+                
+                const month = date.toLocaleString('default', { month: 'short' });
+                monthCount[month] = (monthCount[month] || 0) + 1;
+            }
+
+            let tripDays = 1;
+            if (trip.startDate && trip.endDate) {
+                const start = new Date(trip.startDate);
+                const end = new Date(trip.endDate);
+                tripDays = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
+            }
+            if (tripDays > 0) {
+                totalDays += tripDays;
+                if (tripDays > longestTrip) longestTrip = tripDays;
+                if (tripDays < shortestTrip) shortestTrip = tripDays;
+            }
+
+            if (trip.places) {
+                totalPlacesCount += trip.places.length;
+                let prevCoords = null;
+                trip.places.forEach(p => {
+                    const name = p.name ? p.name.trim() : null;
+                    if (name) uniquePlaces.add(name);
+                    
+                    if (p.transportFromPrevious) {
+                        let mode = p.transportFromPrevious.toLowerCase();
+                        if (mode === 'ferry') mode = 'boat';
+                        if (mode !== 'other' && mode !== '') {
+                            const formattedMode = mode.charAt(0).toUpperCase() + mode.slice(1);
+                            transportCount[formattedMode] = (transportCount[formattedMode] || 0) + 1;
+                        }
+                    }
+
+                    if (p.coordinates) {
+                        if (prevCoords) {
+                            totalDistance += getDistance(prevCoords.lat, prevCoords.lng, p.coordinates.lat, p.coordinates.lng);
+                        }
+                        prevCoords = p.coordinates;
+                    }
+                });
+            }
+        });
+        
+        if (shortestTrip === Infinity) shortestTrip = 0;
+        const totalPlaces = uniquePlaces.size;
+        const busiestYear = Object.keys(yearsCount).sort((a,b) => yearsCount[b] - yearsCount[a])[0];
+        const peakMonth = Object.keys(monthCount).sort((a,b) => monthCount[b] - monthCount[a])[0];
+        const topTransport = Object.entries(transportCount).sort((a,b) => b[1] - a[1]).map(t => t[0]).join(', ') || 'Various';
+        const yearsTraveled = Object.keys(yearsCount).length || 1;
+        
+        const avgTripsYear = (totalTrips / yearsTraveled).toFixed(1);
+        const avgPlacesTrip = (totalPlacesCount / (totalTrips || 1)).toFixed(1);
+        const avgDaysTrip = (totalDays / (totalTrips || 1)).toFixed(1);
+
+        tripDates.sort((a,b) => a - b);
+        let longestGap = 0;
+        for (let i = 1; i < tripDates.length; i++) {
+            const gap = Math.round((tripDates[i] - tripDates[i-1]) / (1000 * 60 * 60 * 24));
+            if (gap > longestGap) longestGap = gap;
+        }
+
+        // Add static image map and stats spread
+        html += `
+            <div class="diary-page">
+                <div class="diary-page-content" style="background-color: #fdf6e3; height: 100%; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column;">
+                    <h2 style="font-family: 'Special Elite', cursive; font-size: 24px; margin: 0 0 10px 0; text-align: center; color: #3b3024; border-bottom: 2px solid rgba(0,0,0,0.1); padding-bottom: 5px;">Footprints in India</h2>
+                    <img src="assets/india_map.png" alt="India Map" style="width: 100%; height: 350px; object-fit: cover; margin: 5px 0; border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); pointer-events: none; mix-blend-mode: multiply;">
+                    <p style="font-family: 'Share Tech Mono', monospace; font-size: 14px; color: #666; text-align: center; margin-top: 10px; margin-bottom: 5px;">An overview of the journey so far.</p>
+                    
+                    <div style="display: flex; justify-content: space-around; margin-top: auto; border-top: 1px dashed rgba(0,0,0,0.2); padding-top: 15px; font-family: 'Special Elite', cursive;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 22px; font-weight: bold; color: #7a2828;">${totalTrips}</div>
+                            <div style="font-size: 10px; text-transform: uppercase; color: #555; font-family: 'Share Tech Mono', monospace;">Trips</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 22px; font-weight: bold; color: #7a2828;">${totalPlaces}</div>
+                            <div style="font-size: 10px; text-transform: uppercase; color: #555; font-family: 'Share Tech Mono', monospace;">Locations</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 22px; font-weight: bold; color: #7a2828;">${Math.round(totalDistance).toLocaleString()}</div>
+                            <div style="font-size: 10px; text-transform: uppercase; color: #555; font-family: 'Share Tech Mono', monospace;">KM Tracked</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="diary-page">
+                <div class="diary-page-content" style="background-color: #fdf6e3; height: 100%; padding: 20px; display: flex; flex-direction: column; box-sizing: border-box;">
+                    <h2 style="font-family: 'Special Elite', cursive; font-size: 24px; text-align: center; color: #3b3024; margin-bottom: 10px; border-bottom: 2px solid rgba(0,0,0,0.1); padding-bottom: 5px;">Travel Statistics</h2>
+                    
+                    <!-- Averages (Circles) -->
+                    <h3 style="font-size: 14px; margin-top: 5px; margin-bottom: 8px; border-bottom: 1px dashed rgba(0,0,0,0.2); padding-bottom: 4px; color: #444; font-family: 'Special Elite', cursive;">Averages</h3>
+                    <div style="display: flex; justify-content: space-between; font-family: 'Share Tech Mono', monospace; margin-bottom: 15px;">
+                        <div style="width: 30%; aspect-ratio: 1; border: 2px solid #a69886; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: rgba(0,0,0,0.02);">
+                            <div style="font-size: 18px; font-weight: bold; color: #7a2828;">${avgTripsYear}</div>
+                            <div style="font-size: 9px; text-align: center; line-height: 1.1; color: #555; margin-top: 2px;">Trips/Yr</div>
+                        </div>
+                        <div style="width: 30%; aspect-ratio: 1; border: 2px solid #a69886; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: rgba(0,0,0,0.02);">
+                            <div style="font-size: 18px; font-weight: bold; color: #7a2828;">${avgPlacesTrip}</div>
+                            <div style="font-size: 9px; text-align: center; line-height: 1.1; color: #555; margin-top: 2px;">Places/Trip</div>
+                        </div>
+                        <div style="width: 30%; aspect-ratio: 1; border: 2px solid #a69886; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: rgba(0,0,0,0.02);">
+                            <div style="font-size: 18px; font-weight: bold; color: #7a2828;">${avgDaysTrip}</div>
+                            <div style="font-size: 9px; text-align: center; line-height: 1.1; color: #555; margin-top: 2px;">Days/Trip</div>
+                        </div>
+                    </div>
+
+                    <!-- Duration Extremes (Data Block) -->
+                    <h3 style="font-size: 14px; margin-bottom: 8px; border-bottom: 1px dashed rgba(0,0,0,0.2); padding-bottom: 4px; color: #444; font-family: 'Special Elite', cursive;">Time on the Road</h3>
+                    <div style="background-color: rgba(0,0,0,0.03); padding: 8px 10px; border-radius: 4px; font-family: 'Share Tech Mono', monospace; font-size: 13px; margin-bottom: 15px; border-left: 3px solid #7a2828;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                            <span style="color: #555;">Total Days</span> <strong style="color: #3b3024;">${totalDays}</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                            <span style="color: #555;">Longest Trip</span> <strong style="color: #3b3024;">${longestTrip} days</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                            <span style="color: #555;">Shortest Trip</span> <strong style="color: #3b3024;">${shortestTrip} days</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: #555;">Max Gap</span> <strong style="color: #3b3024;">${longestGap} days</strong>
+                        </div>
+                    </div>
+
+                    <!-- Trends (Ribbons) -->
+                    <h3 style="font-size: 14px; margin-bottom: 8px; border-bottom: 1px dashed rgba(0,0,0,0.2); padding-bottom: 4px; color: #444; font-family: 'Special Elite', cursive;">Trends & Transport</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px; font-family: 'Special Elite', cursive; font-size: 12px;">
+                        <div style="background-color: #d1c8b4; color: #3b3024; padding: 4px 8px; border-radius: 2px; box-shadow: 1px 1px 2px rgba(0,0,0,0.1);">
+                            Busiest Year: <strong>${busiestYear}</strong>
+                        </div>
+                        <div style="background-color: #d1c8b4; color: #3b3024; padding: 4px 8px; border-radius: 2px; box-shadow: 1px 1px 2px rgba(0,0,0,0.1);">
+                            Peak Month: <strong>${peakMonth}</strong>
+                        </div>
+                        <div style="background-color: #d1c8b4; color: #3b3024; padding: 4px 8px; border-radius: 2px; width: 100%; box-shadow: 1px 1px 2px rgba(0,0,0,0.1);">
+                            Modes: <strong>${topTransport}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
         data.trips.forEach((trip, index) => {
             const placesArray = trip.places ? [...new Set(trip.places.map(p => p.name))] : [];
             const columnStyle = placesArray.length > 10 ? 'column-count: 2; column-gap: 15px;' : '';
