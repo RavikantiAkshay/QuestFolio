@@ -1731,3 +1731,12 @@ canvas {
 .stf__block {
     outline: none;
 }
+
+/* Spine shadows to visually split the pages */
+.diary-page.--left .diary-page-content {
+    box-shadow: inset -20px 0 20px -10px rgba(0,0,0,0.2) !important;
+}
+
+.diary-page.--right .diary-page-content {
+    box-shadow: inset 20px 0 20px -10px rgba(0,0,0,0.2) !important;
+}

@@ -2427,17 +2427,22 @@ async function initDiary() {
         const data = await res.json();
         
         data.trips.forEach((trip, index) => {
-            const places = trip.places ? trip.places.map(p => p.name).join(', ') : 'Various places';
+            const placesArray = trip.places ? [...new Set(trip.places.map(p => p.name))] : [];
+            const placesHtml = placesArray.length > 0 
+                ? `<ul style="list-style-type: square; padding-left: 20px; margin: 5px 0 0 0; font-size: 13px; line-height: 1.2; column-count: 2; column-gap: 15px;">` + placesArray.map(p => `<li style="break-inside: avoid-column;">${p}</li>`).join('') + `</ul>`
+                : '<div style="font-size: 13px; margin-top: 5px;">No places recorded</div>';
+
             const coverHtml = trip.coverImage ? `<img src="${trip.coverImage}" class="diary-img" alt="${trip.title}" style="width: 100%; height: 160px; object-fit: cover; margin: 10px 0; border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">` : '';
             
             html += `
                 <div class="diary-page">
-                    <div class="diary-page-content" style="background-color: #fdf6e3; height: 100%; padding: 20px; color: #3b3024; font-family: 'Caveat', cursive; overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column;">
-                        <h2 style="font-size: 32px; margin: 0 0 5px 0; border-bottom: 2px solid rgba(0,0,0,0.1); padding-bottom: 5px;">${trip.title}</h2>
+                    <div class="diary-page-content" style="background-color: #fdf6e3; height: 100%; padding: 20px; color: #3b3024; font-family: 'Special Elite', cursive; overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column;">
+                        <h2 style="font-size: 28px; margin: 0 0 5px 0; border-bottom: 2px solid rgba(0,0,0,0.1); padding-bottom: 5px;">${trip.title}</h2>
                         <div style="font-family: 'Share Tech Mono', monospace; font-size: 14px; color: #666; margin-bottom: 10px;">Year: ${trip.startDate.split('-')[0]} | Group: ${trip.group || 'Solo'}</div>
                         ${coverHtml}
-                        <div style="font-size: 22px; margin-bottom: 10px; flex: 1; overflow: hidden;">
-                            <strong>Places:</strong> ${places}
+                        <div style="margin-bottom: 10px; flex: 1; display: flex; flex-direction: column;">
+                            <strong style="font-size: 16px;">Places Visited:</strong> 
+                            ${placesHtml}
                         </div>
                         <div style="font-family: 'Share Tech Mono', monospace; font-size: 12px; text-align: right; margin-top: auto;">${index + 1}</div>
                     </div>
