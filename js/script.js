@@ -10,6 +10,7 @@ let collisionData = [];
 let doorPaintData = [];
 let editMode = false;
 let timeMode = 0; // 0 = day, 1 = evening, 2 = night, 3 = early morning
+let seasonMode = 0; // 0 = Summer, 1 = Monsoon, 2 = Autumn, 3 = Winter
 let isDragging = false;
 let paintMode = 1;
 let brushRadius = 0; // 0 = 1x1, 1 = 3x3, 2 = 5x5
@@ -765,6 +766,10 @@ window.addEventListener("keydown", (e) => {
 
     if (key === 'n') {
         timeMode = (timeMode + 1) % 4;
+    }
+
+    if (key === 'm') {
+        seasonMode = (seasonMode + 1) % 4;
     }
 
     if (key === 't') {
@@ -1530,7 +1535,7 @@ function update() {
 
     // --- WIND PARTICLES (LEAVES) ---
     globalTime++;
-    if (Math.random() < 0.2) { // 20% chance per frame to spawn leaf
+    if (seasonMode === 2 && Math.random() < 0.2) { // 20% chance per frame to spawn leaf ONLY in Autumn
         particles.push({
             x: cameraX - 100 + Math.random() * (canvas.width + 100),
             y: cameraY - 50 - Math.random() * 100,
@@ -2376,6 +2381,47 @@ function draw() {
             }
         }
 
+        ctx.restore();
+    }
+
+    // --- SUMMER SUN RAYS ---
+    if (seasonMode === 0 && timeMode === 0 && (!zoneConfig || zoneConfig.type !== "static")) {
+        ctx.save();
+        ctx.globalCompositeOperation = "screen";
+
+        // Define the sun's position (high up, slightly left of the camera center)
+        const sunX = cameraX + canvas.width * 0.2; 
+        const sunY = cameraY - 200; 
+        
+        // Create a radial gradient so the rays are intense near the sun and fade out near the ground
+        const rayGrad = ctx.createRadialGradient(sunX, sunY, 50, sunX, sunY, canvas.height + 400);
+        rayGrad.addColorStop(0, "rgba(255, 255, 230, 0.25)"); // Bright at the source
+        rayGrad.addColorStop(1, "rgba(255, 255, 230, 0)"); // Fades away completely
+
+        ctx.fillStyle = rayGrad;
+
+        const offset = Math.sin(Date.now() / 3000) * 30; // Gentle sway
+        
+        // Tile the rays across the map horizontally at ground level.
+        const gridSpacing = 450; 
+        const startX = Math.floor(cameraX / gridSpacing) * gridSpacing;
+
+        ctx.beginPath();
+        for (let i = -2; i <= Math.ceil(canvas.width / gridSpacing) + 2; i++) {
+            let groundX = startX + (i * gridSpacing) + offset;
+            
+            // Ray 1 (Main distinct ray fanning out from the sun)
+            ctx.moveTo(sunX, sunY);
+            ctx.lineTo(groundX - 80, cameraY + canvas.height + 200);
+            ctx.lineTo(groundX + 40, cameraY + canvas.height + 200);
+            
+            // Ray 2 (Secondary thinner ray)
+            ctx.moveTo(sunX, sunY);
+            ctx.lineTo(groundX + 100, cameraY + canvas.height + 200);
+            ctx.lineTo(groundX + 140, cameraY + canvas.height + 200);
+        }
+        
+        ctx.fill();
         ctx.restore();
     }
 
