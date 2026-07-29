@@ -681,10 +681,11 @@ overlay.innerHTML = `
 document.body.appendChild(overlay);
 
 window.addEventListener("keydown", (e) => {
-    keys[e.key.toLowerCase()] = true;
+    let key = e.key.toLowerCase();
+    keys[key] = true;
 
     // Handle Interaction (E key)
-    if (e.key.toLowerCase() === 'e') {
+    if (key === 'e') {
         if (!isOverlayActive && activeInteractable) {
             isOverlayActive = true;
             isExploringInterior = false;
@@ -1548,11 +1549,11 @@ function update() {
                     // Randomize next attack between 2 and 4 seconds
                     boss.bossAttackTimer = 120 + Math.random() * 120;
                 } else if (boss.phase === 2) {
-                    // Fire stripe: horizontal only for now, width 600
+                    // Fire stripe: horizontal only for now, width 300 (2 tiles)
                     bossSpikes.push({
-                        x: player.x - 300 + (player.size / 2),
+                        x: player.x - 150 + (player.size / 2),
                         y: player.y + player.size - 30,
-                        width: 600, // Covers most of the road
+                        width: 300, // Reduced to show 2 flames
                         height: 60,
                         state: 'warning',
                         timer: 50, // Slightly faster warning
