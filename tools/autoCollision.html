@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Auto Collision Generator</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: #1a1a2e; color: #eee; font-family: 'Segoe UI', sans-serif; 
+            display: flex; flex-direction: column; align-items: center; padding: 20px;
+        }
+        h1 { color: #e94560; margin-bottom: 5px; }
+        p.sub { color: #888; margin-bottom: 20px; font-size: 14px; }
+        .controls { 
+            display: flex; gap: 15px; align-items: center; margin-bottom: 15px; 
+            background: #16213e; padding: 15px 25px; border-radius: 10px;
+            flex-wrap: wrap; justify-content: center;
+        }
+        .controls label { font-size: 14px; color: #aaa; }
+        .controls input[type=range] { width: 120px; }
+        .controls button {
+            padding: 8px 20px; border: none; border-radius: 6px; cursor: pointer;
+            font-weight: bold; font-size: 14px; transition: all 0.2s;
+        }
+        .controls button:hover { transform: scale(1.05); }
+        #analyzeBtn { background: #e94560; color: white; }
+        #copyBtn { background: #0f3460; color: white; }
+        #previewBtn { background: #533483; color: white; }
+        .canvas-wrap { 
+            position: relative; border: 2px solid #333; margin-bottom: 15px;
+            max-width: 95vw; overflow: auto;
+        }
+        canvas { display: block; image-rendering: pixelated; }
+        #status { 
+            background: #16213e; padding: 10px 20px; border-radius: 8px; 
+            margin-bottom: 15px; font-size: 14px; min-width: 300px; text-align: center;
+        }
+        #output { 
+            width: 90vw; max-width: 900px; height: 200px; 
+            background: #0d1117; color: #58a6ff; border: 1px solid #333;
+            border-radius: 8px; padding: 10px; font-family: monospace; font-size: 12px;
+            resize: vertical;
+        }
+        .legend { display: flex; gap: 20px; margin: 10px 0; font-size: 13px; }
+        .legend span { display: flex; align-items: center; gap: 5px; }
+        .legend .swatch { width: 16px; height: 16px; border-radius: 3px; border: 1px solid #555; }
+    </style>
+</head>
+<body>
+    <h1>🗺️ Auto Collision Map Generator</h1>
+    <p class="sub">Analyzes your tileset image pixel-by-pixel to auto-detect walkable vs solid areas</p>
+    
+    <div class="controls">
+        <label>Zone:
+            <select id="zoneSelect">
+                <option value="town" selected>Town</option>
+                <option value="school">School</option>
+                <option value="castle">Castle</option>
+            </select>
+        </label>
+        <label>Sensitivity: <input type="range" id="sensitivity" min="1" max="100" value="35"> <span id="sensVal">35</span></label>
+        <button id="analyzeBtn" onclick="analyze()">🔍 Analyze & Generate</button>
+        <button id="previewBtn" onclick="togglePreview()">👁️ Toggle Overlay</button>
+        <button id="copyBtn" onclick="copyToClipboard()">📋 Copy to Clipboard</button>
+        <button onclick="saveToLocalStorage()" style="background:#27ae60;color:white;">💾 Save to Game</button>
+    </div>
+
+    <div class="legend">
+        <span><div class="swatch" style="background:rgba(0,255,0,0.5)"></div> Walkable (green)</span>
+        <span><div class="swatch" style="background:rgba(255,0,0,0.5)"></div> Solid/Blocked (red)</span>
+    </div>
+
+    <div id="status">Select a zone and click "Analyze & Generate"</div>
+    
+    <div class="canvas-wrap">
+        <canvas id="preview"></canvas>
+    </div>
+
+    <textarea id="output" readonly placeholder="Generated collision data will appear here..."></textarea>
+
+    <script>
+    // --- CONFIG ---
+    const tileSize = 32;
+    const collisionSize = 8; // Must match script.js
+    const tilesPerRow = 10;
+    const subTilesPerTile = tileSize / collisionSize; // 4
+
+    const zoneConfig = {
+        town:   { tileset: 'tileset_image_882ea4.png', rows: 39, cols: 39, spawnX: 400, spawnY: 400 },
+        school: { tileset: 'tileset_image_882eac.png', rows: 39, cols: 39, spawnX: 400, spawnY: 400 },
+        castle: { tileset: 'tileset_image_882eca.png', rows: 39, cols: 39, spawnX: 400, spawnY: 400 }
+    };
+
+    const canvas = document.getElementById('preview');
+    const ctx = canvas.getContext('2d');
+    let collisionGrid = null;
+    let showOverlay = true;
+    let loadedImage = null;
+    let currentZone = 'town';
+
+    document.getElementById('sensitivity').addEventListener('input', (e) => {
+        document.getElementById('sensVal').textContent = e.target.value;
+    });
+
+    function analyze() {
+        currentZone = document.getElementById('zoneSelect').value;
+        const config = zoneConfig[currentZone];
+        const img = new Image();
+        img.onload = () => {
+            loadedImage = img;
+            document.getElementById('status').innerHTML = `✅ Loaded <b>${config.tileset}</b> (${img.width}x${img.height})... Analyzing...`;
+            
+            // Draw the tileset on an offscreen canvas to read pixels
+            const offscreen = document.createElement('canvas');
+            offscreen.width = img.width;
+            offscreen.height = img.height;
+            const offCtx = offscreen.getContext('2d');
+            offCtx.drawImage(img, 0, 0);
+
+            const sensitivity = parseInt(document.getElementById('sensitivity').value);
+            
+            // The map is rows x cols tiles. Each tile ID maps to a position in the tileset.
+            const mapRows = config.rows;
+            const mapCols = config.cols;
+            const collisionRows = mapRows * subTilesPerTile;
+            const collisionCols = mapCols * subTilesPerTile;
+            
+            collisionGrid = Array.from({length: collisionRows}, () => Array(collisionCols).fill(0));
+            
+            // For each tile position in the map
+            for (let tileRow = 0; tileRow < mapRows; tileRow++) {
+                for (let tileCol = 0; tileCol < mapCols; tileCol++) {
+                    // The tile ID is sequential: row * cols + col
+                    const tileID = tileRow * mapCols + tileCol;
+                    
+                    // Where this tile lives in the tileset image
+                    const srcX = (tileID % tilesPerRow) * tileSize;
+                    const srcY = Math.floor(tileID / tilesPerRow) * tileSize;
+
+                    // Analyze each 8x8 sub-tile within this 32x32 tile
+                    for (let subR = 0; subR < subTilesPerTile; subR++) {
+                        for (let subC = 0; subC < subTilesPerTile; subC++) {
+                            const px = srcX + subC * collisionSize;
+                            const py = srcY + subR * collisionSize;
+                            
+                            let imgData;
+                            try {
+                                imgData = offCtx.getImageData(px, py, collisionSize, collisionSize);
+                            } catch(e) {
+                                continue;
+                            }
+                            const pixels = imgData.data;
+                            
+                            const isSolid = classifyBlock(pixels, sensitivity);
+                            
+                            const gridRow = tileRow * subTilesPerTile + subR;
+                            const gridCol = tileCol * subTilesPerTile + subC;
+                            if (gridRow < collisionRows && gridCol < collisionCols) {
+                                collisionGrid[gridRow][gridCol] = isSolid ? 1 : 0;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Post-process: clean up noise
+            cleanupGrid(collisionGrid, collisionRows, collisionCols);
+
+            // FLOOD-FILL REACHABILITY: Only keep walkable areas connected to player spawn
+            const spawnX = config.spawnX || 400;
+            const spawnY = config.spawnY || 400;
+            const spawnCol = Math.floor(spawnX / collisionSize);
+            const spawnRow = Math.floor(spawnY / collisionSize);
+            
+            // BFS flood fill from spawn
+            const reachable = Array.from({length: collisionRows}, () => Array(collisionCols).fill(false));
+            const queue = [[spawnRow, spawnCol]];
+            if (spawnRow >= 0 && spawnRow < collisionRows && spawnCol >= 0 && spawnCol < collisionCols) {
+                reachable[spawnRow][spawnCol] = true;
+            }
+            
+            while (queue.length > 0) {
+                const [r, c] = queue.shift();
+                const dirs = [[0,1],[0,-1],[1,0],[-1,0]];
+                for (const [dr, dc] of dirs) {
+                    const nr = r + dr, nc = c + dc;
+                    if (nr >= 0 && nr < collisionRows && nc >= 0 && nc < collisionCols 
+                        && !reachable[nr][nc] && collisionGrid[nr][nc] === 0) {
+                        reachable[nr][nc] = true;
+                        queue.push([nr, nc]);
+                    }
+                }
+            }
+            
+            // Any walkable cell NOT reachable from spawn → mark solid
+            let blockedUnreachable = 0;
+            for (let r = 0; r < collisionRows; r++) {
+                for (let c = 0; c < collisionCols; c++) {
+                    if (collisionGrid[r][c] === 0 && !reachable[r][c]) {
+                        collisionGrid[r][c] = 1;
+                        blockedUnreachable++;
+                    }
+                }
+            }
+
+            // Draw preview
+            drawPreview(img, config);
+
+            // Output
+            const jsonStr = JSON.stringify(collisionGrid);
+            document.getElementById('output').value = jsonStr;
+            
+            const solidCount = collisionGrid.flat().filter(v => v === 1).length;
+            const total = collisionRows * collisionCols;
+            document.getElementById('status').innerHTML = 
+                `✅ Done! Grid: ${collisionCols}x${collisionRows} | Solid: ${solidCount}/${total} (${Math.round(solidCount/total*100)}%) | Unreachable areas blocked: ${blockedUnreachable} | <b>Review the overlay and adjust sensitivity if needed</b>`;
+        };
+        img.onerror = () => {
+            document.getElementById('status').innerHTML = `❌ Failed to load ${config.tileset}. Make sure this file is in the same folder.`;
+        };
+        img.src = config.tileset;
+    }
+
+    function classifyBlock(pixels, sensitivity) {
+        // Analyze an 8x8 block of pixels to determine if it's "ground" or "solid"
+        // Ground tiles (grass, road, dirt, sand) tend to have:
+        //   - Warm hues (yellows, greens, browns)
+        //   - High brightness
+        //   - Low color variance (uniform)
+        // Solid tiles (buildings, trees, objects) tend to have:
+        //   - Darker pixels, more color variety
+        //   - Edges, shadows, structural details
+
+        let totalR = 0, totalG = 0, totalB = 0, totalA = 0;
+        let darkPixels = 0;
+        let pixelCount = 0;
+        let minR = 255, maxR = 0, minG = 255, maxG = 0, minB = 255, maxB = 0;
+
+        for (let i = 0; i < pixels.length; i += 4) {
+            const r = pixels[i], g = pixels[i+1], b = pixels[i+2], a = pixels[i+3];
+            if (a < 128) continue; // Skip transparent
+            
+            totalR += r; totalG += g; totalB += b; totalA += a;
+            pixelCount++;
+
+            const brightness = (r + g + b) / 3;
+            if (brightness < 100) darkPixels++;
+
+            minR = Math.min(minR, r); maxR = Math.max(maxR, r);
+            minG = Math.min(minG, g); maxG = Math.max(maxG, g);
+            minB = Math.min(minB, b); maxB = Math.max(maxB, b);
+        }
+
+        if (pixelCount === 0) return false; // Transparent = walkable
+
+        const avgR = totalR / pixelCount;
+        const avgG = totalG / pixelCount;
+        const avgB = totalB / pixelCount;
+        const avgBrightness = (avgR + avgG + avgB) / 3;
+
+        // Color variance — how much the colors spread within this block
+        const variance = (maxR - minR) + (maxG - minG) + (maxB - minB);
+        
+        // Dark ratio
+        const darkRatio = darkPixels / pixelCount;
+
+        // Hue analysis — ground tiles are typically warm (sandy/grassy)
+        // Sandy/dirt: high R, medium G, low B
+        // Grass: medium R, high G, low-medium B
+        // Road: gray-ish, all channels similar
+        const isWarm = (avgR > 120 && avgG > 90 && avgB < avgR * 0.85);
+        const isGrassy = (avgG > avgR * 0.7 && avgG > 100 && avgB < avgG * 0.8);
+        const isRoad = (avgBrightness > 130 && variance < 100);
+        const isSandy = (avgR > 160 && avgG > 130 && avgB < 130);
+        
+        const isGround = isWarm || isGrassy || isRoad || isSandy;
+
+        // Score-based system
+        let solidScore = 0;
+        
+        // Dark blocks are likely shadows/buildings
+        if (darkRatio > 0.3) solidScore += 30;
+        if (darkRatio > 0.6) solidScore += 20;
+        
+        // High variance = complex texture = likely an object
+        if (variance > 120) solidScore += 15;
+        if (variance > 200) solidScore += 15;
+        
+        // Low brightness overall
+        if (avgBrightness < 100) solidScore += 25;
+        else if (avgBrightness < 140) solidScore += 10;
+        
+        // If it looks like ground, reduce score heavily
+        if (isGround) solidScore -= 30;
+        if (isSandy) solidScore -= 15;
+        if (isRoad) solidScore -= 20;
+
+        // Very bright and uniform = definitely ground
+        if (avgBrightness > 170 && variance < 80) solidScore -= 25;
+        
+        return solidScore >= sensitivity;
+    }
+
+    function cleanupGrid(grid, rows, cols) {
+        // Remove isolated single-cell noise (lonely solid cells surrounded by walkable)
+        const copy = grid.map(r => [...r]);
+        for (let r = 1; r < rows - 1; r++) {
+            for (let c = 1; c < cols - 1; c++) {
+                if (copy[r][c] === 1) {
+                    const neighbors = 
+                        copy[r-1][c] + copy[r+1][c] + copy[r][c-1] + copy[r][c+1];
+                    if (neighbors <= 1) grid[r][c] = 0; // Remove isolated solid
+                }
+                if (copy[r][c] === 0) {
+                    const neighbors = 
+                        copy[r-1][c] + copy[r+1][c] + copy[r][c-1] + copy[r][c+1];
+                    if (neighbors >= 3) grid[r][c] = 1; // Fill isolated walkable hole
+                }
+            }
+        }
+    }
+
+    function drawPreview(img, config) {
+        const mapW = config.cols * tileSize;
+        const mapH = config.rows * tileSize;
+        
+        // Scale to fit screen
+        const maxW = window.innerWidth * 0.9;
+        const displayScale = Math.min(1, maxW / mapW);
+        
+        canvas.width = mapW * displayScale;
+        canvas.height = mapH * displayScale;
+        ctx.imageSmoothingEnabled = false;
+
+        // We need to reconstruct the map image from the tileset
+        // First draw to an offscreen canvas at full res
+        const offscreen = document.createElement('canvas');
+        offscreen.width = mapW;
+        offscreen.height = mapH;
+        const offCtx = offscreen.getContext('2d');
+        offCtx.imageSmoothingEnabled = false;
+
+        for (let row = 0; row < config.rows; row++) {
+            for (let col = 0; col < config.cols; col++) {
+                const tileID = row * config.cols + col;
+                const srcX = (tileID % tilesPerRow) * tileSize;
+                const srcY = Math.floor(tileID / tilesPerRow) * tileSize;
+                offCtx.drawImage(img, srcX, srcY, tileSize, tileSize, 
+                    col * tileSize, row * tileSize, tileSize, tileSize);
+            }
+        }
+
+        // Draw the reconstructed map
+        ctx.drawImage(offscreen, 0, 0, canvas.width, canvas.height);
+
+        // Draw collision overlay
+        if (showOverlay && collisionGrid) {
+            drawOverlay(displayScale);
+        }
+    }
+
+    function drawOverlay(displayScale) {
+        const cellW = collisionSize * displayScale;
+        const cellH = collisionSize * displayScale;
+        
+        for (let r = 0; r < collisionGrid.length; r++) {
+            for (let c = 0; c < collisionGrid[0].length; c++) {
+                if (collisionGrid[r][c] === 1) {
+                    ctx.fillStyle = 'rgba(255, 30, 30, 0.45)';
+                } else {
+                    ctx.fillStyle = 'rgba(30, 255, 30, 0.15)';
+                }
+                ctx.fillRect(c * cellW, r * cellH, cellW, cellH);
+            }
+        }
+    }
+
+    function togglePreview() {
+        showOverlay = !showOverlay;
+        if (loadedImage && collisionGrid) {
+            const config = zoneConfig[currentZone];
+            drawPreview(loadedImage, config);
+        }
+    }
+
+    // Allow clicking on preview to toggle individual cells
+    canvas.addEventListener('mousedown', (e) => {
+        if (!collisionGrid) return;
+        const config = zoneConfig[currentZone];
+        const mapW = config.cols * tileSize;
+        const displayScale = Math.min(1, (window.innerWidth * 0.9) / mapW);
+        
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const col = Math.floor(x / (collisionSize * displayScale));
+        const row = Math.floor(y / (collisionSize * displayScale));
+        
+        if (row >= 0 && row < collisionGrid.length && col >= 0 && col < collisionGrid[0].length) {
+            collisionGrid[row][col] = collisionGrid[row][col] === 1 ? 0 : 1;
+            drawPreview(loadedImage, config);
+            document.getElementById('output').value = JSON.stringify(collisionGrid);
+        }
+    });
+
+    function copyToClipboard() {
+        const output = document.getElementById('output');
+        output.select();
+        navigator.clipboard.writeText(output.value).then(() => {
+            document.getElementById('status').innerHTML = '📋 Copied to clipboard!';
+        });
+    }
+
+    function saveToLocalStorage() {
+        if (!collisionGrid) {
+            document.getElementById('status').innerHTML = '⚠️ Run analysis first!';
+            return;
+        }
+        const zone = document.getElementById('zoneSelect').value;
+        localStorage.setItem('collision_' + zone, JSON.stringify(collisionGrid));
+        document.getElementById('status').innerHTML = `💾 Saved collision data for "${zone}" to localStorage! Open your game and it will load automatically.`;
+    }
+    </script>
+</body>
+</html>

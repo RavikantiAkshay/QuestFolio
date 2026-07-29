@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Export Collision</title>
+</head>
+
+<body
+    style="background:#1a1a2e;color:#eee;font-family:sans-serif;display:flex;flex-direction:column;align-items:center;padding:40px;">
+    <h2>Export Collision Data</h2>
+    <div style="display:flex;gap:10px;margin:20px;">
+        <button onclick="exportData('town')"
+            style="padding:15px 30px;font-size:18px;background:#27ae60;color:white;border:none;border-radius:8px;cursor:pointer;">
+            💾 Download Town Collision
+        </button>
+        <button onclick="exportData('school')"
+            style="padding:15px 30px;font-size:18px;background:#2980b9;color:white;border:none;border-radius:8px;cursor:pointer;">
+            💾 Download School Collision
+        </button>
+        <button onclick="exportData('castle')"
+            style="padding:15px 30px;font-size:18px;background:#8e44ad;color:white;border:none;border-radius:8px;cursor:pointer;">
+            💾 Download Castle Collision
+        </button>
+    </div>
+    <p id="status"></p>
+    <script>
+        function exportData(zone) {
+            const data = localStorage.getItem('collision_' + zone);
+            if (!data) {
+                document.getElementById('status').innerText = `❌ No collision_${zone} found in localStorage! Open your game and paint the ${zone} map first.`;
+                return;
+            }
+            
+            const variableMap = {
+                'town': 'collision_town_data',
+                'school': 'collision_school_data',
+                'castle': 'collision_castle_data'
+            };
+            
+            const fileMap = {
+                'town': 'collisionData.js',
+                'school': 'collisionDataSchool.js',
+                'castle': 'collisionDataCastle.js'
+            };
+
+            const jsContent = `// Auto-generated collision data for ${zone} zone\nconst ${variableMap[zone]} = ${data};\n`;
+            const blob = new Blob([jsContent], { type: 'application/javascript' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = fileMap[zone];
+            a.click();
+            document.getElementById('status').innerText = `✅ Downloaded ${fileMap[zone]}! Save it to your MyGame folder.`;
+        }
+    </script>
+</body>
+
+</html>
