@@ -9,7 +9,7 @@ let currentTileset = new Image();
 let collisionData = [];
 let doorPaintData = [];
 let editMode = false;
-let isNight = true;
+let timeMode = 0; // 0 = day, 1 = evening, 2 = night
 let isDragging = false;
 let paintMode = 1;
 let brushRadius = 0; // 0 = 1x1, 1 = 3x3, 2 = 5x5
@@ -764,7 +764,7 @@ window.addEventListener("keydown", (e) => {
     keys[key] = true;
 
     if (key === 'n') {
-        isNight = !isNight;
+        timeMode = (timeMode + 1) % 3;
     }
 
     if (key === 't') {
@@ -2232,7 +2232,7 @@ function draw() {
     });
 
     // Draw Night/Lighting Mode
-    if (isNight && (!zoneConfig || zoneConfig.type !== "static")) {
+    if (timeMode > 0 && (!zoneConfig || zoneConfig.type !== "static")) {
         // Create offscreen lighting canvas if it doesn't exist
         if (!window.lightingCanvas) {
             window.lightingCanvas = document.createElement('canvas');
@@ -2249,7 +2249,18 @@ function draw() {
         // 1. Clear previous frame and Fill Darkness on offscreen canvas
         lightCtx.clearRect(0, 0, canvas.width, canvas.height);
         lightCtx.globalCompositeOperation = "source-over";
-        lightCtx.fillStyle = "rgba(10, 15, 30, 0.97)"; // Darker, moody evening tint
+        if (timeMode === 1) {
+            // Dynamic sunset gradient with a gentle breathing effect to avoid the "flat glass" look
+            const pulse = Math.sin(Date.now() / 2500) * 0.04;
+            const grad = lightCtx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            grad.addColorStop(0, `rgba(255, 140, 40, ${0.35 + pulse})`); // Bright, warm sun from top-left
+            grad.addColorStop(0.5, `rgba(220, 90, 20, ${0.25 + pulse})`); // Mid-town evening orange
+            grad.addColorStop(1, `rgba(120, 40, 60, ${0.15 + pulse})`); // Cooler purple/red shadows at bottom-right
+
+            lightCtx.fillStyle = grad;
+        } else {
+            lightCtx.fillStyle = "rgba(10, 15, 30, 0.97)"; // Darker, moody night tint
+        }
         lightCtx.fillRect(0, 0, canvas.width, canvas.height);
 
         // 2. Punch holes in darkness using destination-out
@@ -2277,23 +2288,25 @@ function draw() {
             lightCtx.fill();
         }
 
-        // Player's Lantern (Soft dim glow)
-        drawLightHole(player.x + player.size / 2, player.y + player.size / 2, 100, 0.35);
+        if (timeMode === 2) {
+            // Player's Lantern (Soft dim glow)
+            drawLightHole(player.x + player.size / 2, player.y + player.size / 2, 100, 0.35);
 
-        // Static Lights (Streetlamps, etc.)
-        if (staticLights[currentZone]) {
-            staticLights[currentZone].forEach(light => {
-                // Dimmer and slightly smaller cutout so the night feeling remains
-                drawLightHole(light.x, light.y, light.radius * 1.6, light.intensity * 0.4);
-            });
-        }
+            // Static Lights (Streetlamps, etc.)
+            if (staticLights[currentZone]) {
+                staticLights[currentZone].forEach(light => {
+                    // Dimmer and slightly smaller cutout so the night feeling remains
+                    drawLightHole(light.x, light.y, light.radius * 1.6, light.intensity * 0.4);
+                });
+            }
 
-        // Window Lights
-        if (typeof windowLights !== 'undefined' && windowLights[currentZone]) {
-            windowLights[currentZone].forEach(light => {
-                // Soft light spilling onto the ground (Increased range)
-                drawLightHole(light.x, light.y, light.radius * 1.8, light.intensity * 0.35);
-            });
+            // Window Lights
+            if (typeof windowLights !== 'undefined' && windowLights[currentZone]) {
+                windowLights[currentZone].forEach(light => {
+                    // Soft light spilling onto the ground (Increased range)
+                    drawLightHole(light.x, light.y, light.radius * 1.8, light.intensity * 0.35);
+                });
+            }
         }
 
         // Boss Fire Spikes
@@ -2335,22 +2348,24 @@ function draw() {
             ctx.fill();
         }
 
-        // Draw soft glowing bulb centers for static lights
-        if (staticLights[currentZone]) {
-            staticLights[currentZone].forEach(light => {
-                // Much softer core so it isn't glaringly bright
-                drawLightCore(light.x, light.y, light.radius * 0.25, 255, 240, 200, 0.4);
-                // Subtler warm glow
-                drawLightCore(light.x, light.y, light.radius * 1.2, 255, 180, 80, 0.15);
-            });
-        }
+        if (timeMode === 2) {
+            // Draw soft glowing bulb centers for static lights
+            if (staticLights[currentZone]) {
+                staticLights[currentZone].forEach(light => {
+                    // Much softer core so it isn't glaringly bright
+                    drawLightCore(light.x, light.y, light.radius * 0.25, 255, 240, 200, 0.4);
+                    // Subtler warm glow
+                    drawLightCore(light.x, light.y, light.radius * 1.2, 255, 180, 80, 0.15);
+                });
+            }
 
-        // Draw warm window spill glow (no tiny bulb core needed)
-        if (typeof windowLights !== 'undefined' && windowLights[currentZone]) {
-            windowLights[currentZone].forEach(light => {
-                // Increased range for window spill
-                drawLightCore(light.x, light.y, light.radius * 1.5, 255, 200, 100, 0.25);
-            });
+            // Draw warm window spill glow (no tiny bulb core needed)
+            if (typeof windowLights !== 'undefined' && windowLights[currentZone]) {
+                windowLights[currentZone].forEach(light => {
+                    // Increased range for window spill
+                    drawLightCore(light.x, light.y, light.radius * 1.5, 255, 200, 100, 0.25);
+                });
+            }
         }
 
         ctx.restore();
