@@ -32,6 +32,8 @@ It's part game, part story, part experience — and it runs entirely in your bro
 | `ESC` | Return to the overworld |
 | `Click` | Attack (3-hit combo system) |
 | `F` | Defend |
+| `N` | Cycle time of day (Day, Evening, Night, Morning) |
+| `M` | Cycle season (Summer, Monsoon, Autumn, Winter) |
 
 ---
 
@@ -173,6 +175,8 @@ Then open `http://localhost:8080` in your browser.
 - 🎨 **Pixel-art interiors** — Hand-crafted 16-bit RPG cutaway backgrounds for every building
 - ⚔️ **Combat system** — 3-hit combo attacks, defend stance, health bars, and NPC encounters
 - 🤖 **AKBOT-E7 companion** — Cinematic intro sequence and contextual building narration
+- ☀️ **Dynamic Seasons & Weather** — Fanning summer god-rays, pouring monsoon rain with procedural puddles, blowing autumn leaves, and frosty winter snowfall
+- 🌙 **Atmospheric Time Engine** — 4-state cycle (Day, Evening, Night, Early Morning) with dynamic breathing color gradients and emissive light cutouts
 - 🖥️ **CRT Lab Terminal** — Browse live project demos with embedded iframes
 - ⚒️ **Workshop Blueprints** — Active projects and stashed concepts with honest reasoning
 - 📚 **Library Book Racks** — Interactive skill display organized by category
@@ -180,7 +184,6 @@ Then open `http://localhost:8080` in your browser.
 - ✉️ **Post Office Letter** — Sealed envelope with wax stamp, paperclip, and contact directory
 - 🔍 **Explore Mode** — Toggle between viewing the interior room art and the interactive overlay
 - 🎬 **Dialogue System** — Click-to-advance narrative with character portraits
-- 💨 **Wind particles** — Ambient particle effects across the overworld
 - 📱 **Zero dependencies** — Pure HTML/CSS/JS, no frameworks
 
 ---
@@ -188,7 +191,8 @@ Then open `http://localhost:8080` in your browser.
 ## 🗺️ Roadmap
 
 - [ ] 🏰 Boss Room encounter with combat mechanics
-- [ ] 🌙 Day/night cycle with dynamic lighting
+- [x] 🌙 Day/night cycle with dynamic lighting
+- [x] 🌦️ Four-season weather system
 - [ ] 🎵 Background music and sound effects
 - [ ] 📱 Mobile touch controls
 - [ ] 🏆 Achievement system

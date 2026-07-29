@@ -10,7 +10,7 @@ let collisionData = [];
 let doorPaintData = [];
 let editMode = false;
 let timeMode = 0; // 0 = day, 1 = evening, 2 = night, 3 = early morning
-let seasonMode = 0; // 0 = Summer, 1 = Monsoon, 2 = Autumn, 3 = Winter
+let seasonMode = 2; // 0 = Summer, 1 = Monsoon, 2 = Autumn, 3 = Winter
 let isDragging = false;
 let paintMode = 1;
 let brushRadius = 0; // 0 = 1x1, 1 = 3x3, 2 = 5x5
