@@ -9,6 +9,7 @@ let currentTileset = new Image();
 let collisionData = [];
 let doorPaintData = [];
 let editMode = false;
+let isNight = true;
 let isDragging = false;
 let paintMode = 1;
 let brushRadius = 0; // 0 = 1x1, 1 = 3x3, 2 = 5x5
@@ -23,6 +24,81 @@ let globalTime = 0;
 let cameraX = 0;
 let cameraY = 0;
 const npcImages = [];
+
+const staticLights = {
+    "town": [
+        { "x": 508, "y": 392, "radius": 150, "intensity": 0.8 },
+        { "x": 676, "y": 392, "radius": 150, "intensity": 0.8 },
+        { "x": 508, "y": 544, "radius": 150, "intensity": 0.8 },
+        { "x": 676, "y": 544, "radius": 150, "intensity": 0.8 },
+        { "x": 1004, "y": 712, "radius": 250, "intensity": 0.8 }
+    ],
+    "school": [
+        { "x": 324, "y": 568, "radius": 150, "intensity": 0.8 },
+        { "x": 184, "y": 584, "radius": 180, "intensity": 0.8 },
+        { "x": 852, "y": 616, "radius": 150, "intensity": 0.8 },
+        { "x": 1100, "y": 696, "radius": 150, "intensity": 0.8 }
+    ],
+    "castle": [
+        { "x": 212, "y": 580, "radius": 150, "intensity": 0.8 },
+        { "x": 300, "y": 580, "radius": 150, "intensity": 0.8 },
+        { "x": 972, "y": 580, "radius": 150, "intensity": 0.8 },
+        { "x": 1068, "y": 580, "radius": 150, "intensity": 0.8 },
+        { "x": 212, "y": 732, "radius": 150, "intensity": 0.8 },
+        { "x": 300, "y": 732, "radius": 150, "intensity": 0.8 },
+        { "x": 964, "y": 736, "radius": 150, "intensity": 0.8 },
+        { "x": 1068, "y": 736, "radius": 150, "intensity": 0.8 },
+        { "x": 212, "y": 840, "radius": 150, "intensity": 0.8 },
+        { "x": 308, "y": 840, "radius": 150, "intensity": 0.8 },
+        { "x": 964, "y": 840, "radius": 150, "intensity": 0.8 },
+        { "x": 1068, "y": 840, "radius": 150, "intensity": 0.8 },
+        { "x": 512, "y": 1056, "radius": 180, "intensity": 0.8 },
+        { "x": 768, "y": 1056, "radius": 180, "intensity": 0.8 }
+    ]
+};
+
+const windowLights = {
+    "town": [
+        { "x": 840, "y": 244, "radius": 96, "intensity": 0.8 },
+        { "x": 840, "y": 300, "radius": 96, "intensity": 0.8 },
+        { "x": 300, "y": 364, "radius": 36, "intensity": 0.8 },
+        { "x": 256, "y": 416, "radius": 48, "intensity": 0.8 },
+        { "x": 344, "y": 416, "radius": 48, "intensity": 0.8 }
+    ],
+    "school": [
+        { "x": 444, "y": 112, "radius": 84, "intensity": 0.8 },
+        { "x": 176, "y": 512, "radius": 96, "intensity": 0.8 },
+        { "x": 328, "y": 516, "radius": 84, "intensity": 0.8 },
+        { "x": 548, "y": 544, "radius": 36, "intensity": 0.8 },
+        { "x": 580, "y": 544, "radius": 36, "intensity": 0.8 },
+        { "x": 712, "y": 544, "radius": 24, "intensity": 0.8 },
+        { "x": 744, "y": 544, "radius": 24, "intensity": 0.8 },
+        { "x": 1056, "y": 556, "radius": 36, "intensity": 0.8 },
+        { "x": 548, "y": 580, "radius": 36, "intensity": 0.8 },
+        { "x": 580, "y": 580, "radius": 36, "intensity": 0.8 },
+        { "x": 712, "y": 576, "radius": 24, "intensity": 0.8 },
+        { "x": 744, "y": 576, "radius": 24, "intensity": 0.8 },
+        { "x": 1084, "y": 620, "radius": 36, "intensity": 0.8 }
+    ],
+    "castle": [
+        { "x": 468, "y": 136, "radius": 24, "intensity": 0.8 },
+        { "x": 516, "y": 136, "radius": 24, "intensity": 0.8 },
+        { "x": 832, "y": 136, "radius": 24, "intensity": 0.8 },
+        { "x": 492, "y": 144, "radius": 36, "intensity": 0.8 },
+        { "x": 788, "y": 140, "radius": 12, "intensity": 0.8 },
+        { "x": 808, "y": 144, "radius": 24, "intensity": 0.8 },
+        { "x": 492, "y": 184, "radius": 48, "intensity": 0.8 },
+        { "x": 640, "y": 180, "radius": 36, "intensity": 0.8 },
+        { "x": 812, "y": 184, "radius": 48, "intensity": 0.8 },
+        { "x": 592, "y": 220, "radius": 36, "intensity": 0.8 },
+        { "x": 688, "y": 220, "radius": 36, "intensity": 0.8 },
+        { "x": 768, "y": 272, "radius": 24, "intensity": 0.8 },
+        { "x": 476, "y": 348, "radius": 36, "intensity": 0.8 },
+        { "x": 544, "y": 348, "radius": 36, "intensity": 0.8 },
+        { "x": 744, "y": 348, "radius": 36, "intensity": 0.8 },
+        { "x": 808, "y": 348, "radius": 36, "intensity": 0.8 }
+    ]
+};
 const npcImageSrcs = ["assets/images/characters/npc1.png", "assets/images/characters/npc2.png", "assets/images/characters/npc3.png", "assets/images/characters/npc4.png"]; // Add as many as you want here
 npcImageSrcs.forEach(src => {
     let img = new Image();
@@ -687,6 +763,10 @@ window.addEventListener("keydown", (e) => {
     let key = e.key.toLowerCase();
     keys[key] = true;
 
+    if (key === 'n') {
+        isNight = !isNight;
+    }
+
     if (key === 't') {
         openDiary();
     }
@@ -1026,29 +1106,21 @@ window.addEventListener("keydown", (e) => {
         if (postOffice) postOffice.style.display = 'none';
         isOverlayActive = false;
     }
-    // Uncomment this block to re-enable Edit Modes!
-    /*
-    if (e.key.toLowerCase() === 'c') {
+    // --- LIGHT SOURCE MODE ---
+    if (e.key.toLowerCase() === 'i') {
         editMode = !editMode;
-        
-        // --- BLUE DOOR MODE ---
-        debugUI.innerText = `DOOR EDIT MODE ON\nDrag to Paint Doors\n'P': Print Array to Console\n'V': Toggle Paint/Erase\n'[' / ']': Brush Size`;
-        debugUI.style.color = "#55f";
-        
-        // --- RED COLLISION MODE ---
-        // Uncomment below and comment above to use Red mode
-        // debugUI.innerText = `EDIT MODE ON\nDrag to Paint\n'V': Toggle Solid/Walkable\n'[' / ']': Brush Size\n'F': Fill All Solid\n'X': Clear All`;
-        // debugUI.style.color = "#f55";
+
+        debugUI.innerText = `LIGHT SOURCE MODE ON\nDrag to Paint Light Centers\n'P': Print Array to Console\n'V': Toggle Paint/Erase\n'[' / ']': Brush Size`;
+        debugUI.style.color = "#ffdd55";
 
         debugUI.style.display = editMode ? 'block' : 'none';
         coordUI.style.display = 'none'; // Not needed anymore
     }
-    */
 
     if (!editMode) return;
 
     if (e.key.toLowerCase() === 'p') {
-        let doors = [];
+        let lights = [];
         let visited = Array.from({ length: doorPaintData.length }, () => Array(doorPaintData[0].length).fill(false));
         for (let r = 0; r < doorPaintData.length; r++) {
             for (let c = 0; c < doorPaintData[0].length; c++) {
@@ -1074,19 +1146,24 @@ window.addEventListener("keydown", (e) => {
                             }
                         }
                     }
-                    doors.push({
-                        x: minC * collisionSize,
-                        y: minR * collisionSize,
-                        w: (maxC - minC + 1) * collisionSize,
-                        h: (maxR - minR + 1) * collisionSize,
-                        id: "custom_door",
-                        text: "Custom Door"
+
+                    const w = (maxC - minC + 1) * collisionSize;
+                    const h = (maxR - minR + 1) * collisionSize;
+                    const cx = (minC * collisionSize) + (w / 2);
+                    const cy = (minR * collisionSize) + (h / 2);
+                    const radius = Math.max(w, h) * 1.5; // Scale radius based on drawn area
+
+                    lights.push({
+                        x: Math.floor(cx),
+                        y: Math.floor(cy),
+                        radius: Math.floor(radius),
+                        intensity: 0.8
                     });
                 }
             }
         }
-        console.log("DOOR CONFIG FOR " + currentZone + ":\n", JSON.stringify(doors, null, 2));
-        alert("Printed Doors array to console! Press F12 to copy it.");
+        console.log("LIGHT CONFIG FOR " + currentZone + ":\n", JSON.stringify(lights, null, 2));
+        alert("Printed Lights array to console! Press F12 to copy it.");
     }
     else if (e.key.toLowerCase() === 'z' && e.ctrlKey) {
         if (undoStack.length > 0) {
@@ -1522,13 +1599,13 @@ function update() {
             if (boss.bossAttackTimer > 0) {
                 boss.bossAttackTimer--;
             } else if (!boss.isAttacking && !boss.isCharging && !boss.isTransitioning) {
-                
+
                 // Transition to Phase 2 after surviving enough spikes OR if boss loses 30% HP
                 if (boss.phase === 1 && (boss.attackCount >= boss.maxPhase1Attacks || boss.hp <= boss.maxHp * 0.7)) {
                     boss.isTransitioning = true;
                     isOverlayActive = true; // Freeze the game
                     boss.frameX = 0; // Stop moving anim
-                    
+
                     speechBubbleSequence = [
                         { entity: boss, text: "Seems like you practiced hard enough..." },
                         { entity: boss, text: "But let's see if you can survive the flames of destruction!" }
@@ -1546,7 +1623,7 @@ function update() {
                     if (boss.attackCount >= 5 || boss.hp <= boss.maxHp * 0.85) {
                         numSpikes = 2 + Math.floor(Math.random() * 2); // 2 or 3 spikes
                     }
-                    
+
                     for (let s = 0; s < numSpikes; s++) {
                         let offsetX = 0;
                         let offsetY = 0;
@@ -1554,7 +1631,7 @@ function update() {
                             offsetX = (Math.random() > 0.5 ? 1 : -1) * (40 + Math.random() * 60);
                             offsetY = (Math.random() > 0.5 ? 1 : -1) * (40 + Math.random() * 60);
                         }
-                        
+
                         bossSpikes.push({
                             x: player.x - 10 + offsetX,
                             y: player.y + player.size - 40 + offsetY, // target near feet
@@ -1566,17 +1643,17 @@ function update() {
                             type: 'spike'
                         });
                     }
-                    
+
                     // Attack timer (speed) decreases for 1-4, and repeats trend for 5-8
-                    let speedIndex = (boss.attackCount - 1) % 4; 
+                    let speedIndex = (boss.attackCount - 1) % 4;
                     boss.bossAttackTimer = 140 - (speedIndex * 20);
                 } else if (boss.phase === 2) {
                     let isCross = false;
-                    
+
                     if (boss.attackCount >= 5 || boss.hp <= boss.maxHp * 0.55) {
                         isCross = true;
                     }
-                    
+
                     if (isCross) {
                         bossSpikes.push({
                             x: player.x - 150 + (player.size / 2),
@@ -1602,7 +1679,7 @@ function update() {
                         });
                     } else {
                         const isHorizontal = (boss.attackCount % 2 === 0);
-                        
+
                         if (isHorizontal) {
                             bossSpikes.push({
                                 x: player.x - 150 + (player.size / 2),
@@ -1629,9 +1706,9 @@ function update() {
                             });
                         }
                     }
-                    
+
                     // Same speed trend as phase 1, but maybe slightly faster base speed since it's fire
-                    let speedIndex = (boss.attackCount - 1) % 4; 
+                    let speedIndex = (boss.attackCount - 1) % 4;
                     boss.bossAttackTimer = 120 - (speedIndex * 20);
                 }
             }
@@ -1923,14 +2000,14 @@ function draw() {
             let fH = 214;
             let sX = 190 + (npc.frameX * fW);
             let sY = 50 + (npc.frameY * fH);
-            
+
             let drawXOffset = 0;
 
             if (npc.isBoss && npc.isAttacking && npc.attackImage && npc.attackImage.complete && npc.attackImage.width > 0) {
                 drawImg = npc.attackImage;
                 sX = 190 + (npc.attackFrame * fW);
                 sY = 50 + (npc.frameY * fH);
-                
+
                 // Fix for left-facing hand clipping and right-side artifacts
                 if (npc.frameY === 1) {
                     sX -= 30; // Shift capture window left to include the hand (sX becomes 160)
@@ -1938,7 +2015,7 @@ function draw() {
                     drawXOffset = -30 * (npc.size / 160); // Shift draw position left so body stays anchored
                 }
             }
-            
+
             const displayWidth = npc.size * (fW / 160);
             const displayHeight = npc.size * (fH / 160);
 
@@ -2032,7 +2109,7 @@ function draw() {
             const pulse = (Math.sin(Date.now() / 150) + 1) / 2;
             ctx.fillStyle = `rgba(255, 0, 0, ${0.15 + pulse * 0.25})`;
             ctx.beginPath();
-            
+
             if (spike.type === 'fire') {
                 ctx.fillRect(spike.x, spike.y, spike.width, spike.height);
                 ctx.strokeStyle = "rgba(255, 0, 0, 0.8)";
@@ -2056,44 +2133,44 @@ function draw() {
             if (spike.state === 'fading') {
                 ctx.globalAlpha = spike.timer / 15;
             }
-            
+
             if (spike.type === 'fire') {
                 if (spike.orientation === 'vertical' && fireVerticalImg.complete && fireVerticalImg.width > 0) {
                     const scale = spike.height / fireVerticalImg.height; // Scale to fit height perfectly
                     const drawWidth = fireVerticalImg.width * scale;
                     const drawHeight = spike.height;
-                    
+
                     const dx = spike.x + (spike.width / 2) - (drawWidth / 2);
                     const dy = spike.y; // Align exactly to the top of the strip to prevent clipping the top flames
-                    
+
                     ctx.save();
                     ctx.beginPath();
                     ctx.rect(spike.x, spike.y, spike.width, spike.height);
                     ctx.clip();
-                    
+
                     // Draw exactly twice to fill gaps, as requested
                     ctx.drawImage(fireVerticalImg, dx, dy, drawWidth, drawHeight);
                     // Second copy shifted down perfectly to interleave in the gaps (~25px for 50px spacing)
                     ctx.drawImage(fireVerticalImg, dx, dy + 25, drawWidth, drawHeight);
-                    
+
                     ctx.restore();
                 } else if (spike.orientation !== 'vertical' && fireImg.complete && fireImg.width > 0) {
                     const targetHeight = 180;
                     const scaleY = targetHeight / fireImg.height;
                     const scaleX = spike.width / fireImg.width;
                     const scale = Math.max(scaleX, scaleY);
-                    
+
                     const drawWidth = fireImg.width * scale;
                     const drawHeight = fireImg.height * scale;
-                    
+
                     const dx = spike.x + (spike.width / 2) - (drawWidth / 2);
                     const dy = spike.y + (spike.height / 2) - (drawHeight / 2);
-                    
+
                     ctx.save();
                     ctx.beginPath();
                     ctx.rect(spike.x, spike.y, spike.width, spike.height);
                     ctx.clip();
-                    
+
                     ctx.drawImage(fireImg, dx, dy, drawWidth, drawHeight);
                     ctx.restore();
                 } else {
@@ -2153,6 +2230,131 @@ function draw() {
         }
         ctx.restore();
     });
+
+    // Draw Night/Lighting Mode
+    if (isNight && (!zoneConfig || zoneConfig.type !== "static")) {
+        // Create offscreen lighting canvas if it doesn't exist
+        if (!window.lightingCanvas) {
+            window.lightingCanvas = document.createElement('canvas');
+            window.lightingCtx = window.lightingCanvas.getContext('2d');
+        }
+        // Resize to match main canvas if needed
+        if (window.lightingCanvas.width !== canvas.width || window.lightingCanvas.height !== canvas.height) {
+            window.lightingCanvas.width = canvas.width;
+            window.lightingCanvas.height = canvas.height;
+        }
+
+        const lightCtx = window.lightingCtx;
+
+        // 1. Clear previous frame and Fill Darkness on offscreen canvas
+        lightCtx.clearRect(0, 0, canvas.width, canvas.height);
+        lightCtx.globalCompositeOperation = "source-over";
+        lightCtx.fillStyle = "rgba(10, 15, 30, 0.97)"; // Darker, moody evening tint
+        lightCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // 2. Punch holes in darkness using destination-out
+        // This ensures that overlapping lights never get brighter than the original daylight map!
+        lightCtx.globalCompositeOperation = "destination-out";
+
+        function drawLightHole(worldX, worldY, radius, intensity) {
+            const screenX = worldX - cameraX;
+            const screenY = worldY - cameraY;
+
+            // Optimization: Don't draw if completely off screen
+            if (screenX < -radius || screenX > canvas.width + radius) return;
+            if (screenY < -radius || screenY > canvas.height + radius) return;
+
+            // Simpler color stops create a more natural, seamless falloff
+            const grad = lightCtx.createRadialGradient(screenX, screenY, 0, screenX, screenY, radius);
+            grad.addColorStop(0, `rgba(0, 0, 0, ${intensity})`);
+            grad.addColorStop(0.3, `rgba(0, 0, 0, ${intensity * 0.7})`);
+            grad.addColorStop(0.7, `rgba(0, 0, 0, ${intensity * 0.2})`);
+            grad.addColorStop(1, `rgba(0, 0, 0, 0)`);
+
+            lightCtx.fillStyle = grad;
+            lightCtx.beginPath();
+            lightCtx.arc(screenX, screenY, radius, 0, Math.PI * 2);
+            lightCtx.fill();
+        }
+
+        // Player's Lantern (Soft dim glow)
+        drawLightHole(player.x + player.size / 2, player.y + player.size / 2, 100, 0.35);
+
+        // Static Lights (Streetlamps, etc.)
+        if (staticLights[currentZone]) {
+            staticLights[currentZone].forEach(light => {
+                // Dimmer and slightly smaller cutout so the night feeling remains
+                drawLightHole(light.x, light.y, light.radius * 1.6, light.intensity * 0.4);
+            });
+        }
+
+        // Window Lights
+        if (typeof windowLights !== 'undefined' && windowLights[currentZone]) {
+            windowLights[currentZone].forEach(light => {
+                // Soft light spilling onto the ground (Increased range)
+                drawLightHole(light.x, light.y, light.radius * 1.8, light.intensity * 0.35);
+            });
+        }
+
+        // Boss Fire Spikes
+        if (typeof bossSpikes !== 'undefined') {
+            bossSpikes.forEach(spike => {
+                if (spike.type === 'fire' && (spike.state === 'active' || spike.state === 'fading')) {
+                    const cx = spike.x + spike.width / 2;
+                    const cy = spike.y + spike.height / 2;
+                    const size = Math.max(spike.width, spike.height) * 1.5;
+                    drawLightHole(cx, cy, Math.max(size, 200), 0.8);
+                }
+            });
+        }
+
+        // Draw the lighting canvas over the main canvas
+        ctx.save();
+        ctx.setTransform(1, 0, 0, 1, 0, 0); // reset transform to draw UI fixed to screen
+        ctx.globalCompositeOperation = "source-over";
+        ctx.drawImage(window.lightingCanvas, 0, 0);
+
+        // 3. Draw Emissive Cores & Warmth
+        // This gives the light source an obvious glowing center so the user knows where the light originates
+        ctx.globalCompositeOperation = "screen";
+
+        function drawLightCore(worldX, worldY, radius, r, g, b, intensity) {
+            const screenX = worldX - cameraX;
+            const screenY = worldY - cameraY;
+            if (screenX < -radius || screenX > canvas.width + radius) return;
+            if (screenY < -radius || screenY > canvas.height + radius) return;
+
+            const grad = ctx.createRadialGradient(screenX, screenY, 0, screenX, screenY, radius);
+            grad.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${intensity})`);
+            grad.addColorStop(0.3, `rgba(${r}, ${g}, ${b}, ${intensity * 0.5})`);
+            grad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(screenX, screenY, radius, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Draw soft glowing bulb centers for static lights
+        if (staticLights[currentZone]) {
+            staticLights[currentZone].forEach(light => {
+                // Much softer core so it isn't glaringly bright
+                drawLightCore(light.x, light.y, light.radius * 0.25, 255, 240, 200, 0.4);
+                // Subtler warm glow
+                drawLightCore(light.x, light.y, light.radius * 1.2, 255, 180, 80, 0.15);
+            });
+        }
+
+        // Draw warm window spill glow (no tiny bulb core needed)
+        if (typeof windowLights !== 'undefined' && windowLights[currentZone]) {
+            windowLights[currentZone].forEach(light => {
+                // Increased range for window spill
+                drawLightCore(light.x, light.y, light.radius * 1.5, 255, 200, 100, 0.25);
+            });
+        }
+
+        ctx.restore();
+    }
 
     // Draw Speech Bubble
     if (currentSpeechBubble) {
@@ -2394,8 +2596,8 @@ let pageFlipInstance = null;
 function openDiary() {
     const overlay = document.getElementById('diary-overlay');
     overlay.style.display = 'flex';
-    isOverlayActive = true; 
-    
+    isOverlayActive = true;
+
     if (!pageFlipInstance) {
         document.getElementById('diary-book').style.opacity = '0';
         initDiary();
@@ -2410,7 +2612,7 @@ document.getElementById('diary-close').addEventListener('click', () => {
 async function initDiary() {
     const bookContainer = document.getElementById('diary-book');
     bookContainer.innerHTML = '';
-    
+
     // Use the official stpageflip HTML structure: data-density="hard"
     let html = `
         <div class="diary-page" data-density="hard">
@@ -2426,7 +2628,7 @@ async function initDiary() {
     try {
         const res = await fetch('assets/trips.json');
         const data = await res.json();
-        
+
         const totalTrips = data.trips.length;
         const yearsCount = {};
         const monthCount = {};
@@ -2442,10 +2644,10 @@ async function initDiary() {
         // Haversine distance function for accurate KM approximation
         const getDistance = (lat1, lon1, lat2, lon2) => {
             const R = 6371;
-            const dLat = (lat2 - lat1) * Math.PI/180;
-            const dLon = (lon2 - lon1) * Math.PI/180; 
-            const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) * Math.sin(dLon/2) * Math.sin(dLon/2); 
-            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         };
 
         data.trips.forEach(trip => {
@@ -2454,7 +2656,7 @@ async function initDiary() {
                 tripDates.push(date.getTime());
                 const year = date.getFullYear();
                 yearsCount[year] = (yearsCount[year] || 0) + 1;
-                
+
                 const month = date.toLocaleString('default', { month: 'short' });
                 monthCount[month] = (monthCount[month] || 0) + 1;
             }
@@ -2477,7 +2679,7 @@ async function initDiary() {
                 trip.places.forEach(p => {
                     const name = p.name ? p.name.trim() : null;
                     if (name) uniquePlaces.add(name);
-                    
+
                     if (p.transportFromPrevious) {
                         let mode = p.transportFromPrevious.toLowerCase();
                         if (mode === 'ferry') mode = 'boat';
@@ -2496,22 +2698,22 @@ async function initDiary() {
                 });
             }
         });
-        
+
         if (shortestTrip === Infinity) shortestTrip = 0;
         const totalPlaces = uniquePlaces.size;
-        const busiestYear = Object.keys(yearsCount).sort((a,b) => yearsCount[b] - yearsCount[a])[0];
-        const peakMonth = Object.keys(monthCount).sort((a,b) => monthCount[b] - monthCount[a])[0];
-        const topTransport = Object.entries(transportCount).sort((a,b) => b[1] - a[1]).map(t => t[0]).join(', ') || 'Various';
+        const busiestYear = Object.keys(yearsCount).sort((a, b) => yearsCount[b] - yearsCount[a])[0];
+        const peakMonth = Object.keys(monthCount).sort((a, b) => monthCount[b] - monthCount[a])[0];
+        const topTransport = Object.entries(transportCount).sort((a, b) => b[1] - a[1]).map(t => t[0]).join(', ') || 'Various';
         const yearsTraveled = Object.keys(yearsCount).length || 1;
-        
+
         const avgTripsYear = (totalTrips / yearsTraveled).toFixed(1);
         const avgPlacesTrip = (totalPlacesCount / (totalTrips || 1)).toFixed(1);
         const avgDaysTrip = (totalDays / (totalTrips || 1)).toFixed(1);
 
-        tripDates.sort((a,b) => a - b);
+        tripDates.sort((a, b) => a - b);
         let longestGap = 0;
         for (let i = 1; i < tripDates.length; i++) {
-            const gap = Math.round((tripDates[i] - tripDates[i-1]) / (1000 * 60 * 60 * 24));
+            const gap = Math.round((tripDates[i] - tripDates[i - 1]) / (1000 * 60 * 60 * 24));
             if (gap > longestGap) longestGap = gap;
         }
 
@@ -2597,12 +2799,12 @@ async function initDiary() {
         data.trips.forEach((trip, index) => {
             const placesArray = trip.places ? [...new Set(trip.places.map(p => p.name))] : [];
             const columnStyle = placesArray.length > 10 ? 'column-count: 2; column-gap: 15px;' : '';
-            const placesHtml = placesArray.length > 0 
+            const placesHtml = placesArray.length > 0
                 ? `<ul style="list-style-type: square; padding-left: 20px; margin: 5px 0 0 0; font-size: 12px; line-height: 1.3; ${columnStyle}">` + placesArray.map(p => `<li style="break-inside: avoid-column;">${p}</li>`).join('') + `</ul>`
                 : '<div style="font-size: 12px; margin-top: 5px;">No places recorded</div>';
 
             const coverHtml = trip.coverImage ? `<img src="${trip.coverImage}" class="diary-img" alt="${trip.title}" style="width: 100%; height: 160px; object-fit: cover; margin: 10px 0; border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">` : '';
-            
+
             html += `
                 <div class="diary-page">
                     <div class="diary-page-content" style="background-color: #fdf6e3; height: 100%; padding: 20px; color: #3b3024; font-family: 'Special Elite', cursive; overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column;">
@@ -2618,7 +2820,7 @@ async function initDiary() {
                 </div>
             `;
         });
-        
+
         // Add blank page if odd number of internal pages
         if (data.trips.length % 2 !== 0) {
             html += `
@@ -2672,7 +2874,7 @@ async function initDiary() {
         let isFlipping = false;
         document.getElementById('diary-overlay').addEventListener('wheel', (e) => {
             if (isFlipping || !pageFlipInstance) return;
-            
+
             if (Math.abs(e.deltaY) > 30) {
                 isFlipping = true;
                 if (e.deltaY > 0) {
@@ -2680,7 +2882,7 @@ async function initDiary() {
                 } else {
                     pageFlipInstance.flipPrev();
                 }
-                
+
                 // Debounce to prevent multiple pages flipping at once
                 setTimeout(() => {
                     isFlipping = false;
