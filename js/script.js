@@ -91,6 +91,8 @@ let bossFightActive = false;
 let bossSpikes = [];
 const spikeImg = new Image();
 spikeImg.src = 'assets/images/fx/spikes.png';
+const fireImg = new Image();
+fireImg.src = 'assets/images/fx/fire.png';
 
 function advanceSpeechBubble() {
     if (!speechBubbleSequence) return;
@@ -104,6 +106,11 @@ function advanceSpeechBubble() {
         const boss = npcs.find(n => n.isBoss);
         if (boss) {
             boss.bossAttackTimer = 60; // Start attacking in 1 second
+            if (boss.isTransitioning) {
+                boss.phase = 2;
+                boss.isTransitioning = false;
+                boss.bossAttackTimer = 40; // Quick attack after dialogue
+            }
         }
 
         return;
@@ -948,7 +955,11 @@ window.addEventListener("keydown", (e) => {
                         directionTimer: 999999, // Prevent random movement
                         isBoss: true,
                         image: bossImg,
-                        attackImage: bossAttackImg
+                        attackImage: bossAttackImg,
+                        phase: 1,
+                        attackCount: 0,
+                        maxPhase1Attacks: Math.floor(Math.random() * 3) + 6,
+                        isTransitioning: false
                     };
 
                     // Clear other NPCs and add Boss
@@ -1502,21 +1513,69 @@ function update() {
 
             if (boss.bossAttackTimer > 0) {
                 boss.bossAttackTimer--;
-            } else if (!boss.isAttacking && !boss.isCharging) {
-                boss.isCharging = true; // start charging (static old image)
+            } else if (!boss.isAttacking && !boss.isCharging && !boss.isTransitioning) {
+                
+                // Transition to Phase 2 after surviving enough spikes
+                if (boss.phase === 1 && boss.attackCount >= boss.maxPhase1Attacks) {
+                    boss.isTransitioning = true;
+                    isOverlayActive = true; // Freeze the game
+                    boss.frameX = 0; // Stop moving anim
+                    
+                    speechBubbleSequence = [
+                        { entity: boss, text: "Seems like you practiced hard enough..." },
+                        { entity: boss, text: "But let's see if you can survive the flames of destruction!" }
+                    ];
+                    speechBubbleIndex = 0;
+                    advanceSpeechBubble();
+                    return; // Skip normal attack logic this frame
+                }
 
-                // Spawn a spike warning under the player
-                bossSpikes.push({
-                    x: player.x - 10,
-                    y: player.y + player.size - 40, // target near feet
-                    width: 70,
-                    height: 70,
-                    state: 'warning',
-                    timer: 60, // 1 second warning at 60fps
-                    damage: 25
-                });
-                // Randomize next attack between 2 and 4 seconds
-                boss.bossAttackTimer = 120 + Math.random() * 120;
+                boss.isCharging = true; // start charging (static old image)
+                boss.attackCount++;
+
+                if (boss.phase === 1) {
+                    // Spawn a spike warning under the player
+                    bossSpikes.push({
+                        x: player.x - 10,
+                        y: player.y + player.size - 40, // target near feet
+                        width: 70,
+                        height: 70,
+                        state: 'warning',
+                        timer: 60, // 1 second warning at 60fps
+                        damage: 25,
+                        type: 'spike'
+                    });
+                    // Randomize next attack between 2 and 4 seconds
+                    boss.bossAttackTimer = 120 + Math.random() * 120;
+                } else if (boss.phase === 2) {
+                    // Fire stripe: randomly horizontal or vertical
+                    const isHorizontal = Math.random() > 0.5;
+                    if (isHorizontal) {
+                        bossSpikes.push({
+                            x: player.x - 400,
+                            y: player.y + player.size - 30,
+                            width: 800 + player.size, // Very long horizontal stripe
+                            height: 60,
+                            state: 'warning',
+                            timer: 50, // Slightly faster warning
+                            damage: 35,
+                            type: 'fire'
+                        });
+                    } else {
+                        bossSpikes.push({
+                            x: player.x - 10,
+                            y: player.y - 400,
+                            width: 60,
+                            height: 800 + player.size, // Very long vertical stripe
+                            state: 'warning',
+                            timer: 50, // Slightly faster warning
+                            damage: 35,
+                            type: 'fire'
+                        });
+                    }
+                    // Faster attacks in phase 2
+                    boss.bossAttackTimer = 90 + Math.random() * 90; 
+                }
             }
         } else if (!boss || boss.hp <= 0) {
             bossFightActive = false; // Boss is dead
@@ -1907,7 +1966,7 @@ function draw() {
         });
     }
 
-    // Draw Boss Spikes
+    // Draw Boss Spikes & Fire
     bossSpikes.forEach(spike => {
         ctx.save();
         if (spike.state === 'warning') {
@@ -1915,67 +1974,85 @@ function draw() {
             const pulse = (Math.sin(Date.now() / 150) + 1) / 2;
             ctx.fillStyle = `rgba(255, 0, 0, ${0.15 + pulse * 0.25})`;
             ctx.beginPath();
-            // Draw an ellipse on the ground
-            ctx.ellipse(spike.x + spike.width / 2, spike.y + spike.height / 2, spike.width / 2, spike.height / 3, 0, 0, Math.PI * 2);
-            ctx.fill();
+            
+            if (spike.type === 'fire') {
+                ctx.fillRect(spike.x, spike.y, spike.width, spike.height);
+                ctx.strokeStyle = "rgba(255, 0, 0, 0.8)";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(spike.x, spike.y, spike.width, spike.height);
+            } else {
+                // Draw an ellipse on the ground
+                ctx.ellipse(spike.x + spike.width / 2, spike.y + spike.height / 2, spike.width / 2, spike.height / 3, 0, 0, Math.PI * 2);
+                ctx.fill();
 
-            // Draw an expanding ring
-            ctx.strokeStyle = "rgba(255, 0, 0, 0.8)";
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            const ringSize = spike.width / 2 * (1 - spike.timer / 60);
-            ctx.ellipse(spike.x + spike.width / 2, spike.y + spike.height / 2, ringSize, ringSize * 0.66, 0, 0, Math.PI * 2);
-            ctx.stroke();
+                // Draw an expanding ring
+                ctx.strokeStyle = "rgba(255, 0, 0, 0.8)";
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                const ringSize = spike.width / 2 * (1 - spike.timer / 60);
+                ctx.ellipse(spike.x + spike.width / 2, spike.y + spike.height / 2, ringSize, ringSize * 0.66, 0, 0, Math.PI * 2);
+                ctx.stroke();
+            }
 
         } else if (spike.state === 'active' || spike.state === 'fading') {
             if (spike.state === 'fading') {
                 ctx.globalAlpha = spike.timer / 15;
             }
-            if (spikeImg.complete && spikeImg.width > 0) {
-                // Draw spike image
-                ctx.drawImage(spikeImg, spike.x - 10, spike.y - 20, spike.width + 20, spike.height + 20);
+            
+            if (spike.type === 'fire') {
+                if (fireImg.complete && fireImg.width > 0) {
+                    ctx.drawImage(fireImg, spike.x, spike.y - 40, spike.width, spike.height + 40);
+                } else {
+                    ctx.fillStyle = "rgba(255, 100, 0, 0.8)";
+                    ctx.fillRect(spike.x, spike.y, spike.width, spike.height);
+                }
             } else {
-                // Draw a grid of upright metallic spikes
-                const rows = 4;
-                const cols = 5;
-                const spikeBaseWidth = 8;
-                const spikeHeight = 18;
+                if (spikeImg.complete && spikeImg.width > 0) {
+                    // Draw spike image
+                    ctx.drawImage(spikeImg, spike.x - 10, spike.y - 20, spike.width + 20, spike.height + 20);
+                } else {
+                    // Draw a grid of upright metallic spikes
+                    const rows = 4;
+                    const cols = 5;
+                    const spikeBaseWidth = 8;
+                    const spikeHeight = 18;
 
-                // Draw cracked earth base
-                const cx = spike.x + spike.width / 2;
-                const cy = spike.y + spike.height / 2;
-                ctx.fillStyle = "#4a3b2c";
-                ctx.beginPath();
-                ctx.ellipse(cx, cy + 5, spike.width * 0.45, spike.height * 0.35, 0, 0, Math.PI * 2);
-                ctx.fill();
+                    // Draw cracked earth base
+                    const cx = spike.x + spike.width / 2;
+                    const cy = spike.y + spike.height / 2;
+                    ctx.fillStyle = "#4a3b2c";
+                    ctx.beginPath();
+                    ctx.ellipse(cx, cy + 5, spike.width * 0.45, spike.height * 0.35, 0, 0, Math.PI * 2);
+                    ctx.fill();
 
-                // Draw grid of spikes from back to front
-                for (let r = 0; r < rows; r++) {
-                    const py = spike.y + 20 + (r * 12);
-                    for (let c = 0; c < cols; c++) {
-                        const px = spike.x + 10 + (c * 12);
+                    // Draw grid of spikes from back to front
+                    for (let r = 0; r < rows; r++) {
+                        const py = spike.y + 20 + (r * 12);
+                        for (let c = 0; c < cols; c++) {
+                            const px = spike.x + 10 + (c * 12);
 
-                        // Spike base rim
-                        ctx.fillStyle = "#33383d";
-                        ctx.beginPath();
-                        ctx.ellipse(px + spikeBaseWidth / 2, py, spikeBaseWidth / 2 + 1, 3, 0, 0, Math.PI * 2);
-                        ctx.fill();
+                            // Spike base rim
+                            ctx.fillStyle = "#33383d";
+                            ctx.beginPath();
+                            ctx.ellipse(px + spikeBaseWidth / 2, py, spikeBaseWidth / 2 + 1, 3, 0, 0, Math.PI * 2);
+                            ctx.fill();
 
-                        // Left side (highlight)
-                        ctx.fillStyle = "#9ca5b0";
-                        ctx.beginPath();
-                        ctx.moveTo(px, py);
-                        ctx.lineTo(px + spikeBaseWidth / 2, py - spikeHeight);
-                        ctx.lineTo(px + spikeBaseWidth / 2, py + 2);
-                        ctx.fill();
+                            // Left side (highlight)
+                            ctx.fillStyle = "#9ca5b0";
+                            ctx.beginPath();
+                            ctx.moveTo(px, py);
+                            ctx.lineTo(px + spikeBaseWidth / 2, py - spikeHeight);
+                            ctx.lineTo(px + spikeBaseWidth / 2, py + 2);
+                            ctx.fill();
 
-                        // Right side (shadow)
-                        ctx.fillStyle = "#5c656d";
-                        ctx.beginPath();
-                        ctx.moveTo(px + spikeBaseWidth / 2, py - spikeHeight);
-                        ctx.lineTo(px + spikeBaseWidth, py);
-                        ctx.lineTo(px + spikeBaseWidth / 2, py + 2);
-                        ctx.fill();
+                            // Right side (shadow)
+                            ctx.fillStyle = "#5c656d";
+                            ctx.beginPath();
+                            ctx.moveTo(px + spikeBaseWidth / 2, py - spikeHeight);
+                            ctx.lineTo(px + spikeBaseWidth, py);
+                            ctx.lineTo(px + spikeBaseWidth / 2, py + 2);
+                            ctx.fill();
+                        }
                     }
                 }
             }
