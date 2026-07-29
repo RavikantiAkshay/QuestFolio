@@ -2006,26 +2006,22 @@ function draw() {
             
             if (spike.type === 'fire') {
                 if (spike.orientation === 'vertical' && fireVerticalImg.complete && fireVerticalImg.width > 0) {
-                    const targetWidth = 180;
-                    const scale = targetWidth / fireVerticalImg.width;
+                    const scale = spike.height / fireVerticalImg.height; // Scale to fit height perfectly
                     const drawWidth = fireVerticalImg.width * scale;
-                    const drawHeight = fireVerticalImg.height * scale;
+                    const drawHeight = spike.height;
                     
                     const dx = spike.x + (spike.width / 2) - (drawWidth / 2);
+                    const dy = spike.y; // Align exactly to the top of the strip to prevent clipping the top flames
                     
                     ctx.save();
                     ctx.beginPath();
                     ctx.rect(spike.x, spike.y, spike.width, spike.height);
                     ctx.clip();
                     
-                    // Draw multiple overlapping copies to reduce vertical spacing
-                    const stepY = drawHeight * 0.35; // 65% overlap
-                    const numCopies = Math.ceil(spike.height / stepY) + 1;
-                    
-                    for (let i = 0; i <= numCopies; i++) {
-                        let dy = spike.y + (i * stepY) - (drawHeight * 0.2);
-                        ctx.drawImage(fireVerticalImg, dx, dy, drawWidth, drawHeight);
-                    }
+                    // Draw exactly twice to fill gaps, as requested
+                    ctx.drawImage(fireVerticalImg, dx, dy, drawWidth, drawHeight);
+                    // Second copy shifted down perfectly to interleave in the gaps (~25px for 50px spacing)
+                    ctx.drawImage(fireVerticalImg, dx, dy + 25, drawWidth, drawHeight);
                     
                     ctx.restore();
                 } else if (spike.orientation !== 'vertical' && fireImg.complete && fireImg.width > 0) {
