@@ -1551,7 +1551,7 @@ function update() {
                     // Randomize next attack between 2 and 4 seconds
                     boss.bossAttackTimer = 120 + Math.random() * 120;
                 } else if (boss.phase === 2) {
-                    const isHorizontal = Math.random() > 0.5;
+                    const isHorizontal = (boss.attackCount % 2 === 0);
                     
                     if (isHorizontal) {
                         bossSpikes.push({
@@ -2006,37 +2006,43 @@ function draw() {
             
             if (spike.type === 'fire') {
                 if (spike.orientation === 'vertical' && fireVerticalImg.complete && fireVerticalImg.width > 0) {
-                    const drawWidth = 180;
-                    const scale = drawWidth / fireVerticalImg.width;
-                    const nativeTileHeight = fireVerticalImg.height * scale;
+                    const targetWidth = 180;
+                    const scaleX = targetWidth / fireVerticalImg.width;
+                    const scaleY = spike.height / fireVerticalImg.height;
+                    const scale = Math.max(scaleX, scaleY);
                     
-                    const numTiles = Math.round(spike.height / nativeTileHeight) || 1;
-                    const tileHeight = spike.height / numTiles;
+                    const drawWidth = fireVerticalImg.width * scale;
+                    const drawHeight = fireVerticalImg.height * scale;
                     
-                    for (let t = 0; t < numTiles; t++) {
-                        ctx.drawImage(
-                            fireVerticalImg,
-                            0, 0, fireVerticalImg.width, fireVerticalImg.height,
-                            spike.x - (drawWidth / 2) + (spike.width / 2), spike.y + (t * tileHeight),
-                            drawWidth, tileHeight
-                        );
-                    }
+                    const dx = spike.x + (spike.width / 2) - (drawWidth / 2);
+                    const dy = spike.y + (spike.height / 2) - (drawHeight / 2);
+                    
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.rect(spike.x, spike.y, spike.width, spike.height);
+                    ctx.clip();
+                    
+                    ctx.drawImage(fireVerticalImg, dx, dy, drawWidth, drawHeight);
+                    ctx.restore();
                 } else if (spike.orientation !== 'vertical' && fireImg.complete && fireImg.width > 0) {
-                    const drawHeight = 180;
-                    const scale = drawHeight / fireImg.height;
-                    const nativeTileWidth = fireImg.width * scale;
+                    const targetHeight = 180;
+                    const scaleY = targetHeight / fireImg.height;
+                    const scaleX = spike.width / fireImg.width;
+                    const scale = Math.max(scaleX, scaleY);
                     
-                    const numTiles = Math.round(spike.width / nativeTileWidth) || 1;
-                    const tileWidth = spike.width / numTiles;
+                    const drawWidth = fireImg.width * scale;
+                    const drawHeight = fireImg.height * scale;
                     
-                    for (let t = 0; t < numTiles; t++) {
-                        ctx.drawImage(
-                            fireImg, 
-                            0, 0, fireImg.width, fireImg.height, 
-                            spike.x + (t * tileWidth), spike.y - (drawHeight / 2) + (spike.height / 2), 
-                            tileWidth, drawHeight
-                        );
-                    }
+                    const dx = spike.x + (spike.width / 2) - (drawWidth / 2);
+                    const dy = spike.y + (spike.height / 2) - (drawHeight / 2);
+                    
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.rect(spike.x, spike.y, spike.width, spike.height);
+                    ctx.clip();
+                    
+                    ctx.drawImage(fireImg, dx, dy, drawWidth, drawHeight);
+                    ctx.restore();
                 } else {
                     ctx.fillStyle = "rgba(255, 100, 0, 0.8)";
                     ctx.fillRect(spike.x, spike.y, spike.width, spike.height);
