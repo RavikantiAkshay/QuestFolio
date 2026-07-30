@@ -1542,6 +1542,15 @@ function isWalkable(nextX, nextY, entitySize = player.size, ignoreEntity = null)
 }
 
 function update() {
+    if (player.hp <= 0) {
+        const gameOverOverlay = document.getElementById('game-over-overlay');
+        if (gameOverOverlay && gameOverOverlay.style.display !== 'flex') {
+            gameOverOverlay.style.display = 'flex';
+            isOverlayActive = true;
+        }
+        return; // Freeze game
+    }
+
     if (isOverlayActive) return; // Freeze game when reading
 
     // Update interactables
