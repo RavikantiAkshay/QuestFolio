@@ -1787,8 +1787,8 @@ function update() {
                     speechBubbleIndex = 0;
                     advanceSpeechBubble();
                     return;
-                } else if (boss.phase === 3 && (boss.attackCount >= 15 || boss.hp <= boss.maxHp * 0.15)) {
-                    // Transition to Phase 4 (Rage Phase) after 15 voids/missiles OR if boss loses 85% HP
+                } else if (boss.phase === 3 && (boss.attackCount >= 15 || boss.hp <= boss.maxHp * 0.10)) {
+                    // Transition to Phase 4 (Rage Phase) after 15 voids/missiles OR if boss HP <= 10%
                     boss.isTransitioning = true;
                     isOverlayActive = true;
                     boss.frameX = 0;
