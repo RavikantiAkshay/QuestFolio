@@ -1995,6 +1995,15 @@ function update() {
             }
         } else if (!boss || boss.hp <= 0) {
             bossFightActive = false; // Boss is dead
+            blackHoles.length = 0;
+            bossSpikes.length = 0;
+            bossMissiles.length = 0;
+
+            const victoryOverlay = document.getElementById('victory-overlay');
+            if (victoryOverlay && victoryOverlay.style.display !== 'flex') {
+                victoryOverlay.style.display = 'flex';
+                isOverlayActive = true;
+            }
         }
     }
 
