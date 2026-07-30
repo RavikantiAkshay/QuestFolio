@@ -11,6 +11,56 @@ let doorPaintData = [];
 let editMode = false;
 let timeMode = 0; // 0 = day, 1 = evening, 2 = night, 3 = early morning
 let seasonMode = 2; // 0 = Summer, 1 = Monsoon, 2 = Autumn, 3 = Winter
+
+// Initialize Time and Season based on IST (Hyderabad)
+function initializeRealTimeEnvironment() {
+    try {
+        const formatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'Asia/Kolkata',
+            hour: 'numeric',
+            month: 'numeric',
+            hour12: false
+        });
+        const parts = formatter.formatToParts(new Date());
+        let currentHour = 12;
+        let currentMonth = 1;
+        
+        parts.forEach(part => {
+            if (part.type === 'hour') {
+                currentHour = parseInt(part.value);
+                if (currentHour === 24) currentHour = 0; // Some browsers return 24 instead of 0
+            }
+            if (part.type === 'month') {
+                currentMonth = parseInt(part.value);
+            }
+        });
+
+        // Determine Time of Day
+        if (currentHour >= 4 && currentHour < 7) {
+            timeMode = 3; // Early Morning
+        } else if (currentHour >= 7 && currentHour < 17) {
+            timeMode = 0; // Day
+        } else if (currentHour >= 17 && currentHour < 19) {
+            timeMode = 1; // Evening
+        } else {
+            timeMode = 2; // Night
+        }
+
+        // Determine Season
+        if (currentMonth >= 3 && currentMonth <= 5) {
+            seasonMode = 0; // Summer
+        } else if (currentMonth >= 6 && currentMonth <= 9) {
+            seasonMode = 1; // Monsoon
+        } else if (currentMonth >= 10 && currentMonth <= 11) {
+            seasonMode = 2; // Autumn
+        } else {
+            seasonMode = 3; // Winter
+        }
+    } catch (e) {
+        console.error("Could not set IST timezone, falling back to defaults.");
+    }
+}
+initializeRealTimeEnvironment();
 let isDragging = false;
 let paintMode = 1;
 let brushRadius = 0; // 0 = 1x1, 1 = 3x3, 2 = 5x5
