@@ -33,7 +33,7 @@
     <div id="interior-overlay" style="display: none;">
         <div class="interior-background" id="interior-bg"></div>
         <div class="interior-interactive-layer">
-            <div id="diary-hotspot" class="diary-hotspot" style="display: none;" title="Read Travel Diary" onclick="openDiary()"></div>
+            <div id="diary-hotspot" class="diary-hotspot" style="display: none;" title="Read Travel Diary"></div>
         </div>
         <div class="interior-buttons">
             <button class="interior-btn" id="interior-explore"><span class="x">🔍</span> Explore Home</button>
@@ -370,9 +370,9 @@
 
     <!-- Diary Overlay -->
     <div id="diary-overlay"
-        style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; align-items: center; justify-content: center; background: rgba(0,0,0,0.85); flex-direction: column;">
+        style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 900; align-items: center; justify-content: center; background: rgba(0,0,0,0.85); flex-direction: column;">
         <button id="diary-close"
-            style="position: absolute; top: 20px; right: 20px; font-size: 20px; padding: 10px 20px; cursor: pointer; background: #333; color: white; border: 2px solid white; font-family: 'Share Tech Mono', monospace; z-index: 110;">✕
+            style="position: absolute; top: 20px; right: 20px; font-size: 20px; padding: 10px 20px; cursor: pointer; background: #333; color: white; border: 2px solid white; font-family: 'Share Tech Mono', monospace; z-index: 910;">✕
             CLOSE DIARY</button>
         <div id="diary-book" class="diary-book" style="width: 800px; height: 550px;">
             <!-- Pages will be injected dynamically -->

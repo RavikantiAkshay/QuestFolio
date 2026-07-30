@@ -206,6 +206,16 @@ const interiorTitle = document.getElementById('interior-title');
 const interiorBody = document.getElementById('interior-body');
 const interiorClose = document.getElementById('interior-close');
 const interiorExplore = document.getElementById('interior-explore');
+// Click listener for diary hotspot
+const diaryHotspot = document.getElementById('diary-hotspot');
+if (diaryHotspot) {
+    diaryHotspot.addEventListener('click', (e) => {
+        // Prevent click from bubbling up and doing weird things
+        e.stopPropagation(); 
+        openDiary();
+    });
+}
+
 // Click logger to find diary coordinates
 interiorOverlay.addEventListener('click', (e) => {
     if (activeInteractable && activeInteractable.id === 'home' && isExploringInterior) {
