@@ -1936,7 +1936,7 @@ function update() {
                         // Spin player visually IN PLACE
                         player.x = bh.x - player.size / 2;
                         player.y = bh.y - player.size / 2;
-                        player.trappedRotation = (player.trappedRotation || 0) + 0.3; // rotate like a top
+                        player.trappedRotation = (player.trappedRotation || 0) + 0.1; // rotate slower like a top
                         
                         if (player.trappedTimer <= 0 || bh.lifetime <= 0) { // release if timer ends or hole fades
                             player.isTrapped = false;
@@ -2429,7 +2429,7 @@ function draw() {
             let radiusX = bh.radius * 0.5;
             let radiusY = bh.radius * 0.9; // Vertical shape
             ctx.ellipse(0, 0, radiusX, radiusY, 0, 0, Math.PI * 2);
-            ctx.fillStyle = "#050011";
+            ctx.fillStyle = "rgba(5, 0, 17, 0.4)"; // semi-transparent black
             ctx.fill();
 
             // Inner glowing ring (Vertical Ellipse) - NOT ROTATING
