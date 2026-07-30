@@ -230,6 +230,7 @@ let speechBubbleIndex = 0;
 let bossFightActive = false;
 let bossSpikes = [];
 let blackHoles = []; // Added for testing Phase 3
+let bossMissiles = []; // Added for homing missiles
 const spikeImg = new Image();
 spikeImg.src = 'assets/images/fx/spikes.png';
 const fireImg = new Image();
@@ -1782,7 +1783,7 @@ function update() {
                 boss.isCharging = true; // start charging (static old image)
                 boss.attackCount++;
 
-                if (boss.phase === 1) { // Restored Phase 1
+                if (false && boss.phase === 1) { // Commented out Phase 1 for Missile testing
                     let numSpikes = 1;
                     if (boss.attackCount >= 5 || boss.hp <= boss.maxHp * 0.85) {
                         numSpikes = 2 + Math.floor(Math.random() * 2); // 2 or 3 spikes
@@ -1811,7 +1812,7 @@ function update() {
                     // Attack timer (speed) decreases for 1-4, and repeats trend for 5-8
                     let speedIndex = (boss.attackCount - 1) % 4;
                     boss.bossAttackTimer = 140 - (speedIndex * 20);
-                } else if (boss.phase === 2) { // Restored Phase 2
+                } else if (false && boss.phase === 2) { // Commented out Phase 2 for Missile testing
                     let isCross = false;
 
                     if (boss.attackCount >= 5 || boss.hp <= boss.maxHp * 0.55) {
@@ -1874,7 +1875,7 @@ function update() {
                     // Same speed trend as phase 1, but maybe slightly faster base speed since it's fire
                     let speedIndex = (boss.attackCount - 1) % 4;
                     boss.bossAttackTimer = 120 - (speedIndex * 20);
-                } else if (boss.phase === 3) {
+                } else if (false && boss.phase === 3) { // Commented out Phase 3 for Missile testing
                     // Summon one black hole directly under the player
                     blackHoles.push({ 
                         x: player.x + player.size / 2, 
@@ -1887,6 +1888,28 @@ function update() {
                         lifetime: 180 // 3 seconds active
                     });
                     boss.bossAttackTimer = 160; // constant cooldown speed for phase 3
+                } else if (true) { // FORCED MISSILE TESTING
+                    bossMissiles.push({
+                        x: boss.x + boss.size / 2, // spawn at boss center
+                        y: boss.y + boss.size / 2,
+                        width: 15, // size of missile
+                        height: 15,
+                        speed: 3.5, // slightly faster than player to apply pressure
+                        damage: 15,
+                        angle: Math.random() * Math.PI * 2, // start pointing randomly
+                        lifetime: 240 // max lifetime 4 seconds
+                    });
+                    boss.bossAttackTimer = 100; // constant cooldown for missile test
+                    
+                    // Instant attack, skip charging phase
+                    boss.isCharging = false;
+                    boss.isAttacking = true;
+                    boss.attackFrame = (boss.frameY === 1) ? 0 : 1;
+                    
+                    // Reset attacking state after a short delay so he can move again
+                    setTimeout(() => {
+                        if (boss && boss.isAttacking) boss.isAttacking = false;
+                    }, 500);
                 }
             }
         } else if (!boss || boss.hp <= 0) {
@@ -2027,6 +2050,44 @@ function update() {
             }
         } else if (spike.state === 'fading' && spike.timer <= 0) {
             bossSpikes.splice(i, 1);
+        }
+    }
+
+    // Update Boss Missiles
+    for (let i = bossMissiles.length - 1; i >= 0; i--) {
+        let m = bossMissiles[i];
+        m.lifetime--;
+        
+        if (bossFightActive) {
+            let dx = (player.x + player.size / 2) - m.x;
+            let dy = (player.y + player.size / 2) - m.y;
+            let targetAngle = Math.atan2(dy, dx);
+            
+            // Smoothly rotate towards player
+            let angleDiff = targetAngle - m.angle;
+            // Normalize angle difference to -PI to PI
+            angleDiff = (angleDiff + Math.PI * 3) % (2 * Math.PI) - Math.PI;
+            
+            m.angle += Math.sign(angleDiff) * Math.min(Math.abs(angleDiff), 0.04); // max turn speed (0.04 limits turning sharpness)
+        }
+        
+        // Move forward constantly
+        m.x += Math.cos(m.angle) * m.speed;
+        m.y += Math.sin(m.angle) * m.speed;
+
+        // Collision check
+        let mBox = { x: m.x - m.width/2, y: m.y - m.height/2, w: m.width, h: m.height };
+        let playerBox = { x: player.x, y: player.y, w: player.size, h: player.size };
+        if (rectIntersect(mBox, playerBox)) {
+            if (!player.isDefending) {
+                player.hp -= m.damage;
+                if (player.hp < 0) player.hp = 0;
+                player.hurtTimer = 30;
+            }
+            bossMissiles.splice(i, 1);
+            screenShake = 10;
+        } else if (m.lifetime <= 0) {
+            bossMissiles.splice(i, 1);
         }
     }
 
@@ -2588,6 +2649,109 @@ function draw() {
                 }
             }
         }
+        ctx.restore();
+    });
+
+    // Draw Boss Missiles
+    bossMissiles.forEach(m => {
+        ctx.save();
+        ctx.translate(m.x, m.y);
+        ctx.rotate(m.angle);
+        
+        const scale = 0.55;
+        ctx.scale(scale, scale);
+
+        // 1. Draw thick white outline by drawing the silhouette
+        ctx.lineJoin = 'round';
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = '#ffffff';
+
+        // Outer silhouette path
+        ctx.beginPath();
+        ctx.moveTo(35, 0); // Nose tip
+        ctx.lineTo(15, -7); // Body top
+        ctx.lineTo(-5, -7); // Fin start top
+        ctx.lineTo(-20, -25); // Fin tip top
+        ctx.lineTo(-15, -7); // Fin end top
+        ctx.lineTo(-25, -7); // Base top
+        ctx.lineTo(-25, 7); // Base bottom
+        ctx.lineTo(-15, 7); // Fin end bottom
+        ctx.lineTo(-20, 25); // Fin tip bottom
+        ctx.lineTo(-5, 7); // Fin start bottom
+        ctx.lineTo(15, 7); // Body bottom
+        ctx.closePath();
+        ctx.stroke();
+
+        // 2. Red Fins
+        ctx.fillStyle = "#C32313";
+        ctx.beginPath();
+        // Top fin
+        ctx.moveTo(-5, -7);
+        ctx.lineTo(-20, -25);
+        ctx.lineTo(-15, -7);
+        ctx.closePath();
+        ctx.fill();
+        // Bottom fin
+        ctx.beginPath();
+        ctx.moveTo(-5, 7);
+        ctx.lineTo(-20, 25);
+        ctx.lineTo(-15, 7);
+        ctx.closePath();
+        ctx.fill();
+
+        // 3. Yellow Base (thruster section)
+        ctx.fillStyle = "#C09419";
+        ctx.fillRect(-25, -7, 10, 14);
+
+        // 4. Main Yellow Body
+        ctx.fillStyle = "#F6C824";
+        ctx.fillRect(-15, -7, 30, 14);
+
+        // 5. Red Stripe
+        ctx.fillStyle = "#B21E14";
+        ctx.fillRect(0, -7, 6, 14);
+
+        // 6. Orange Nose Cone
+        ctx.fillStyle = "#E97D02";
+        ctx.beginPath();
+        ctx.moveTo(15, -7);
+        ctx.lineTo(35, 0);
+        ctx.lineTo(15, 7);
+        ctx.closePath();
+        ctx.fill();
+
+        // 7. Specular Highlights (White, semi-transparent)
+        ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+        ctx.beginPath(); // Top highlight on body
+        ctx.rect(-22, -5, 35, 3);
+        ctx.fill();
+
+        ctx.beginPath(); // Highlight on nose cone
+        ctx.moveTo(16, -4);
+        ctx.lineTo(28, 0);
+        ctx.lineTo(16, 0);
+        ctx.closePath();
+        ctx.fill();
+        
+        ctx.beginPath(); // Nose tip bright spot
+        ctx.arc(31, -1, 1.5, 0, Math.PI*2);
+        ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+        ctx.fill();
+
+        // 8. Engine exhaust pulsing
+        if (Math.random() > 0.3) {
+            ctx.fillStyle = (Math.random() > 0.5) ? "#ffea00" : "#ffaa00"; // Yellow or Orange
+            ctx.beginPath();
+            ctx.arc(-28, 0, 4 + Math.random() * 4, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Inner white hot core
+            ctx.fillStyle = "#ffffff";
+            ctx.beginPath();
+            ctx.arc(-28, 0, 2 + Math.random() * 2, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
         ctx.restore();
     });
 
