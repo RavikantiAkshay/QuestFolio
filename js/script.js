@@ -1778,6 +1778,19 @@ function update() {
                     speechBubbleIndex = 0;
                     advanceSpeechBubble();
                     return;
+                } else if (boss.phase === 3 && (boss.attackCount >= 15 || boss.hp <= boss.maxHp * 0.15)) {
+                    // Transition to Phase 4 (Rage Phase) after 15 voids/missiles OR if boss loses 85% HP
+                    boss.isTransitioning = true;
+                    isOverlayActive = true;
+                    boss.frameX = 0;
+
+                    speechBubbleSequence = [
+                        { entity: boss, text: "ENOUGH!" },
+                        { entity: boss, text: "I WILL SHOW YOU TRUE DESPAIR!" }
+                    ];
+                    speechBubbleIndex = 0;
+                    advanceSpeechBubble();
+                    return;
                 }
 
                 boss.isCharging = true; // start charging (static old image)
@@ -1915,6 +1928,60 @@ function update() {
                             if (boss && boss.isAttacking) boss.isAttacking = false;
                         }, 500);
                     }
+                } else if (boss.phase === 4) { // CRAZY RAGE PHASE - DISASTER MODE
+                    let choice = Math.floor(Math.random() * 4); // Completely random single spawn
+                    
+                    if (choice === 0) { // 1 Spike
+                        let offsetX = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 120);
+                        let offsetY = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 120);
+                        bossSpikes.push({
+                            x: player.x - 10 + offsetX,
+                            y: player.y + player.size - 40 + offsetY,
+                            width: 70, height: 70, state: 'warning',
+                            timer: 30, damage: 25, type: 'spike'
+                        });
+                    } else if (choice === 1) { // 1 Fire line
+                        if (Math.random() > 0.5) { // Horizontal
+                            bossSpikes.push({
+                                x: player.x - 150 + (player.size / 2) + (Math.random() * 60 - 30),
+                                y: player.y + player.size - 30 + (Math.random() * 60 - 30),
+                                width: 300, height: 60, state: 'warning',
+                                timer: 35, damage: 35, type: 'fire', orientation: 'horizontal'
+                            });
+                        } else { // Vertical
+                            bossSpikes.push({
+                                x: player.x + (player.size / 2) - 30 + (Math.random() * 60 - 30),
+                                y: player.y - 150 + (Math.random() * 60 - 30),
+                                width: 60, height: 300, state: 'warning',
+                                timer: 35, damage: 35, type: 'fire', orientation: 'vertical'
+                            });
+                        }
+                    } else if (choice === 2) { // 1 Black hole
+                        let offsetX = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 80);
+                        let offsetY = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 80);
+                        blackHoles.push({ 
+                            x: player.x + player.size / 2 + offsetX, 
+                            y: player.y + player.size / 2 + offsetY, 
+                            radius: 40, pullRadius: 100, angle: 0,
+                            state: 'warning', timer: 35, lifetime: 90 
+                        });
+                    } else if (choice === 3) { // 1 Missile
+                        bossMissiles.push({
+                            x: boss.x + boss.size / 2 + (Math.random() * 60 - 30), 
+                            y: boss.y + boss.size / 2 + (Math.random() * 60 - 30),
+                            width: 15, height: 15, speed: 5.5, // extremely fast
+                            damage: 15, angle: Math.random() * Math.PI * 2, lifetime: 240
+                        });
+                    }
+                    
+                    // Very short, continuous stream of attacks
+                    boss.bossAttackTimer = 12 + Math.floor(Math.random() * 8); // 12-20 frames
+                    
+                    // Ensure boss doesn't freeze and looks chaotic
+                    boss.isCharging = false;
+                    boss.isAttacking = true;
+                    boss.attackFrame = (boss.frameY === 1) ? 0 : 1;
+                    setTimeout(() => { if (boss && boss.isAttacking) boss.isAttacking = false; }, 200);
                 }
             }
         } else if (!boss || boss.hp <= 0) {
@@ -1939,18 +2006,15 @@ function update() {
                         } else {
                             boss.attackFrame = 1;
                         }
+                        
+                        // Robustly reset attacking state so AI doesn't freeze
+                        setTimeout(() => {
+                            if (boss && boss.isAttacking) boss.isAttacking = false;
+                        }, 500);
                     }
                 }
             } else if (bh.state === 'active') {
                 bh.lifetime--;
-                
-                // Reset boss attacking state after a short delay (20 frames) so he can start next attack loop
-                if (bh.lifetime === 160) {
-                    const boss = npcs.find(n => n.isBoss);
-                    if (boss && boss.isAttacking) {
-                        boss.isAttacking = false;
-                    }
-                }
                 
                 let px = player.x + player.size / 2;
                 let py = player.y + player.size / 2;
