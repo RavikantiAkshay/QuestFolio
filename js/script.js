@@ -1999,6 +1999,14 @@ function update() {
             bossSpikes.length = 0;
             bossMissiles.length = 0;
 
+            // Remove boss from npcs array so he vanishes
+            if (boss) {
+                const bossIndex = npcs.indexOf(boss);
+                if (bossIndex > -1) {
+                    npcs.splice(bossIndex, 1);
+                }
+            }
+
             const victoryOverlay = document.getElementById('victory-overlay');
             if (victoryOverlay && victoryOverlay.style.display !== 'flex') {
                 victoryOverlay.style.display = 'flex';
