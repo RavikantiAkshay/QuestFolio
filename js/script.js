@@ -1783,7 +1783,7 @@ function update() {
                 boss.isCharging = true; // start charging (static old image)
                 boss.attackCount++;
 
-                if (false && boss.phase === 1) { // Commented out Phase 1 for Missile testing
+                if (boss.phase === 1) { // Restored Phase 1
                     let numSpikes = 1;
                     if (boss.attackCount >= 5 || boss.hp <= boss.maxHp * 0.85) {
                         numSpikes = 2 + Math.floor(Math.random() * 2); // 2 or 3 spikes
@@ -1812,7 +1812,7 @@ function update() {
                     // Attack timer (speed) decreases for 1-4, and repeats trend for 5-8
                     let speedIndex = (boss.attackCount - 1) % 4;
                     boss.bossAttackTimer = 140 - (speedIndex * 20);
-                } else if (false && boss.phase === 2) { // Commented out Phase 2 for Missile testing
+                } else if (boss.phase === 2) { // Restored Phase 2
                     let isCross = false;
 
                     if (boss.attackCount >= 5 || boss.hp <= boss.maxHp * 0.55) {
@@ -1875,41 +1875,46 @@ function update() {
                     // Same speed trend as phase 1, but maybe slightly faster base speed since it's fire
                     let speedIndex = (boss.attackCount - 1) % 4;
                     boss.bossAttackTimer = 120 - (speedIndex * 20);
-                } else if (false && boss.phase === 3) { // Commented out Phase 3 for Missile testing
-                    // Summon one black hole directly under the player
-                    blackHoles.push({ 
-                        x: player.x + player.size / 2, 
-                        y: player.y + player.size / 2, 
-                        radius: 40, 
-                        pullRadius: 100, 
-                        angle: 0,
-                        state: 'warning',
-                        timer: 45, // 0.75s warning
-                        lifetime: 180 // 3 seconds active
-                    });
-                    boss.bossAttackTimer = 160; // constant cooldown speed for phase 3
-                } else if (true) { // FORCED MISSILE TESTING
-                    bossMissiles.push({
-                        x: boss.x + boss.size / 2, // spawn at boss center
-                        y: boss.y + boss.size / 2,
-                        width: 15, // size of missile
-                        height: 15,
-                        speed: 3.5, // slightly faster than player to apply pressure
-                        damage: 15,
-                        angle: Math.random() * Math.PI * 2, // start pointing randomly
-                        lifetime: 240 // max lifetime 4 seconds
-                    });
-                    boss.bossAttackTimer = 100; // constant cooldown for missile test
-                    
-                    // Instant attack, skip charging phase
-                    boss.isCharging = false;
-                    boss.isAttacking = true;
-                    boss.attackFrame = (boss.frameY === 1) ? 0 : 1;
-                    
-                    // Reset attacking state after a short delay so he can move again
-                    setTimeout(() => {
-                        if (boss && boss.isAttacking) boss.isAttacking = false;
-                    }, 500);
+                } else if (boss.phase === 3) {
+                    // Phase 3: Combine Black Holes and Missiles
+                    // Alternate between them to keep pressure high but manageable
+                    if (boss.attackCount % 2 !== 0) {
+                        // Summon one black hole directly under the player
+                        blackHoles.push({ 
+                            x: player.x + player.size / 2, 
+                            y: player.y + player.size / 2, 
+                            radius: 40, 
+                            pullRadius: 100, 
+                            angle: 0,
+                            state: 'warning',
+                            timer: 45, // 0.75s warning
+                            lifetime: 180 // 3 seconds active
+                        });
+                        boss.bossAttackTimer = 160;
+                    } else {
+                        // Shoot a homing missile
+                        bossMissiles.push({
+                            x: boss.x + boss.size / 2, // spawn at boss center
+                            y: boss.y + boss.size / 2,
+                            width: 15,
+                            height: 15,
+                            speed: 3.5, // slightly faster than player
+                            damage: 15,
+                            angle: Math.random() * Math.PI * 2,
+                            lifetime: 240
+                        });
+                        boss.bossAttackTimer = 90; // shorter cooldown for missiles
+                        
+                        // Instant attack, skip charging phase
+                        boss.isCharging = false;
+                        boss.isAttacking = true;
+                        boss.attackFrame = (boss.frameY === 1) ? 0 : 1;
+                        
+                        // Reset attacking state after a short delay
+                        setTimeout(() => {
+                            if (boss && boss.isAttacking) boss.isAttacking = false;
+                        }, 500);
+                    }
                 }
             }
         } else if (!boss || boss.hp <= 0) {
