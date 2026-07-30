@@ -1753,18 +1753,18 @@ canvas {
     pointer-events: auto;
     clip-path: polygon(32.70% 71.52%, 34.79% 74.51%, 32.10% 75.71%, 30.01% 72.71%);
     background: rgba(255, 215, 0, 0.15);
-    animation: diary-pulse 2s infinite alternate;
+    animation: diary-pulse 0.8s infinite alternate;
     z-index: 10;
     transition: background 0.3s ease;
 }
 
 .diary-hotspot:hover {
-    background: rgba(255, 215, 0, 0.5);
+    background: rgba(255, 215, 0, 0.65);
 }
 
 @keyframes diary-pulse {
-    0% { background: rgba(255, 215, 0, 0.05); }
-    100% { background: rgba(255, 215, 0, 0.3); }
+    0% { background: rgba(255, 215, 0, 0.15); }
+    100% { background: rgba(255, 215, 0, 0.4); }
 }
 
 .interior-interactive-layer {

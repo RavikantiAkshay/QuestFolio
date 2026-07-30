@@ -2816,6 +2816,13 @@ function openDiary() {
     if (!pageFlipInstance) {
         document.getElementById('diary-book').style.opacity = '0';
         initDiary();
+    } else {
+        // Reset to first page if already open
+        try {
+            pageFlipInstance.flip(0);
+        } catch(e) {
+            try { pageFlipInstance.turnToPage(0); } catch(err) {}
+        }
     }
 }
 
