@@ -35,18 +35,7 @@ function initializeRealTimeEnvironment() {
             }
         });
 
-        // Determine Time of Day
-        if (currentHour >= 4 && currentHour < 7) {
-            timeMode = 3; // Early Morning
-        } else if (currentHour >= 7 && currentHour < 17) {
-            timeMode = 0; // Day
-        } else if (currentHour >= 17 && currentHour < 19) {
-            timeMode = 1; // Evening
-        } else {
-            timeMode = 2; // Night
-        }
-
-        // Determine Season
+        // Determine Season First
         if (currentMonth >= 3 && currentMonth <= 5) {
             seasonMode = 0; // Summer
         } else if (currentMonth >= 6 && currentMonth <= 9) {
@@ -56,6 +45,29 @@ function initializeRealTimeEnvironment() {
         } else {
             seasonMode = 3; // Winter
         }
+
+        // Determine Time of Day based on Season (Longer days in Summer, shorter in Winter)
+        let morningStart, dayStart, eveningStart, nightStart;
+
+        if (seasonMode === 0) { // Summer
+            morningStart = 5; dayStart = 7; eveningStart = 19; nightStart = 20;
+        } else if (seasonMode === 3) { // Winter
+            morningStart = 6; dayStart = 8; eveningStart = 17; nightStart = 18;
+        } else { // Monsoon & Autumn
+            morningStart = 5; dayStart = 7; eveningStart = 18; nightStart = 19;
+        }
+
+        // Apply Time of Day
+        if (currentHour >= morningStart && currentHour < dayStart) {
+            timeMode = 3; // Early Morning
+        } else if (currentHour >= dayStart && currentHour < eveningStart) {
+            timeMode = 0; // Day
+        } else if (currentHour >= eveningStart && currentHour < nightStart) {
+            timeMode = 1; // Evening
+        } else {
+            timeMode = 2; // Night
+        }
+        
     } catch (e) {
         console.error("Could not set IST timezone, falling back to defaults.");
     }
