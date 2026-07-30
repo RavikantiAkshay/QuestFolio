@@ -1576,7 +1576,7 @@ function update() {
             vx: 3 + Math.random() * 3, 
             vy: 2 + Math.random() * 2, 
             size: 3 + Math.random() * 4,
-            color: Math.random() > 0.5 ? '#27ae60' : '#2ecc71',
+            color: Math.random() > 0.5 ? '#d35400' : '#f39c12', // Autumn orange/yellow instead of green
             wobble: Math.random() * Math.PI * 2,
             wobbleSpeed: 0.05 + Math.random() * 0.1
         });
@@ -1982,44 +1982,7 @@ function draw() {
             }
         }
 
-        // --- MONSOON PUDDLES ---
-        if (seasonMode === 1) {
-            ctx.save();
-            ctx.fillStyle = "rgba(40, 60, 80, 0.3)"; // Darkish wet puddles
-            
-            // Use a grid to deterministically place puddles across the world
-            const pGrid = 150;
-            const pStartX = Math.max(0, Math.floor(cameraX / pGrid) * pGrid);
-            const pEndX = Math.min(mapWidth, Math.ceil((cameraX + canvas.width) / pGrid) * pGrid + pGrid);
-            const pStartY = Math.max(0, Math.floor(cameraY / pGrid) * pGrid);
-            const pEndY = Math.min(mapHeight, Math.ceil((cameraY + canvas.height) / pGrid) * pGrid + pGrid);
-            
-            for (let px = pStartX; px < pEndX; px += pGrid) {
-                for (let py = pStartY; py < pEndY; py += pGrid) {
-                    let hash = Math.sin(px * 12.9898 + py * 78.233) * 43758.5453;
-                    let fract = hash - Math.floor(hash);
-                    
-                    if (fract > 0.4) { // 60% chance of a puddle in this cell
-                        let puddleRadiusX = 20 + fract * 50;
-                        let puddleRadiusY = puddleRadiusX * 0.4; // Flat ellipse
-                        let puddleX = px + fract * 100;
-                        let puddleY = py + ((hash * 10) - Math.floor(hash * 10)) * 100;
-                        
-                        ctx.beginPath();
-                        ctx.ellipse(puddleX, puddleY, puddleRadiusX, puddleRadiusY, 0, 0, Math.PI * 2);
-                        ctx.fill();
-                        
-                        // Specular highlight
-                        ctx.fillStyle = "rgba(200, 220, 255, 0.15)";
-                        ctx.beginPath();
-                        ctx.ellipse(puddleX, puddleY - 2, puddleRadiusX * 0.7, puddleRadiusY * 0.5, 0, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.fillStyle = "rgba(40, 60, 80, 0.3)"; 
-                    }
-                }
-            }
-            ctx.restore();
-        }
+        // --- MONSOON PUDDLES REMOVED ---
 
         // Draw collision debug overlay
         if (editMode && collisionData.length > 0) {
