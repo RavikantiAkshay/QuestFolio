@@ -1740,3 +1740,41 @@ canvas {
 .diary-page.--right .diary-page-content {
     box-shadow: inset 20px 0 20px -10px rgba(0,0,0,0.2) !important;
 }
+
+
+/* Diary Hotspot */
+.diary-hotspot {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    pointer-events: auto;
+    clip-path: polygon(32.70% 71.52%, 34.79% 74.51%, 32.10% 75.71%, 30.01% 72.71%);
+    background: rgba(255, 215, 0, 0.15);
+    animation: diary-pulse 2s infinite alternate;
+    z-index: 10;
+    transition: background 0.3s ease;
+}
+
+.diary-hotspot:hover {
+    background: rgba(255, 215, 0, 0.5);
+}
+
+@keyframes diary-pulse {
+    0% { background: rgba(255, 215, 0, 0.05); }
+    100% { background: rgba(255, 215, 0, 0.3); }
+}
+
+.interior-interactive-layer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vmin;
+    height: 100vmin;
+    z-index: 5;
+    pointer-events: none;
+}
+

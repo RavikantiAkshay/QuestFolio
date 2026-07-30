@@ -206,13 +206,28 @@ const interiorTitle = document.getElementById('interior-title');
 const interiorBody = document.getElementById('interior-body');
 const interiorClose = document.getElementById('interior-close');
 const interiorExplore = document.getElementById('interior-explore');
-const scrollWrapContainer = document.getElementById('scroll-wrap-container');
+// Click logger to find diary coordinates
+interiorOverlay.addEventListener('click', (e) => {
+    if (activeInteractable && activeInteractable.id === 'home' && isExploringInterior) {
+        const interactiveLayer = document.querySelector('.interior-interactive-layer');
+        if (interactiveLayer) {
+            const rect = interactiveLayer.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const xPercent = (x / rect.width) * 100;
+            const yPercent = (y / rect.height) * 100;
+            console.log(`${xPercent.toFixed(2)}% ${yPercent.toFixed(2)}%`);
+        }
+    }
+});
 
 let isExploringInterior = false;
 
 if (interiorClose) {
     interiorClose.addEventListener('click', () => {
         if (interiorOverlay) interiorOverlay.style.display = 'none';
+        const hotspot = document.getElementById('diary-hotspot');
+        if (hotspot) hotspot.style.display = 'none';
         isOverlayActive = false;
         isExploringInterior = false;
     });
@@ -240,6 +255,11 @@ if (interiorExplore) {
             if (interiorBg) interiorBg.style.filter = 'none';
 
             if (activeInteractable) {
+                if (activeInteractable.id === 'home') {
+                    const hotspot = document.getElementById('diary-hotspot');
+                    if (hotspot) hotspot.style.display = 'block';
+                }
+
                 if (activeInteractable.id === 'post') {
                     interiorExplore.innerHTML = '<span class="x">✉️</span> View Letter';
                 } else if (activeInteractable.id === 'school') {
@@ -256,6 +276,9 @@ if (interiorExplore) {
             }
         } else {
             // Restore UI container and re-apply ambient background blur/brightness
+            const hotspot = document.getElementById('diary-hotspot');
+            if (hotspot) hotspot.style.display = 'none';
+
             if (activeInteractable) {
                 if (interiorBg) {
                     if (activeInteractable.id === 'post') interiorBg.style.filter = "brightness(0.4) blur(6px)";
