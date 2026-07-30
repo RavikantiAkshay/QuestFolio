@@ -229,6 +229,7 @@ let speechBubbleIndex = 0;
 
 let bossFightActive = false;
 let bossSpikes = [];
+let blackHoles = []; // Added for testing Phase 3
 const spikeImg = new Image();
 spikeImg.src = 'assets/images/fx/spikes.png';
 const fireImg = new Image();
@@ -249,7 +250,7 @@ function advanceSpeechBubble() {
         if (boss) {
             boss.bossAttackTimer = 60; // Start attacking in 1 second
             if (boss.isTransitioning) {
-                boss.phase = 2;
+                boss.phase++;
                 boss.isTransitioning = false;
                 boss.attackCount = 0;
                 boss.bossAttackTimer = 40; // Quick attack after dialogue
@@ -1561,21 +1562,23 @@ function update() {
     // Sprint logic: double speed if Shift is held
     const currentSpeed = keys["shift"] ? player.speed * 2 : player.speed;
 
-    if (keys["arrowup"] || keys["w"]) {
-        if (isWalkable(player.x, player.y - currentSpeed, player.size, player)) player.y -= currentSpeed;
-        player.frameY = 2; player.isMoving = true;
-    }
-    else if (keys["arrowdown"] || keys["s"]) {
-        if (isWalkable(player.x, player.y + currentSpeed, player.size, player)) player.y += currentSpeed;
-        player.frameY = 0; player.isMoving = true;
-    }
-    else if (keys["arrowleft"] || keys["a"]) {
-        if (isWalkable(player.x - currentSpeed, player.y, player.size, player)) player.x -= currentSpeed;
-        player.frameY = 1; player.isMoving = true;
-    }
-    else if (keys["arrowright"] || keys["d"]) {
-        if (isWalkable(player.x + currentSpeed, player.y, player.size, player)) player.x += currentSpeed;
-        player.frameY = 3; player.isMoving = true;
+    if (!player.isTrapped) {
+        if (keys["arrowup"] || keys["w"]) {
+            if (isWalkable(player.x, player.y - currentSpeed, player.size, player)) player.y -= currentSpeed;
+            player.frameY = 2; player.isMoving = true;
+        }
+        else if (keys["arrowdown"] || keys["s"]) {
+            if (isWalkable(player.x, player.y + currentSpeed, player.size, player)) player.y += currentSpeed;
+            player.frameY = 0; player.isMoving = true;
+        }
+        else if (keys["arrowleft"] || keys["a"]) {
+            if (isWalkable(player.x - currentSpeed, player.y, player.size, player)) player.x -= currentSpeed;
+            player.frameY = 1; player.isMoving = true;
+        }
+        else if (keys["arrowright"] || keys["d"]) {
+            if (isWalkable(player.x + currentSpeed, player.y, player.size, player)) player.x += currentSpeed;
+            player.frameY = 3; player.isMoving = true;
+        }
     }
 
     // Decrement combo window timer
@@ -1761,12 +1764,25 @@ function update() {
                     speechBubbleIndex = 0;
                     advanceSpeechBubble();
                     return; // Skip normal attack logic this frame
+                } else if (boss.phase === 2 && (boss.attackCount >= 15 || boss.hp <= boss.maxHp * 0.4)) {
+                    // Transition to Phase 3 after enough fire OR if boss loses 60% HP
+                    boss.isTransitioning = true;
+                    isOverlayActive = true; // Freeze the game
+                    boss.frameX = 0;
+
+                    speechBubbleSequence = [
+                        { entity: boss, text: "You're tough..." },
+                        { entity: boss, text: "But let's see if you can escape the void itself!" }
+                    ];
+                    speechBubbleIndex = 0;
+                    advanceSpeechBubble();
+                    return;
                 }
 
                 boss.isCharging = true; // start charging (static old image)
                 boss.attackCount++;
 
-                if (boss.phase === 1) {
+                if (boss.phase === 1) { // Restored Phase 1
                     let numSpikes = 1;
                     if (boss.attackCount >= 5 || boss.hp <= boss.maxHp * 0.85) {
                         numSpikes = 2 + Math.floor(Math.random() * 2); // 2 or 3 spikes
@@ -1795,7 +1811,7 @@ function update() {
                     // Attack timer (speed) decreases for 1-4, and repeats trend for 5-8
                     let speedIndex = (boss.attackCount - 1) % 4;
                     boss.bossAttackTimer = 140 - (speedIndex * 20);
-                } else if (boss.phase === 2) {
+                } else if (boss.phase === 2) { // Restored Phase 2
                     let isCross = false;
 
                     if (boss.attackCount >= 5 || boss.hp <= boss.maxHp * 0.55) {
@@ -1858,12 +1874,96 @@ function update() {
                     // Same speed trend as phase 1, but maybe slightly faster base speed since it's fire
                     let speedIndex = (boss.attackCount - 1) % 4;
                     boss.bossAttackTimer = 120 - (speedIndex * 20);
+                } else if (boss.phase === 3) {
+                    // Summon one black hole directly under the player
+                    blackHoles.push({ 
+                        x: player.x + player.size / 2, 
+                        y: player.y + player.size / 2, 
+                        radius: 40, 
+                        pullRadius: 100, 
+                        angle: 0,
+                        state: 'warning',
+                        timer: 45, // 0.75s warning
+                        lifetime: 180 // 3 seconds active
+                    });
+                    boss.bossAttackTimer = 160; // constant cooldown speed for phase 3
                 }
             }
         } else if (!boss || boss.hp <= 0) {
             bossFightActive = false; // Boss is dead
         }
     }
+
+    // Update Black Holes
+    blackHoles.forEach(bh => {
+        bh.angle += 0.05; // Visual spin
+        if (bossFightActive) {
+            if (bh.state === 'warning') {
+                bh.timer--;
+                if (bh.timer <= 0) {
+                    bh.state = 'active';
+                }
+            } else if (bh.state === 'active') {
+                bh.lifetime--;
+                
+                let px = player.x + player.size / 2;
+                let py = player.y + player.size / 2;
+                let dx = bh.x - px;
+                let dy = bh.y - py;
+                let dist = Math.hypot(dx, dy);
+
+                if (player.isTrapped) {
+                    if (player.trappedBh === bh) {
+                        player.trappedTimer--;
+                        // Spin player visually IN PLACE
+                        player.x = bh.x - player.size / 2;
+                        player.y = bh.y - player.size / 2;
+                        player.trappedRotation = (player.trappedRotation || 0) + 0.3; // rotate like a top
+                        
+                        if (player.trappedTimer <= 0 || bh.lifetime <= 0) { // release if timer ends or hole fades
+                            player.isTrapped = false;
+                            player.trappedBh = null;
+                            player.trappedRotation = 0;
+                            // Spit player out safely
+                            let angles = [0, Math.PI/2, Math.PI, Math.PI*1.5, Math.PI/4, Math.PI*0.75, Math.PI*1.25, Math.PI*1.75];
+                            let safeFound = false;
+                            for (let a of angles) {
+                                let testX = bh.x + Math.cos(a) * 90;
+                                let testY = bh.y + Math.sin(a) * 90;
+                                if (isWalkable(testX, testY, player.size, player)) {
+                                    player.x = testX;
+                                    player.y = testY;
+                                    safeFound = true;
+                                    break;
+                                }
+                            }
+                            if (!safeFound) { // fallback
+                                player.x = bh.x; 
+                                player.y = bh.y + 100;
+                            }
+                        }
+                    }
+                } else if (dist < bh.pullRadius && bh.lifetime > 0) {
+                    if (dist < bh.radius / 2) {
+                        // Sucked in!
+                        player.isTrapped = true;
+                        player.trappedBh = bh;
+                        player.trappedTimer = 90; // Trapped for 1.5 seconds
+                        player.hp -= 20; // Damage on suck
+                        if (player.hp < 0) player.hp = 0;
+                        player.hurtTimer = 30;
+                    } else {
+                        // Constant pulling force
+                        player.x += (dx / dist) * 2.5; 
+                        player.y += (dy / dist) * 2.5;
+                    }
+                }
+            }
+        }
+    });
+
+    // Clean up expired black holes
+    blackHoles = blackHoles.filter(bh => bh.state !== 'active' || bh.lifetime > 0 || (player.isTrapped && player.trappedBh === bh));
 
     // Update Spikes
     for (let i = bossSpikes.length - 1; i >= 0; i--) {
@@ -2118,11 +2218,20 @@ function draw() {
             ctx.filter = (Math.floor(Date.now() / 100) % 2 === 0) ? "brightness(2) sepia(1) hue-rotate(-50deg) saturate(5)" : "none";
         }
 
+        let drawX = player.x - (displayWidth - player.size) / 2;
+        let drawY = player.y - (displayHeight - player.size);
+        
+        // Spin if trapped
+        if (player.isTrapped && player.trappedRotation !== undefined) {
+            ctx.translate(player.x + player.size / 2, player.y + player.size / 2);
+            ctx.rotate(player.trappedRotation);
+            ctx.translate(-(player.x + player.size / 2), -(player.y + player.size / 2));
+        }
+
         ctx.drawImage(
             currentImg,
             sX, sY, fW, fH,
-            player.x - (displayWidth - player.size) / 2, // Center horizontally
-            player.y - (displayHeight - player.size), // align bottom of sprite to collision box
+            drawX, drawY,
             displayWidth, displayHeight
         );
         ctx.restore();
@@ -2269,6 +2378,70 @@ function draw() {
             ctx.fillRect(door.x, door.y, door.w, door.h);
         });
     }
+
+    // Draw Black Holes
+    blackHoles.forEach(bh => {
+        ctx.save();
+        ctx.translate(bh.x, bh.y);
+        
+        if (bh.state === 'warning') {
+            // Draw pulsating warning zone
+            ctx.beginPath();
+            ctx.arc(0, 0, bh.pullRadius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(150, 0, 200, ${(bh.timer % 15 < 7) ? 0.3 : 0.1})`;
+            ctx.fill();
+        } else if (bh.state === 'active') {
+            // Fade out effect at the end of lifetime
+            if (bh.lifetime < 30) {
+                ctx.globalAlpha = bh.lifetime / 30;
+            }
+
+            // Pulling aura (pulsing)
+            let pulse = Math.sin(Date.now() / 150) * 10;
+            ctx.beginPath();
+            ctx.arc(0, 0, bh.pullRadius + pulse, 0, Math.PI * 2);
+            let grad = ctx.createRadialGradient(0, 0, bh.radius, 0, 0, bh.pullRadius + pulse);
+            grad.addColorStop(0, "rgba(50, 0, 100, 0.5)");
+            grad.addColorStop(1, "rgba(50, 0, 100, 0)");
+            ctx.fillStyle = grad;
+            ctx.fill();
+
+            // Dark Event Horizon (Vertical Ellipse) - NOT ROTATING
+            ctx.beginPath();
+            let radiusX = bh.radius * 0.5;
+            let radiusY = bh.radius * 0.9; // Vertical shape
+            ctx.ellipse(0, 0, radiusX, radiusY, 0, 0, Math.PI * 2);
+            ctx.fillStyle = "#050011";
+            ctx.fill();
+
+            // Inner glowing ring (Vertical Ellipse) - NOT ROTATING
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = "rgba(220, 150, 255, 0.8)";
+            ctx.stroke();
+
+            // Rotate for the aura particles ONLY
+            ctx.rotate(bh.angle);
+            
+            // Particle Swirl (Ombre aura of tiny particles)
+            ctx.fillStyle = "rgba(180, 80, 255, 0.8)";
+            for (let i = 0; i < 50; i++) {
+                let pAngle = (i / 50) * Math.PI * 2 * 3; // swirl 3 times around
+                let pDist = bh.radius + (i / 50) * bh.radius * 1.5;
+                let px = Math.cos(pAngle) * pDist;
+                let py = Math.sin(pAngle) * pDist;
+                
+                // Pulse particle size slightly (made smaller)
+                let pSize = 0.5 + Math.sin(Date.now() / 200 + i) * 1;
+                if (pSize < 0) pSize = 0;
+
+                ctx.beginPath();
+                ctx.arc(px, py, pSize, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        ctx.restore();
+    });
 
     // Draw Boss Spikes & Fire
     bossSpikes.forEach(spike => {
