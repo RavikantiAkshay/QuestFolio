@@ -1902,9 +1902,27 @@ function update() {
                 bh.timer--;
                 if (bh.timer <= 0) {
                     bh.state = 'active';
+                    const boss = npcs.find(n => n.isBoss);
+                    if (boss && boss.isCharging) {
+                        boss.isCharging = false;
+                        boss.isAttacking = true;
+                        if (boss.frameY === 1) {
+                            boss.attackFrame = 0;
+                        } else {
+                            boss.attackFrame = 1;
+                        }
+                    }
                 }
             } else if (bh.state === 'active') {
                 bh.lifetime--;
+                
+                // Reset boss attacking state after a short delay (20 frames) so he can start next attack loop
+                if (bh.lifetime === 160) {
+                    const boss = npcs.find(n => n.isBoss);
+                    if (boss && boss.isAttacking) {
+                        boss.isAttacking = false;
+                    }
+                }
                 
                 let px = player.x + player.size / 2;
                 let py = player.y + player.size / 2;
