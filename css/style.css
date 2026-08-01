@@ -1770,17 +1770,17 @@ canvas {
 /* PC Hotspot */
 .pc-hotspot {
     position: absolute;
-    left: 48.5%;
-    top: 48%;
-    width: 9%;
-    height: 10%;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
     cursor: pointer;
     pointer-events: auto;
     background: rgba(46, 204, 113, 0.15);
     animation: pc-pulse 0.8s infinite alternate;
     z-index: 10;
     transition: background 0.3s ease;
-    clip-path: polygon(10% 10%, 90% 10%, 90% 90%, 10% 90%);
+    clip-path: polygon(16.08% 23.88%, 20.40% 21.72%, 20.54% 26.04%, 15.94% 28.19%);
 }
 
 .pc-hotspot:hover {
