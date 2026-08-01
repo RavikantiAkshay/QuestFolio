@@ -3507,7 +3507,7 @@ async function initDiary() {
                 <div class="diary-page">
                     <div class="diary-page-content" style="background-color: #fdf6e3; height: 100%; padding: 20px; color: #3b3024; font-family: 'Special Elite', cursive; overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column;">
                         <h2 style="font-size: 28px; margin: 0 0 5px 0; border-bottom: 2px solid rgba(0,0,0,0.1); padding-bottom: 5px;">${trip.title}</h2>
-                        <div style="font-family: 'Share Tech Mono', monospace; font-size: 14px; color: #666; margin-bottom: 10px;">Year: ${trip.startDate.split('-')[0]} | Group: ${trip.group || 'Solo'}</div>
+                        <div style="font-family: 'Share Tech Mono', monospace; font-size: 14px; color: #666; margin-bottom: 10px;">Year: ${trip.startDate.split('-')[0]}</div>
                         ${coverHtml}
                         <div style="margin-bottom: 10px; flex: 1; display: flex; flex-direction: column;">
                             <strong style="font-size: 14px;">Places Visited:</strong> 
