@@ -281,6 +281,39 @@ if (diaryHotspot) {
     });
 }
 
+const pcHotspot = document.getElementById('pc-hotspot');
+if (pcHotspot) {
+    pcHotspot.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const pcContainer = document.getElementById('sitcom-pc-container');
+        const interiorButtons = document.querySelector('.interior-buttons');
+        const interiorInteractiveLayer = document.querySelector('.interior-interactive-layer');
+
+        pcContainer.style.display = 'flex';
+        if (interiorButtons) interiorButtons.style.display = 'none';
+        if (interiorInteractiveLayer) interiorInteractiveLayer.style.display = 'none';
+
+        const closePc = () => {
+            pcContainer.style.display = 'none';
+            if (interiorButtons) interiorButtons.style.display = 'flex';
+            if (interiorInteractiveLayer) interiorInteractiveLayer.style.display = 'block';
+        };
+
+        // Add a click outside listener to close it
+        pcContainer.onclick = (e) => {
+            if (e.target === pcContainer) closePc();
+        };
+        
+        const pcCloseBtn = document.getElementById('sitcom-pc-close');
+        if (pcCloseBtn) {
+            pcCloseBtn.onclick = (e) => {
+                e.stopPropagation();
+                closePc();
+            };
+        }
+    });
+}
+
 // Click logger to find diary coordinates
 interiorOverlay.addEventListener('click', (e) => {
     if (activeInteractable && activeInteractable.id === 'home' && isExploringInterior) {
@@ -303,6 +336,12 @@ if (interiorClose) {
         if (interiorOverlay) interiorOverlay.style.display = 'none';
         const hotspot = document.getElementById('diary-hotspot');
         if (hotspot) hotspot.style.display = 'none';
+        const pcH = document.getElementById('pc-hotspot');
+        if (pcH) pcH.style.display = 'none';
+        
+        const pcContainer = document.getElementById('sitcom-pc-container');
+        if (pcContainer) pcContainer.style.display = 'none';
+        
         isOverlayActive = false;
         isExploringInterior = false;
     });
@@ -333,6 +372,8 @@ if (interiorExplore) {
                 if (activeInteractable.id === 'home') {
                     const hotspot = document.getElementById('diary-hotspot');
                     if (hotspot) hotspot.style.display = 'block';
+                    const pcH = document.getElementById('pc-hotspot');
+                    if (pcH) pcH.style.display = 'block';
                 }
 
                 if (activeInteractable.id === 'post') {
@@ -353,6 +394,8 @@ if (interiorExplore) {
             // Restore UI container and re-apply ambient background blur/brightness
             const hotspot = document.getElementById('diary-hotspot');
             if (hotspot) hotspot.style.display = 'none';
+            const pcH = document.getElementById('pc-hotspot');
+            if (pcH) pcH.style.display = 'none';
 
             if (activeInteractable) {
                 if (interiorBg) {
@@ -861,6 +904,20 @@ document.body.appendChild(overlay);
 window.addEventListener("keydown", (e) => {
     let key = e.key.toLowerCase();
     keys[key] = true;
+
+    // Quick test shortcut for PC UI
+    if (key === 'p') {
+        const pcContainer = document.getElementById('sitcom-pc-container');
+        const interiorButtons = document.querySelector('.interior-buttons');
+        const interiorInteractiveLayer = document.querySelector('.interior-interactive-layer');
+
+        if (pcContainer) {
+            const isOpening = pcContainer.style.display !== 'flex';
+            pcContainer.style.display = isOpening ? 'flex' : 'none';
+            if (interiorButtons) interiorButtons.style.display = isOpening ? 'none' : 'flex';
+            if (interiorInteractiveLayer) interiorInteractiveLayer.style.display = isOpening ? 'none' : 'block';
+        }
+    }
 
     if (key === 'n') {
         timeMode = (timeMode + 1) % 4;

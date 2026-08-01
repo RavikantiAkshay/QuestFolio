@@ -6,7 +6,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Permanent+Marker&family=Special+Elite&family=Caveat:wght@400;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Permanent+Marker&family=Special+Elite&family=Kalam:wght@400;700&family=Caveat:wght@400;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="css/style.css?v=2">
     <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
@@ -34,6 +34,7 @@
         <div class="interior-background" id="interior-bg"></div>
         <div class="interior-interactive-layer">
             <div id="diary-hotspot" class="diary-hotspot" style="display: none;" title="Read Travel Diary"></div>
+            <div id="pc-hotspot" class="pc-hotspot" style="display: none;" title="Access Sitcom OS"></div>
         </div>
         <div class="interior-buttons">
             <button class="interior-btn" id="interior-explore"><span class="x">🔍</span> Explore Home</button>
@@ -359,6 +360,111 @@
                                     </div>
                                 </a>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SITCOM PC INTERIOR -->
+            <div id="sitcom-pc-container" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 950; align-items: center; justify-content: center; background: rgba(0,0,0,0.85);">
+                <button id="sitcom-pc-close" style="position: absolute; top: 20px; right: 20px; font-size: 20px; padding: 10px 20px; cursor: pointer; background: #333; color: white; border: 2px solid white; font-family: 'Share Tech Mono', monospace; z-index: 960;">✕ CLOSE</button>
+                <div style="width: 1350px; height: 720px; max-width: 95%; max-height: 90vh; background: #e0d8c8; border-radius: 12px; border: 4px solid #8b7d6b; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,0.2); overflow: hidden;">
+                    
+                    <!-- Screen Content -->
+                    <div style="flex: 1; background: #faf9f5; padding: 15px; display: flex; gap: 20px; box-shadow: inset 0 0 40px rgba(0,0,0,0.2);">
+                        
+                        <!-- Left Panel: DNA (Friendly / Magazine style) -->
+                        <div style="flex: 1.2; background: #ffffff; border: 2px solid #e0e0e0; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column;">
+                            
+                            <h2 style="font-family: 'Permanent Marker', cursive; color: #ff6b6b; text-align: center; margin: 0 0 15px 0; font-size: 30px; transform: rotate(-1deg);">My Sitcom DNA</h2>
+                            
+                            <div style="flex: 1; display: flex; flex-direction: column; justify-content: space-evenly; color: #333;">
+                                <!-- Phil -->
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: bold; color: #2c3e50; font-family: sans-serif; font-size: 15px;"><span>Phil Dunphy (Modern Family)</span><span>30%</span></div>
+                                    <div style="width: 100%; height: 12px; background: #f0f0f0; border-radius: 6px; overflow: hidden;"><div style="width: 30%; height: 100%; background: #ff9ff3;"></div></div>
+                                    <div style="margin-top: 5px; line-height: 1.2; font-family: 'Caveat', cursive; font-size: 22px;">"1% inspiration, 98% perspiration, 2% attention to detail."</div>
+                                </div>
+                                <!-- Ron -->
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: bold; color: #2c3e50; font-family: sans-serif; font-size: 15px;"><span>Ron Swanson (Parks & Rec)</span><span>25%</span></div>
+                                    <div style="width: 100%; height: 12px; background: #f0f0f0; border-radius: 6px; overflow: hidden;"><div style="width: 25%; height: 100%; background: #54a0ff;"></div></div>
+                                    <div style="margin-top: 5px; line-height: 1.2; font-family: 'Caveat', cursive; font-size: 22px;">"Focusing only on what actually works and completely ignoring the small, unnecessary drama."</div>
+                                </div>
+                                <!-- Axl -->
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: bold; color: #2c3e50; font-family: sans-serif; font-size: 15px;"><span>Axl Heck (The Middle)</span><span>20%</span></div>
+                                    <div style="width: 100%; height: 12px; background: #f0f0f0; border-radius: 6px; overflow: hidden;"><div style="width: 20%; height: 100%; background: #1dd1a1;"></div></div>
+                                    <div style="margin-top: 5px; line-height: 1.2; font-family: 'Caveat', cursive; font-size: 22px;">"Finding the absolute laziest, yet most brutally efficient way to solve a complex problem."</div>
+                                </div>
+                                <!-- Haley -->
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: bold; color: #2c3e50; font-family: sans-serif; font-size: 15px;"><span>Haley Dunphy (Modern Family)</span><span>15%</span></div>
+                                    <div style="width: 100%; height: 12px; background: #f0f0f0; border-radius: 6px; overflow: hidden;"><div style="width: 15%; height: 100%; background: #feca57;"></div></div>
+                                    <div style="margin-top: 5px; line-height: 1.2; font-family: 'Caveat', cursive; font-size: 22px;">"Convincing the project manager that the UI glitch is actually a trendy new feature."</div>
+                                </div>
+                                <!-- Jake -->
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: bold; color: #2c3e50; font-family: sans-serif; font-size: 15px;"><span>Jake Peralta (B99)</span><span>10%</span></div>
+                                    <div style="width: 100%; height: 12px; background: #f0f0f0; border-radius: 6px; overflow: hidden;"><div style="width: 10%; height: 100%; background: #ff6b6b;"></div></div>
+                                    <div style="margin-top: 5px; line-height: 1.2; font-family: 'Caveat', cursive; font-size: 22px;">"Turning every boring, repetitive task into some kind of high-stakes game."</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Panel: Quotes (Corkboard/Sticky Notes) -->
+                        <div style="flex: 1.4; background: #d4a373; border: 10px solid #8b5a2b; border-radius: 8px; padding: 15px; position: relative; box-shadow: inset 0 0 20px rgba(0,0,0,0.4); display: grid; grid-template-columns: 1fr 1fr; gap: 15px; align-content: start;">
+                            
+                            <h2 style="grid-column: span 2; font-family: 'Permanent Marker', cursive; text-align: center; margin: 0 0 10px 0; color: #3d2b1f; transform: rotate(1deg); font-size: 26px;">QUOTES I CODE BY</h2>
+
+                            <!-- Sticky 1 -->
+                            <div style="background: #fcfc99; padding: 10px; box-shadow: 2px 4px 6px rgba(0,0,0,0.2); transform: rotate(2deg); color: #111;">
+                                <div style="font-weight: bold; font-size: 22px; font-family: 'Caveat', cursive; line-height: 1.1;">"Title of your sex tape." <span style="font-family: 'Kalam', cursive; font-size: 14px; font-weight: normal; color: #555;">- Jake Peralta</span></div>
+                                <div style="font-family: 'Kalam', cursive; font-size: 14px; margin-top: 6px; color: #333; line-height: 1.1;">Me when a teammate says, "It’s way too big to push all at once."</div>
+                            </div>
+
+                            <!-- Sticky 2 -->
+                            <div style="background: #ffb3ba; padding: 10px; box-shadow: 2px 4px 6px rgba(0,0,0,0.2); transform: rotate(-3deg); color: #111;">
+                                <div style="font-weight: bold; font-size: 22px; font-family: 'Caveat', cursive; line-height: 1.1;">"I have no idea what I'm doing, but I know I'm doing it really well." <span style="font-family: 'Kalam', cursive; font-size: 14px; font-weight: normal; color: #555;">- Andy Dwyer</span></div>
+                                <div style="font-family: 'Kalam', cursive; font-size: 14px; margin-top: 6px; color: #333; line-height: 1.1;">Me explaining my code during a senior review.</div>
+                            </div>
+                            
+                            <!-- Sticky 3 -->
+                            <div style="background: #bae1ff; padding: 10px; box-shadow: 2px 4px 6px rgba(0,0,0,0.2); transform: rotate(1deg); color: #111;">
+                                <div style="font-weight: bold; font-size: 22px; font-family: 'Caveat', cursive; line-height: 1.1;">"Cool, cool, cool, cool, no doubt, no doubt." <span style="font-family: 'Kalam', cursive; font-size: 14px; font-weight: normal; color: #555;">- Jake Peralta</span></div>
+                                <div style="font-family: 'Kalam', cursive; font-size: 14px; margin-top: 6px; color: #333; line-height: 1.1;">Fixing 1 bug and immediately getting 196 new errors.</div>
+                            </div>
+
+                            <!-- Sticky 4 -->
+                            <div style="background: #baffc9; padding: 10px; box-shadow: 2px 4px 6px rgba(0,0,0,0.2); transform: rotate(-2deg); color: #111;">
+                                <div style="font-weight: bold; font-size: 22px; font-family: 'Caveat', cursive; line-height: 1.1;">"WE WERE ON A BREAK!" <span style="font-family: 'Kalam', cursive; font-size: 14px; font-weight: normal; color: #555;">- Ross Geller</span></div>
+                                <div style="font-family: 'Kalam', cursive; font-size: 14px; margin-top: 6px; color: #333; line-height: 1.1;">Explaining to the PM why the server went offline.</div>
+                            </div>
+
+                            <!-- Sticky 5 -->
+                            <div style="background: #e8baff; padding: 10px; box-shadow: 2px 4px 6px rgba(0,0,0,0.2); transform: rotate(3deg); color: #111;">
+                                <div style="font-weight: bold; font-size: 22px; font-family: 'Caveat', cursive; line-height: 1.1;">"It sended! Please come back." <span style="font-family: 'Kalam', cursive; font-size: 14px; font-weight: normal; color: #555;">- Gloria</span></div>
+                                <div style="font-family: 'Kalam', cursive; font-size: 14px; margin-top: 6px; color: #333; line-height: 1.1;">Me right after accidentally pushing my .env file to a public repo.</div>
+                            </div>
+
+                            <!-- Sticky 6 -->
+                            <div style="background: #ffdfba; padding: 10px; box-shadow: 2px 4px 6px rgba(0,0,0,0.2); transform: rotate(-1deg); color: #111;">
+                                <div style="font-weight: bold; font-size: 22px; font-family: 'Caveat', cursive; line-height: 1.1;">"You're just gonna have to lower your expectations." <span style="font-family: 'Kalam', cursive; font-size: 14px; font-weight: normal; color: #555;">- Mike Heck</span></div>
+                                <div style="font-family: 'Kalam', cursive; font-size: 14px; margin-top: 6px; color: #333; line-height: 1.1;">Giving the project manager the initial MVP timeline.</div>
+                            </div>
+
+                            <!-- Sticky 7 -->
+                            <div style="background: #bafff3; padding: 10px; box-shadow: 2px 4px 6px rgba(0,0,0,0.2); transform: rotate(2deg); color: #111;">
+                                <div style="font-weight: bold; font-size: 22px; font-family: 'Caveat', cursive; line-height: 1.1;">"I am the truest repairman!" <span style="font-family: 'Kalam', cursive; font-size: 14px; font-weight: normal; color: #555;">- Troy Barnes</span></div>
+                                <div style="font-family: 'Kalam', cursive; font-size: 14px; margin-top: 6px; color: #333; line-height: 1.1;">Me taking full credit after letting ChatGPT fix every single bug in my code.</div>
+                            </div>
+
+                            <!-- Sticky 8 -->
+                            <div style="background: #ffbaba; padding: 10px; box-shadow: 2px 4px 6px rgba(0,0,0,0.2); transform: rotate(-2deg); color: #111;">
+                                <div style="font-weight: bold; font-size: 22px; font-family: 'Caveat', cursive; line-height: 1.1;">"I typed your symptoms into the thing up here and it says..." <span style="font-family: 'Kalam', cursive; font-size: 14px; font-weight: normal; color: #555;">- Andy Dwyer</span></div>
+                                <div style="font-family: 'Kalam', cursive; font-size: 14px; margin-top: 6px; color: #333; line-height: 1.1;">Me telling my coding AI the result I got from pasting its errors into my debugging AI.</div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
