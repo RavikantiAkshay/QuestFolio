@@ -171,8 +171,8 @@ npcImageSrcs.forEach(src => {
 });
 
 const player = {
-    x: 400,
-    y: 400,
+    x: 575,
+    y: 94,
     size: 48,
     speed: 3,
     hp: 100,
@@ -1339,15 +1339,15 @@ window.addEventListener("keydown", (e) => {
         if (postOffice) postOffice.style.display = 'none';
         isOverlayActive = false;
     }
-    // --- LIGHT SOURCE MODE ---
+    // --- LIGHT SOURCE / DEV MODE ---
     if (e.key.toLowerCase() === 'i') {
         editMode = !editMode;
 
-        debugUI.innerText = `LIGHT SOURCE MODE ON\nDrag to Paint Light Centers\n'P': Print Array to Console\n'V': Toggle Paint/Erase\n'[' / ']': Brush Size`;
+        debugUI.innerText = `DEV MODE ON\nDrag to Paint Light Centers\n'P': Print Array\n'V': Toggle Paint/Erase`;
         debugUI.style.color = "#ffdd55";
 
         debugUI.style.display = editMode ? 'block' : 'none';
-        coordUI.style.display = 'none'; // Not needed anymore
+        coordUI.style.display = editMode ? 'block' : 'none';
     }
 
     if (!editMode) return;
@@ -3271,7 +3271,7 @@ function loop(currentTime) {
 }
 
 // Start the game!
-loadZone("town", 400, 400);
+loadZone("town", 575, 94);
 requestAnimationFrame(loop);
 
 // --- 8. EDIT MODE UI ---
@@ -3403,8 +3403,8 @@ canvas.addEventListener('mousemove', (e) => {
 
         const worldX = Math.floor(clickX + cX);
         const worldY = Math.floor(clickY + cY);
-        // Display top-left corner coordinates for a 64x64 box centered on mouse
-        coordUI.innerText = `Door Hover Coordinates:\nx: ${worldX - 32}, y: ${worldY - 32}`;
+        // Display precise world coordinates for setting spawn locations
+        coordUI.innerText = `Hover Coordinates:\nx: ${worldX}, y: ${worldY}`;
     }
     if (isDragging) handleMouse(e);
 });
