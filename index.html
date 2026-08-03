@@ -8,7 +8,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Permanent+Marker&family=Special+Elite&family=Kalam:wght@400;700&family=Caveat:wght@400;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=2">
+    <link rel="stylesheet" href="css/style.css?v=3">
     <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -16,6 +16,31 @@
 <body>
     <canvas id="gameCanvas" width="800" height="800"></canvas>
 
+    <!-- In-World Map Stand -->
+    <div id="in-world-map-stand" style="display: none;">
+        <div class="map-stand-unit">
+            <!-- The parchment map nailed to the board -->
+            <div class="stand-board">
+                <!-- Nail top-left -->
+                <div class="stand-nail" style="top:3px;left:4px;"></div>
+                <!-- Nail top-right -->
+                <div class="stand-nail" style="top:3px;right:4px;"></div>
+                <!-- The aged parchment -->
+                <div class="stand-parchment">
+                    <div class="stand-map-content">
+                        <!-- Mini map injected by JS -->
+                    </div>
+                    <!-- Aged overlay -->
+                    <div class="stand-parchment-aging"></div>
+                </div>
+            </div>
+            <!-- Wooden post/legs -->
+            <div class="stand-legs">
+                <div class="stand-leg stand-leg-left"></div>
+                <div class="stand-leg stand-leg-right"></div>
+            </div>
+        </div>
+    </div>
     <!-- Dialogue System Overlay -->
     <div id="dialogue-backdrop"></div>
     <div id="dialogue-box" class="dialogue-box" style="display: none;">

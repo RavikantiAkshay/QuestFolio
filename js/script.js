@@ -905,7 +905,7 @@ document.body.appendChild(overlay);
 const townMapOverlay = document.createElement('div');
 townMapOverlay.id = 'town-map-overlay';
 townMapOverlay.style.cssText = 'display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:9999; background:rgba(0,0,0,0.7); backdrop-filter:blur(5px); justify-content:center; align-items:center;';
-townMapOverlay.innerHTML = `
+const townMapContent = `
 <div style="width:900px; height:620px; max-width:95vw; max-height:85vh; background-color:#e0d0a0; border-radius: 4px 18px 5px 22px / 20px 6px 15px 8px; box-shadow: inset 0 0 80px rgba(100,70,30,0.7), inset 0 0 20px rgba(80,50,20,0.5), 0 20px 50px rgba(0,0,0,0.8); position:relative; overflow:visible; border: 4px solid #8c734b; transform: rotate(-0.5deg);">
     <!-- Dirt and noise overlay for old torn effect -->
     <div style="position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:1;background:radial-gradient(circle at 20% 30%, rgba(100,70,30,0.1) 0%, transparent 40%),radial-gradient(circle at 80% 70%, rgba(100,70,30,0.15) 0%, transparent 50%),url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.25'/%3E%3C/svg%3E&quot;);mix-blend-mode:multiply;border-radius:inherit;"></div>
@@ -964,6 +964,7 @@ townMapOverlay.innerHTML = `
     <div style="position:absolute;bottom:-40px;width:100%;text-align:center;color:white;font-family:'Press Start 2P',monospace;font-size:12px;text-shadow:2px 2px 0 #000;">Press 'O' or click outside to close map</div>
 </div>
 `;
+townMapOverlay.innerHTML = townMapContent;
 document.body.appendChild(townMapOverlay);
 townMapOverlay.addEventListener('click', (e) => {
     if (e.target === townMapOverlay) townMapOverlay.style.display = 'none';
@@ -1339,16 +1340,14 @@ window.addEventListener("keydown", (e) => {
         if (postOffice) postOffice.style.display = 'none';
         isOverlayActive = false;
     }
-    // --- LIGHT SOURCE / DEV MODE ---
-    if (e.key.toLowerCase() === 'i') {
-        editMode = !editMode;
-
-        debugUI.innerText = `DEV MODE ON\nDrag to Paint Light Centers\n'P': Print Array\n'V': Toggle Paint/Erase`;
-        debugUI.style.color = "#ffdd55";
-
-        debugUI.style.display = editMode ? 'block' : 'none';
-        coordUI.style.display = editMode ? 'block' : 'none';
-    }
+    // --- LIGHT SOURCE / DEV MODE (commented out) ---
+    // if (e.key.toLowerCase() === 'i') {
+    //     editMode = !editMode;
+    //     debugUI.innerText = `DEV MODE ON\nDrag to Paint Light Centers\n'P': Print Array\n'V': Toggle Paint/Erase`;
+    //     debugUI.style.color = "#ffdd55";
+    //     debugUI.style.display = editMode ? 'block' : 'none';
+    //     coordUI.style.display = editMode ? 'block' : 'none';
+    // }
 
     if (!editMode) return;
 
@@ -3245,6 +3244,64 @@ function draw() {
         ctx.restore();
     }
 
+    // Sync In-World Map Stand UI
+    const mapStand = document.getElementById('in-world-map-stand');
+    if (mapStand && currentZone === "town") {
+        const standX = 475;
+        const standY = 162;
+        const screenX = standX - cameraX;
+        const screenY = standY - cameraY;
+
+        if (screenX > -150 && screenX < canvas.width + 150 && screenY > -150 && screenY < canvas.height + 150) {
+            mapStand.style.display = 'block';
+            // Position the stand's bottom-center at the world coordinate
+            mapStand.style.left = (screenX * scale) + 'px';
+            mapStand.style.top = ((screenY - 42) * scale) + 'px';
+            // Scale with the game's zoom but keep the 3D on the child .map-stand-unit
+            mapStand.style.transform = `scale(${scale})`;
+            mapStand.style.transformOrigin = 'center center';
+
+            // Inject mini map once
+            if (!mapStand.dataset.initialized) {
+                const standMapContent = mapStand.querySelector('.stand-map-content');
+                if (standMapContent) {
+                    const hintRegex = /<!-- Close hint -->[\s\S]*?<\/div>/;
+                    let miniHTML = townMapContent
+                        .replace(hintRegex, '')
+                        .replace('border: 4px solid #8c734b;', '')
+                        .replace('overflow:visible', 'overflow:hidden');
+                    
+                    // Parchment is 62x46px. Map source is 900x620.
+                    // Scale factor: Math.min(62/900, 46/620) = Math.min(0.0689, 0.0742) = 0.0689
+                    // Scaled size: 62 x 42.7. Center vertically: (46-42.7)/2 ≈ 1.6px
+                    const mapScale = 0.069;
+                    standMapContent.innerHTML = `<div style="
+                        transform: scale(${mapScale});
+                        transform-origin: top left;
+                        width: 900px;
+                        height: 620px;
+                        filter: sepia(0.3) blur(0.8px);
+                        opacity: 0.9;
+                        pointer-events: none;
+                        margin-top: 1px;
+                    ">${miniHTML}</div>`;
+                    mapStand.dataset.initialized = 'true';
+                }
+            }
+
+            // Depth sorting
+            if (player.y > standY - 20) {
+                mapStand.style.zIndex = 1;
+            } else {
+                mapStand.style.zIndex = 5;
+            }
+        } else {
+            mapStand.style.display = 'none';
+        }
+    } else if (mapStand) {
+        mapStand.style.display = 'none';
+    }
+
     ctx.restore();
 }
 
@@ -3291,21 +3348,21 @@ debugUI.style.display = 'none'; // Hidden by default
 debugUI.innerText = `EDIT MODE ON\nDrag to Paint\n'V': Toggle Solid/Walkable\n'[' / ']': Brush Size\n'F': Fill All Solid\n'X': Clear All`;
 document.body.appendChild(debugUI);
 
-const coordUI = document.createElement('div');
-coordUI.style.position = 'absolute';
-coordUI.style.top = '10px';
-coordUI.style.right = '10px';
-coordUI.style.background = 'rgba(0,0,0,0.8)';
-coordUI.style.color = '#5f5';
-coordUI.style.padding = '10px 15px';
-coordUI.style.fontFamily = 'monospace';
-coordUI.style.fontSize = '16px';
-coordUI.style.pointerEvents = 'none';
-coordUI.style.borderRadius = '5px';
-coordUI.style.zIndex = '1000';
-coordUI.style.display = 'none'; // Hidden by default
-coordUI.innerText = `Hover over doors!`;
-document.body.appendChild(coordUI);
+// const coordUI = document.createElement('div');
+// coordUI.style.position = 'absolute';
+// coordUI.style.top = '10px';
+// coordUI.style.right = '10px';
+// coordUI.style.background = 'rgba(0,0,0,0.8)';
+// coordUI.style.color = '#5f5';
+// coordUI.style.padding = '10px 15px';
+// coordUI.style.fontFamily = 'monospace';
+// coordUI.style.fontSize = '16px';
+// coordUI.style.pointerEvents = 'none';
+// coordUI.style.borderRadius = '5px';
+// coordUI.style.zIndex = '1000';
+// coordUI.style.display = 'none';
+// coordUI.innerText = `Hover over doors!`;
+// document.body.appendChild(coordUI);
 
 function handleMouse(e) {
     const clickX = e.clientX / scale;
@@ -3403,8 +3460,7 @@ canvas.addEventListener('mousemove', (e) => {
 
         const worldX = Math.floor(clickX + cX);
         const worldY = Math.floor(clickY + cY);
-        // Display precise world coordinates for setting spawn locations
-        coordUI.innerText = `Hover Coordinates:\nx: ${worldX}, y: ${worldY}`;
+        // coordUI.innerText = `Hover Coordinates:\nx: ${worldX}, y: ${worldY}`;
     }
     if (isDragging) handleMouse(e);
 });
