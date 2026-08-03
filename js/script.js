@@ -207,7 +207,8 @@ const interactables = {
     "town": [
         { "x": 896, "y": 304, "w": 48, "h": 48, "id": "lab", "text": "Lab" },
         { "x": 280, "y": 408, "w": 40, "h": 48, "id": "home", "text": "Home" },
-        { "x": 904, "y": 656, "w": 48, "h": 56, "id": "workshop", "text": "Workshop" }
+        { "x": 904, "y": 656, "w": 48, "h": 56, "id": "workshop", "text": "Workshop" },
+        { "x": 450, "y": 140, "w": 60, "h": 60, "id": "map_stand", "text": "Town Map" }
     ],
     "school": [
         { "x": 224, "y": 536, "w": 64, "h": 56, "id": "library", "text": "Library" },
@@ -1007,6 +1008,10 @@ window.addEventListener("keydown", (e) => {
 
     // Handle Interaction (E key)
     if (key === 'e') {
+        if (activeInteractable && activeInteractable.id === 'map_stand') {
+            townMapOverlay.style.display = townMapOverlay.style.display === 'flex' ? 'none' : 'flex';
+            return;
+        }
         if (!isOverlayActive && activeInteractable) {
             isOverlayActive = true;
             isExploringInterior = false;
@@ -1327,18 +1332,28 @@ window.addEventListener("keydown", (e) => {
             isOverlayActive = false;
         }
     }
-    if (e.key === 'Escape' && isOverlayActive && !isDialogueActive) {
-        overlay.style.display = 'none';
-        if (interiorOverlay) interiorOverlay.style.display = 'none';
-        const workshopContainer = document.getElementById('workshop-container');
-        if (workshopContainer) workshopContainer.style.display = 'none';
-        const schoolBoard = document.getElementById('school-board-container');
-        if (schoolBoard) schoolBoard.style.display = 'none';
-        const libraryRack = document.getElementById('library-rack-container');
-        if (libraryRack) libraryRack.style.display = 'none';
-        const postOffice = document.getElementById('post-office-container');
-        if (postOffice) postOffice.style.display = 'none';
-        isOverlayActive = false;
+    if (e.key === 'Escape') {
+        if (townMapOverlay && townMapOverlay.style.display === 'flex') {
+            townMapOverlay.style.display = 'none';
+        }
+        const diaryOverlay = document.getElementById('diary-overlay');
+        if (diaryOverlay && diaryOverlay.style.display === 'flex') {
+            diaryOverlay.style.display = 'none';
+            isOverlayActive = false;
+        }
+        if (isOverlayActive && !isDialogueActive) {
+            overlay.style.display = 'none';
+            if (interiorOverlay) interiorOverlay.style.display = 'none';
+            const workshopContainer = document.getElementById('workshop-container');
+            if (workshopContainer) workshopContainer.style.display = 'none';
+            const schoolBoard = document.getElementById('school-board-container');
+            if (schoolBoard) schoolBoard.style.display = 'none';
+            const libraryRack = document.getElementById('library-rack-container');
+            if (libraryRack) libraryRack.style.display = 'none';
+            const postOffice = document.getElementById('post-office-container');
+            if (postOffice) postOffice.style.display = 'none';
+            isOverlayActive = false;
+        }
     }
     // --- LIGHT SOURCE / DEV MODE (commented out) ---
     // if (e.key.toLowerCase() === 'i') {
@@ -2670,8 +2685,9 @@ function draw() {
 
         ctx.lineWidth = 3;
         ctx.strokeStyle = "black";
-        ctx.strokeText(`Press [E] to enter ${activeInteractable.text}`, player.x + player.size / 2, player.y - 15 - pulse);
-        ctx.fillText(`Press [E] to enter ${activeInteractable.text}`, player.x + player.size / 2, player.y - 15 - pulse);
+        const verb = activeInteractable.id === 'map_stand' ? 'open' : 'enter';
+        ctx.strokeText(`Press [E] to ${verb} ${activeInteractable.text}`, player.x + player.size / 2, player.y - 15 - pulse);
+        ctx.fillText(`Press [E] to ${verb} ${activeInteractable.text}`, player.x + player.size / 2, player.y - 15 - pulse);
     }
 
     // Draw Interaction zones in edit mode
@@ -3263,6 +3279,13 @@ function draw() {
 
             // Inject mini map once
             if (!mapStand.dataset.initialized) {
+                mapStand.style.cursor = 'pointer';
+                mapStand.title = 'Click or press E to view Town Map';
+                mapStand.addEventListener('click', () => {
+                    if (townMapOverlay) {
+                        townMapOverlay.style.display = townMapOverlay.style.display === 'flex' ? 'none' : 'flex';
+                    }
+                });
                 const standMapContent = mapStand.querySelector('.stand-map-content');
                 if (standMapContent) {
                     const hintRegex = /<!-- Close hint -->[\s\S]*?<\/div>/;
@@ -3472,14 +3495,21 @@ let pageFlipInstance = null;
 
 function openDiary() {
     const overlay = document.getElementById('diary-overlay');
+    if (!overlay) return;
+    if (overlay.style.display === 'flex') {
+        overlay.style.display = 'none';
+        isOverlayActive = false;
+        return;
+    }
     overlay.style.display = 'flex';
     isOverlayActive = true;
 
+    const book = document.getElementById('diary-book');
+    if (book) book.style.opacity = '1';
+
     if (!pageFlipInstance) {
-        document.getElementById('diary-book').style.opacity = '0';
         initDiary();
     } else {
-        // Reset to first page if already open
         try {
             pageFlipInstance.flip(0);
         } catch(e) {
@@ -3493,11 +3523,12 @@ document.getElementById('diary-close').addEventListener('click', () => {
     isOverlayActive = false;
 });
 
-async function initDiary() {
+function initDiary() {
     const bookContainer = document.getElementById('diary-book');
+    if (!bookContainer) return;
     bookContainer.innerHTML = '';
+    bookContainer.style.opacity = '1';
 
-    // Use the official stpageflip HTML structure: data-density="hard"
     let html = `
         <div class="diary-page" data-density="hard">
             <div class="diary-page-content" style="background-color: #4a3424; color: #e8dcc4; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; border: 2px solid #2a1f15;">
@@ -3509,213 +3540,208 @@ async function initDiary() {
         </div>
     `;
 
-    try {
-        const res = await fetch('assets/trips.json');
-        const data = await res.json();
+    const data = window.TRIPS_DATA;
+    if (data && data.trips) {
+        try {
+            const totalTrips = data.trips.length;
+            const yearsCount = {};
+            const monthCount = {};
+            const transportCount = {};
+            const uniquePlaces = new Set();
+            let totalDays = 0;
+            let longestTrip = 0;
+            let shortestTrip = Infinity;
+            let totalDistance = 0;
+            let totalPlacesCount = 0;
+            const tripDates = [];
 
-        const totalTrips = data.trips.length;
-        const yearsCount = {};
-        const monthCount = {};
-        const transportCount = {};
-        const uniquePlaces = new Set();
-        let totalDays = 0;
-        let longestTrip = 0;
-        let shortestTrip = Infinity;
-        let totalDistance = 0;
-        let totalPlacesCount = 0;
-        const tripDates = [];
+            const getDistance = (lat1, lon1, lat2, lon2) => {
+                const R = 6371;
+                const dLat = (lat2 - lat1) * Math.PI / 180;
+                const dLon = (lon2 - lon1) * Math.PI / 180;
+                const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            };
 
-        // Haversine distance function for accurate KM approximation
-        const getDistance = (lat1, lon1, lat2, lon2) => {
-            const R = 6371;
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        };
+            data.trips.forEach(trip => {
+                if (trip.startDate) {
+                    const date = new Date(trip.startDate);
+                    tripDates.push(date.getTime());
+                    const year = date.getFullYear();
+                    yearsCount[year] = (yearsCount[year] || 0) + 1;
 
-        data.trips.forEach(trip => {
-            if (trip.startDate) {
-                const date = new Date(trip.startDate);
-                tripDates.push(date.getTime());
-                const year = date.getFullYear();
-                yearsCount[year] = (yearsCount[year] || 0) + 1;
+                    const month = date.toLocaleString('default', { month: 'short' });
+                    monthCount[month] = (monthCount[month] || 0) + 1;
+                }
 
-                const month = date.toLocaleString('default', { month: 'short' });
-                monthCount[month] = (monthCount[month] || 0) + 1;
-            }
+                let tripDays = 1;
+                if (trip.startDate && trip.endDate) {
+                    const start = new Date(trip.startDate);
+                    const end = new Date(trip.endDate);
+                    tripDays = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
+                }
+                if (tripDays > 0) {
+                    totalDays += tripDays;
+                    if (tripDays > longestTrip) longestTrip = tripDays;
+                    if (tripDays < shortestTrip) shortestTrip = tripDays;
+                }
 
-            let tripDays = 1;
-            if (trip.startDate && trip.endDate) {
-                const start = new Date(trip.startDate);
-                const end = new Date(trip.endDate);
-                tripDays = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
-            }
-            if (tripDays > 0) {
-                totalDays += tripDays;
-                if (tripDays > longestTrip) longestTrip = tripDays;
-                if (tripDays < shortestTrip) shortestTrip = tripDays;
-            }
+                if (trip.places) {
+                    totalPlacesCount += trip.places.length;
+                    let prevCoords = null;
+                    trip.places.forEach(p => {
+                        const name = p.name ? p.name.trim() : null;
+                        if (name) uniquePlaces.add(name);
 
-            if (trip.places) {
-                totalPlacesCount += trip.places.length;
-                let prevCoords = null;
-                trip.places.forEach(p => {
-                    const name = p.name ? p.name.trim() : null;
-                    if (name) uniquePlaces.add(name);
-
-                    if (p.transportFromPrevious) {
-                        let mode = p.transportFromPrevious.toLowerCase();
-                        if (mode === 'ferry') mode = 'boat';
-                        if (mode !== 'other' && mode !== '') {
-                            const formattedMode = mode.charAt(0).toUpperCase() + mode.slice(1);
-                            transportCount[formattedMode] = (transportCount[formattedMode] || 0) + 1;
+                        if (p.transportFromPrevious) {
+                            let mode = p.transportFromPrevious.toLowerCase();
+                            if (mode === 'ferry') mode = 'boat';
+                            if (mode !== 'other' && mode !== '') {
+                                const formattedMode = mode.charAt(0).toUpperCase() + mode.slice(1);
+                                transportCount[formattedMode] = (transportCount[formattedMode] || 0) + 1;
+                            }
                         }
-                    }
 
-                    if (p.coordinates) {
-                        if (prevCoords) {
-                            totalDistance += getDistance(prevCoords.lat, prevCoords.lng, p.coordinates.lat, p.coordinates.lng);
+                        if (p.coordinates) {
+                            if (prevCoords) {
+                                totalDistance += getDistance(prevCoords.lat, prevCoords.lng, p.coordinates.lat, p.coordinates.lng);
+                            }
+                            prevCoords = p.coordinates;
                         }
-                        prevCoords = p.coordinates;
-                    }
-                });
+                    });
+                }
+            });
+
+            if (shortestTrip === Infinity) shortestTrip = 0;
+            const totalPlaces = uniquePlaces.size;
+            const busiestYear = Object.keys(yearsCount).sort((a, b) => yearsCount[b] - yearsCount[a])[0] || 'N/A';
+            const peakMonth = Object.keys(monthCount).sort((a, b) => monthCount[b] - monthCount[a])[0] || 'N/A';
+            const topTransport = Object.entries(transportCount).sort((a, b) => b[1] - a[1]).map(t => t[0]).join(', ') || 'Various';
+            const yearsTraveled = Object.keys(yearsCount).length || 1;
+
+            const avgTripsYear = (totalTrips / yearsTraveled).toFixed(1);
+            const avgPlacesTrip = (totalPlacesCount / (totalTrips || 1)).toFixed(1);
+            const avgDaysTrip = (totalDays / (totalTrips || 1)).toFixed(1);
+
+            tripDates.sort((a, b) => a - b);
+            let longestGap = 0;
+            for (let i = 1; i < tripDates.length; i++) {
+                const gap = Math.round((tripDates[i] - tripDates[i - 1]) / (1000 * 60 * 60 * 24));
+                if (gap > longestGap) longestGap = gap;
             }
-        });
-
-        if (shortestTrip === Infinity) shortestTrip = 0;
-        const totalPlaces = uniquePlaces.size;
-        const busiestYear = Object.keys(yearsCount).sort((a, b) => yearsCount[b] - yearsCount[a])[0];
-        const peakMonth = Object.keys(monthCount).sort((a, b) => monthCount[b] - monthCount[a])[0];
-        const topTransport = Object.entries(transportCount).sort((a, b) => b[1] - a[1]).map(t => t[0]).join(', ') || 'Various';
-        const yearsTraveled = Object.keys(yearsCount).length || 1;
-
-        const avgTripsYear = (totalTrips / yearsTraveled).toFixed(1);
-        const avgPlacesTrip = (totalPlacesCount / (totalTrips || 1)).toFixed(1);
-        const avgDaysTrip = (totalDays / (totalTrips || 1)).toFixed(1);
-
-        tripDates.sort((a, b) => a - b);
-        let longestGap = 0;
-        for (let i = 1; i < tripDates.length; i++) {
-            const gap = Math.round((tripDates[i] - tripDates[i - 1]) / (1000 * 60 * 60 * 24));
-            if (gap > longestGap) longestGap = gap;
-        }
-
-        // Add static image map and stats spread
-        html += `
-            <div class="diary-page">
-                <div class="diary-page-content" style="background-color: #fdf6e3; height: 100%; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column;">
-                    <h2 style="font-family: 'Special Elite', cursive; font-size: 24px; margin: 0 0 10px 0; text-align: center; color: #3b3024; border-bottom: 2px solid rgba(0,0,0,0.1); padding-bottom: 5px;">Footprints in India</h2>
-                    <img src="assets/india_map.png" alt="India Map" style="width: 100%; height: 350px; object-fit: cover; margin: 5px 0; border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); pointer-events: none; mix-blend-mode: multiply;">
-                    <p style="font-family: 'Share Tech Mono', monospace; font-size: 14px; color: #666; text-align: center; margin-top: 10px; margin-bottom: 5px;">An overview of the journey so far.</p>
-                    
-                    <div style="display: flex; justify-content: space-around; margin-top: auto; border-top: 1px dashed rgba(0,0,0,0.2); padding-top: 15px; font-family: 'Special Elite', cursive;">
-                        <div style="text-align: center;">
-                            <div style="font-size: 22px; font-weight: bold; color: #7a2828;">${totalTrips}</div>
-                            <div style="font-size: 10px; text-transform: uppercase; color: #555; font-family: 'Share Tech Mono', monospace;">Trips</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="font-size: 22px; font-weight: bold; color: #7a2828;">${totalPlaces}</div>
-                            <div style="font-size: 10px; text-transform: uppercase; color: #555; font-family: 'Share Tech Mono', monospace;">Locations</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="font-size: 22px; font-weight: bold; color: #7a2828;">${Math.round(totalDistance).toLocaleString()}</div>
-                            <div style="font-size: 10px; text-transform: uppercase; color: #555; font-family: 'Share Tech Mono', monospace;">KM Tracked</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="diary-page">
-                <div class="diary-page-content" style="background-color: #fdf6e3; height: 100%; padding: 20px; display: flex; flex-direction: column; box-sizing: border-box;">
-                    <h2 style="font-family: 'Special Elite', cursive; font-size: 24px; text-align: center; color: #3b3024; margin-bottom: 10px; border-bottom: 2px solid rgba(0,0,0,0.1); padding-bottom: 5px;">Travel Statistics</h2>
-                    
-                    <!-- Averages (Circles) -->
-                    <h3 style="font-size: 14px; margin-top: 5px; margin-bottom: 8px; border-bottom: 1px dashed rgba(0,0,0,0.2); padding-bottom: 4px; color: #444; font-family: 'Special Elite', cursive;">Averages</h3>
-                    <div style="display: flex; justify-content: space-between; font-family: 'Share Tech Mono', monospace; margin-bottom: 15px;">
-                        <div style="width: 30%; aspect-ratio: 1; border: 2px solid #a69886; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: rgba(0,0,0,0.02);">
-                            <div style="font-size: 18px; font-weight: bold; color: #7a2828;">${avgTripsYear}</div>
-                            <div style="font-size: 9px; text-align: center; line-height: 1.1; color: #555; margin-top: 2px;">Trips/Yr</div>
-                        </div>
-                        <div style="width: 30%; aspect-ratio: 1; border: 2px solid #a69886; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: rgba(0,0,0,0.02);">
-                            <div style="font-size: 18px; font-weight: bold; color: #7a2828;">${avgPlacesTrip}</div>
-                            <div style="font-size: 9px; text-align: center; line-height: 1.1; color: #555; margin-top: 2px;">Places/Trip</div>
-                        </div>
-                        <div style="width: 30%; aspect-ratio: 1; border: 2px solid #a69886; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: rgba(0,0,0,0.02);">
-                            <div style="font-size: 18px; font-weight: bold; color: #7a2828;">${avgDaysTrip}</div>
-                            <div style="font-size: 9px; text-align: center; line-height: 1.1; color: #555; margin-top: 2px;">Days/Trip</div>
-                        </div>
-                    </div>
-
-                    <!-- Duration Extremes (Data Block) -->
-                    <h3 style="font-size: 14px; margin-bottom: 8px; border-bottom: 1px dashed rgba(0,0,0,0.2); padding-bottom: 4px; color: #444; font-family: 'Special Elite', cursive;">Time on the Road</h3>
-                    <div style="background-color: rgba(0,0,0,0.03); padding: 8px 10px; border-radius: 4px; font-family: 'Share Tech Mono', monospace; font-size: 13px; margin-bottom: 15px; border-left: 3px solid #7a2828;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                            <span style="color: #555;">Total Days</span> <strong style="color: #3b3024;">${totalDays}</strong>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                            <span style="color: #555;">Longest Trip</span> <strong style="color: #3b3024;">${longestTrip} days</strong>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                            <span style="color: #555;">Shortest Trip</span> <strong style="color: #3b3024;">${shortestTrip} days</strong>
-                        </div>
-                        <div style="display: flex; justify-content: space-between;">
-                            <span style="color: #555;">Max Gap</span> <strong style="color: #3b3024;">${longestGap} days</strong>
-                        </div>
-                    </div>
-
-                    <!-- Trends (Ribbons) -->
-                    <h3 style="font-size: 14px; margin-bottom: 8px; border-bottom: 1px dashed rgba(0,0,0,0.2); padding-bottom: 4px; color: #444; font-family: 'Special Elite', cursive;">Trends & Transport</h3>
-                    <div style="display: flex; flex-wrap: wrap; gap: 8px; font-family: 'Special Elite', cursive; font-size: 12px;">
-                        <div style="background-color: #d1c8b4; color: #3b3024; padding: 4px 8px; border-radius: 2px; box-shadow: 1px 1px 2px rgba(0,0,0,0.1);">
-                            Busiest Year: <strong>${busiestYear}</strong>
-                        </div>
-                        <div style="background-color: #d1c8b4; color: #3b3024; padding: 4px 8px; border-radius: 2px; box-shadow: 1px 1px 2px rgba(0,0,0,0.1);">
-                            Peak Month: <strong>${peakMonth}</strong>
-                        </div>
-                        <div style="background-color: #d1c8b4; color: #3b3024; padding: 4px 8px; border-radius: 2px; width: 100%; box-shadow: 1px 1px 2px rgba(0,0,0,0.1);">
-                            Modes: <strong>${topTransport}</strong>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        data.trips.forEach((trip, index) => {
-            const placesArray = trip.places ? [...new Set(trip.places.map(p => p.name))] : [];
-            const columnStyle = placesArray.length > 10 ? 'column-count: 2; column-gap: 15px;' : '';
-            const placesHtml = placesArray.length > 0
-                ? `<ul style="list-style-type: square; padding-left: 20px; margin: 5px 0 0 0; font-size: 12px; line-height: 1.3; ${columnStyle}">` + placesArray.map(p => `<li style="break-inside: avoid-column;">${p}</li>`).join('') + `</ul>`
-                : '<div style="font-size: 12px; margin-top: 5px;">No places recorded</div>';
-
-            const coverHtml = trip.coverImage ? `<img src="${trip.coverImage}" class="diary-img" alt="${trip.title}" style="width: 100%; height: 160px; object-fit: cover; margin: 10px 0; border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">` : '';
 
             html += `
                 <div class="diary-page">
-                    <div class="diary-page-content" style="background-color: #fdf6e3; height: 100%; padding: 20px; color: #3b3024; font-family: 'Special Elite', cursive; overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column;">
-                        <h2 style="font-size: 28px; margin: 0 0 5px 0; border-bottom: 2px solid rgba(0,0,0,0.1); padding-bottom: 5px;">${trip.title}</h2>
-                        <div style="font-family: 'Share Tech Mono', monospace; font-size: 14px; color: #666; margin-bottom: 10px;">Year: ${trip.startDate.split('-')[0]}</div>
-                        ${coverHtml}
-                        <div style="margin-bottom: 10px; flex: 1; display: flex; flex-direction: column;">
-                            <strong style="font-size: 14px;">Places Visited:</strong> 
-                            ${placesHtml}
+                    <div class="diary-page-content" style="background-color: #fdf6e3; height: 100%; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column;">
+                        <h2 style="font-family: 'Special Elite', cursive; font-size: 24px; margin: 0 0 10px 0; text-align: center; color: #3b3024; border-bottom: 2px solid rgba(0,0,0,0.1); padding-bottom: 5px;">Footprints in India</h2>
+                        <img src="assets/india_map.png" alt="India Map" style="width: 100%; height: 350px; object-fit: cover; margin: 5px 0; border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); pointer-events: none; mix-blend-mode: multiply;">
+                        <p style="font-family: 'Share Tech Mono', monospace; font-size: 14px; color: #666; text-align: center; margin-top: 10px; margin-bottom: 5px;">An overview of the journey so far.</p>
+                        
+                        <div style="display: flex; justify-content: space-around; margin-top: auto; border-top: 1px dashed rgba(0,0,0,0.2); padding-top: 15px; font-family: 'Special Elite', cursive;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 22px; font-weight: bold; color: #7a2828;">${totalTrips}</div>
+                                <div style="font-size: 10px; text-transform: uppercase; color: #555; font-family: 'Share Tech Mono', monospace;">Trips</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 22px; font-weight: bold; color: #7a2828;">${totalPlaces}</div>
+                                <div style="font-size: 10px; text-transform: uppercase; color: #555; font-family: 'Share Tech Mono', monospace;">Locations</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 22px; font-weight: bold; color: #7a2828;">${Math.round(totalDistance).toLocaleString()}</div>
+                                <div style="font-size: 10px; text-transform: uppercase; color: #555; font-family: 'Share Tech Mono', monospace;">KM Tracked</div>
+                            </div>
                         </div>
-                        <div style="font-family: 'Share Tech Mono', monospace; font-size: 12px; text-align: right; margin-top: auto;">${index + 1}</div>
+                    </div>
+                </div>
+                <div class="diary-page">
+                    <div class="diary-page-content" style="background-color: #fdf6e3; height: 100%; padding: 20px; display: flex; flex-direction: column; box-sizing: border-box;">
+                        <h2 style="font-family: 'Special Elite', cursive; font-size: 24px; text-align: center; color: #3b3024; margin-bottom: 10px; border-bottom: 2px solid rgba(0,0,0,0.1); padding-bottom: 5px;">Travel Statistics</h2>
+                        
+                        <h3 style="font-size: 14px; margin-top: 5px; margin-bottom: 8px; border-bottom: 1px dashed rgba(0,0,0,0.2); padding-bottom: 4px; color: #444; font-family: 'Special Elite', cursive;">Averages</h3>
+                        <div style="display: flex; justify-content: space-between; font-family: 'Share Tech Mono', monospace; margin-bottom: 15px;">
+                            <div style="width: 30%; aspect-ratio: 1; border: 2px solid #a69886; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: rgba(0,0,0,0.02);">
+                                <div style="font-size: 18px; font-weight: bold; color: #7a2828;">${avgTripsYear}</div>
+                                <div style="font-size: 9px; text-align: center; line-height: 1.1; color: #555; margin-top: 2px;">Trips/Yr</div>
+                            </div>
+                            <div style="width: 30%; aspect-ratio: 1; border: 2px solid #a69886; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: rgba(0,0,0,0.02);">
+                                <div style="font-size: 18px; font-weight: bold; color: #7a2828;">${avgPlacesTrip}</div>
+                                <div style="font-size: 9px; text-align: center; line-height: 1.1; color: #555; margin-top: 2px;">Places/Trip</div>
+                            </div>
+                            <div style="width: 30%; aspect-ratio: 1; border: 2px solid #a69886; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: rgba(0,0,0,0.02);">
+                                <div style="font-size: 18px; font-weight: bold; color: #7a2828;">${avgDaysTrip}</div>
+                                <div style="font-size: 9px; text-align: center; line-height: 1.1; color: #555; margin-top: 2px;">Days/Trip</div>
+                            </div>
+                        </div>
+
+                        <h3 style="font-size: 14px; margin-bottom: 8px; border-bottom: 1px dashed rgba(0,0,0,0.2); padding-bottom: 4px; color: #444; font-family: 'Special Elite', cursive;">Time on the Road</h3>
+                        <div style="background-color: rgba(0,0,0,0.03); padding: 8px 10px; border-radius: 4px; font-family: 'Share Tech Mono', monospace; font-size: 13px; margin-bottom: 15px; border-left: 3px solid #7a2828;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span style="color: #555;">Total Days</span> <strong style="color: #3b3024;">${totalDays}</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span style="color: #555;">Longest Trip</span> <strong style="color: #3b3024;">${longestTrip} days</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span style="color: #555;">Shortest Trip</span> <strong style="color: #3b3024;">${shortestTrip} days</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: #555;">Max Gap</span> <strong style="color: #3b3024;">${longestGap} days</strong>
+                            </div>
+                        </div>
+
+                        <h3 style="font-size: 14px; margin-bottom: 8px; border-bottom: 1px dashed rgba(0,0,0,0.2); padding-bottom: 4px; color: #444; font-family: 'Special Elite', cursive;">Trends & Transport</h3>
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px; font-family: 'Special Elite', cursive; font-size: 12px;">
+                            <div style="background-color: #d1c8b4; color: #3b3024; padding: 4px 8px; border-radius: 2px; box-shadow: 1px 1px 2px rgba(0,0,0,0.1);">
+                                Busiest Year: <strong>${busiestYear}</strong>
+                            </div>
+                            <div style="background-color: #d1c8b4; color: #3b3024; padding: 4px 8px; border-radius: 2px; box-shadow: 1px 1px 2px rgba(0,0,0,0.1);">
+                                Peak Month: <strong>${peakMonth}</strong>
+                            </div>
+                            <div style="background-color: #d1c8b4; color: #3b3024; padding: 4px 8px; border-radius: 2px; width: 100%; box-shadow: 1px 1px 2px rgba(0,0,0,0.1);">
+                                Modes: <strong>${topTransport}</strong>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
-        });
 
-        // Add blank page if odd number of internal pages
-        if (data.trips.length % 2 !== 0) {
-            html += `
-                <div class="diary-page">
-                    <div class="diary-page-content" style="background-color: #fdf6e3; height: 100%;"></div>
-                </div>
-            `;
+            data.trips.forEach((trip, index) => {
+                const placesArray = trip.places ? [...new Set(trip.places.map(p => p.name))] : [];
+                const columnStyle = placesArray.length > 10 ? 'column-count: 2; column-gap: 15px;' : '';
+                const placesHtml = placesArray.length > 0
+                    ? `<ul style="list-style-type: square; padding-left: 20px; margin: 5px 0 0 0; font-size: 12px; line-height: 1.3; ${columnStyle}">` + placesArray.map(p => `<li style="break-inside: avoid-column;">${p}</li>`).join('') + `</ul>`
+                    : '<div style="font-size: 12px; margin-top: 5px;">No places recorded</div>';
+
+                const coverHtml = trip.coverImage ? `<img src="${trip.coverImage}" class="diary-img" alt="${trip.title}" style="width: 100%; height: 160px; object-fit: cover; margin: 10px 0; border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">` : '';
+
+                html += `
+                    <div class="diary-page">
+                        <div class="diary-page-content" style="background-color: #fdf6e3; height: 100%; padding: 20px; color: #3b3024; font-family: 'Special Elite', cursive; overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column;">
+                            <h2 style="font-size: 28px; margin: 0 0 5px 0; border-bottom: 2px solid rgba(0,0,0,0.1); padding-bottom: 5px;">${trip.title}</h2>
+                            <div style="font-family: 'Share Tech Mono', monospace; font-size: 14px; color: #666; margin-bottom: 10px;">Year: ${trip.startDate ? trip.startDate.split('-')[0] : 'N/A'}</div>
+                            ${coverHtml}
+                            <div style="margin-bottom: 10px; flex: 1; display: flex; flex-direction: column;">
+                                <strong style="font-size: 14px;">Places Visited:</strong> 
+                                ${placesHtml}
+                            </div>
+                            <div style="font-family: 'Share Tech Mono', monospace; font-size: 12px; text-align: right; margin-top: auto;">${index + 1}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            if (data.trips.length % 2 !== 0) {
+                html += `
+                    <div class="diary-page">
+                        <div class="diary-page-content" style="background-color: #fdf6e3; height: 100%;"></div>
+                    </div>
+                `;
+            }
+
+        } catch (e) {
+            console.error("Error processing trips data:", e);
         }
-
-    } catch (e) {
-        console.error("Failed to load trips.json", e);
+    } else {
         html += `
             <div class="diary-page">
                 <div class="diary-page-content" style="background-color: #fdf6e3; height: 100%; padding: 30px;"><p style="font-family: 'Caveat', cursive; font-size: 24px;">Could not load diary entries.</p></div>
@@ -3740,43 +3766,53 @@ async function initDiary() {
     bookContainer.innerHTML = html;
 
     setTimeout(() => {
-        const pageFlip = new St.PageFlip(bookContainer, {
-            width: 400,
-            height: 550,
-            size: "fixed",
-            drawShadow: true,
-            showCover: true,
-            usePortrait: false,
-            mobileScrollSupport: false,
-            useMouseEvents: true, // Re-enable drag & drop since user liked Nodlik demo
-            maxShadowOpacity: 0.5 // Standard shadow
-        });
+        try {
+            if (window.St && window.St.PageFlip) {
+                const pageFlip = new St.PageFlip(bookContainer, {
+                    width: 400,
+                    height: 550,
+                    size: "fixed",
+                    drawShadow: true,
+                    showCover: true,
+                    usePortrait: false,
+                    mobileScrollSupport: false,
+                    useMouseEvents: true,
+                    maxShadowOpacity: 0.5
+                });
 
-        pageFlip.loadFromHTML(document.querySelectorAll('.diary-page'));
-        pageFlipInstance = pageFlip;
+                pageFlip.loadFromHTML(bookContainer.querySelectorAll('.diary-page'));
+                pageFlipInstance = pageFlip;
 
-        let isFlipping = false;
-        document.getElementById('diary-overlay').addEventListener('wheel', (e) => {
-            if (isFlipping || !pageFlipInstance) return;
+                let isFlipping = false;
+                const dOverlay = document.getElementById('diary-overlay');
+                if (dOverlay && !dOverlay.dataset.wheelBound) {
+                    dOverlay.dataset.wheelBound = "true";
+                    dOverlay.addEventListener('wheel', (e) => {
+                        if (isFlipping || !pageFlipInstance) return;
 
-            if (Math.abs(e.deltaY) > 30) {
-                isFlipping = true;
-                if (e.deltaY > 0) {
-                    pageFlipInstance.flipNext();
-                } else {
-                    pageFlipInstance.flipPrev();
+                        if (Math.abs(e.deltaY) > 30) {
+                            isFlipping = true;
+                            if (e.deltaY > 0) {
+                                pageFlipInstance.flipNext();
+                            } else {
+                                pageFlipInstance.flipPrev();
+                            }
+
+                            setTimeout(() => {
+                                isFlipping = false;
+                            }, 800);
+                        }
+                    });
                 }
-
-                // Debounce to prevent multiple pages flipping at once
-                setTimeout(() => {
-                    isFlipping = false;
-                }, 800);
+            } else {
+                console.warn("PageFlip library missing; showing static page elements.");
             }
-        });
-
-        // Show the book smoothly after initialization
-        bookContainer.style.transition = 'opacity 0.3s ease';
-        bookContainer.style.opacity = '1';
-    }, 100);
+        } catch (err) {
+            console.error("PageFlip initialization error:", err);
+        } finally {
+            bookContainer.style.transition = 'opacity 0.3s ease';
+            bookContainer.style.opacity = '1';
+        }
+    }, 50);
 }
 
