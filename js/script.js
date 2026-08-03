@@ -1002,10 +1002,6 @@ window.addEventListener("keydown", (e) => {
         seasonMode = (seasonMode + 1) % 4;
     }
 
-    if (key === 't') {
-        openDiary();
-    }
-
     // Handle Interaction (E key)
     if (key === 'e') {
         if (activeInteractable && activeInteractable.id === 'map_stand') {

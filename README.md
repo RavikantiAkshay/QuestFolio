@@ -1,157 +1,152 @@
 <div align="center">
 
-# QuestFolio
+# QuestFolio 🗡️📜
 
-**A browser-based pixel-art RPG that doubles as a developer portfolio.**
+**A browser-based 2D pixel-art RPG that doubles as an interactive developer portfolio.**
 
 [![Play Now](https://img.shields.io/badge/▶_Play_Now-Visit_QuestFolio-2ea44f?style=for-the-badge&logo=googlechrome&logoColor=white)](https://ravikantiakshay.github.io/my-game/)
 [![GitHub Stars](https://img.shields.io/github/stars/RavikantiAkshay/my-game?style=for-the-badge&logo=github)](https://github.com/RavikantiAkshay/my-game)
 
-*Walk through a handcrafted world. Enter buildings. Discover a developer's story told through interactive interiors — typewriters, CRT terminals, chalkboards, bookshelves, blueprints, sealed letters, and a travel diary.*
+*Explore a handcrafted world. Enter buildings. Discover a developer's journey through interactive interiors — typewriters, retro Sitcom TV monitor, CRT workstations, chalkboards, skill bookshelves, blueprints, sealed letters, and a page-flippable travel diary.*
 
 ---
 
 </div>
 
-## Overview
+## 🌟 Overview
 
-QuestFolio is a top-down RPG built entirely in the browser with vanilla HTML, CSS, and JavaScript — no frameworks, no bundlers. You control a character exploring an interconnected world of villages, schools, and castles. Every building you enter is a fully interactive experience: the Lab boots up a CRT monitor with live project demos, the Library lines its shelves with skill books, the Workshop lays out blueprints, the School writes on a chalkboard, and the Post Office delivers a sealed letter.
+**QuestFolio** is a top-down pixel-art RPG built entirely in the browser using vanilla HTML5, CSS3, and JavaScript — no external game engines or heavy bundlers. You control an animated adventurer exploring an interconnected world filled with villages, a school campus, and a dark castle.
 
-It's part game, part portfolio, part cinematic experience.
+Every building you enter opens a custom-designed interactive experience:
+- 🏡 **Home**: Personal intro on a vintage typewriter, Sitcom OS retro TV, and a realistic Travel Diary.
+- 🧪 **Lab Workstation**: Multi-device terminal (Tablet, Monitor, Phone) to view live projects and gamified bounties.
+- 🛠️ **Workshop**: Architectural drafting table with blueprints of active and stashed projects.
+- 🏫 **School**: Animated chalkboard displaying an education timeline from Class X through B.Tech at IIT Bhilai.
+- 📚 **Library**: Floor-to-ceiling wooden racks showcasing technical skills categorized into 6 technology shelves.
+- ✉️ **Post Office**: Kraft envelope with a wax seal, airmail borders, paperclip, and direct contact directory.
+- 🗺️ **Town Map Stand**: Physical wooden parchment map stand with proximity-based interactive viewing.
+- 🏰 **Castle & Boss Fight**: Multi-phase boss battle with attack combos, defense stance, warning spikes, and fire walls.
 
 ---
 
-## Controls
+## 🎮 Controls
 
-| Key | Action |
+| Key / Input | Action |
 |:---:|:-------|
-| `W` `A` `S` `D` / Arrow Keys | Move |
-| `E` | Interact with buildings / NPCs |
-| `ESC` | Return to overworld |
-| `Click` | Attack (3-hit combo) |
-| `F` | Defend |
-| `N` | Cycle time of day |
-| `M` | Cycle season |
-| `T` | Open travel diary |
+| `W` `A` `S` `D` / `Arrow Keys` | Move Character |
+| `E` | Interact with Buildings / NPCs / Map Stand |
+| `ESC` | Close Active Overlay / Return to Overworld |
+| `Left Click` | Attack (3-hit combo sequence) |
+| `F` | Defend Stance (Block incoming damage) |
+| `N` | Cycle Time of Day (*Day ➔ Evening ➔ Night ➔ Early Morning*) |
+| `M` | Cycle Season (*Summer ➔ Monsoon ➔ Autumn ➔ Winter*) |
 
 ---
 
-## The World
+## 🗺️ The World & Landmarks
 
-Three interconnected zones, each with its own tileset, collision map, NPCs, and interactable buildings.
+The game world features three distinct zones, each with dedicated tilesets, collision maps, NPCs, and interactive buildings:
 
-**Town** — The starting village. Pine forests, dirt paths, streetlamps.
-- **Home** — A log cabin with a typewriter. The page stuck in it is your personal introduction.
-- **Lab** — A research facility. Boot up the CRT monitor to browse live project demos with embedded iframes, feature lists, tech stacks, and direct links to GitHub repos and deployed apps. A phone-shaped panel shows "Active Bounties" — gamified calls to action.
-- **Workshop** — A blacksmith forge turned drafting table. Flip through blueprints for active projects and stashed concepts (with honest reasons why they were shelved). Decorative rulers, protractors, pencils, and coffee stains on the table.
+### 1. Town Village (The Starting Hub)
+- **Home**: A cozy log cabin containing:
+  - **Typewriter**: A mechanical typewriter holding a personal introduction sheet.
+  - **Sitcom OS (Retro TV)**: An 80s CRT television featuring developer "Sitcom DNA" and a corkboard of developer quotes styled as sticky notes from popular sitcoms (*Modern Family, B99, Parks & Rec, Friends, The Middle, Community*).
+  - **Travel Diary**: A realistic 3D page-flippable book showcasing travel statistics, trip histories, and Leaflet.js interactive maps.
+- **Lab Workstation**: A high-tech research station featuring a Tablet (description/features), PC Monitor (project preview & navigation), and Phone (tech stack, repository links, and active bounties).
+- **Workshop**: A blacksmith forge turned drafting table lined with drafting tools (rulers, pencils, graphite dust, coffee stains) displaying project blueprints.
+- **Town Map Stand**: An outdoor wooden display board nailed with an aged parchment mini-map. Proximity prompts appear when standing nearby (`Press E to open Map`).
 
-**School** — A sprawling campus with a bell tower and classrooms.
-- **School** — Step inside and face the chalkboard. Slide through an animated education timeline from Class X through B.Tech at IIT Bhilai. Chalk pieces and an eraser sit on the ledge.
-- **Library** — A grand hall with two floor-to-ceiling wooden book racks. Six shelves: Languages, Frontend, Backend, Databases, Tools & DevOps, AI & Cloud. Each book spine is a technology.
-- **Post Office** — An L-shaped post office. A kraft envelope sits open on the desk — complete with an airmail border, a wax seal stamped "A", a postmark, and a green paperclip. The letter inside has a personal note and a contact directory (Email, Phone, GitHub, LinkedIn).
+### 2. School Campus
+- **School Classroom**: Features a wooden-framed green chalkboard with sliding chalk slides detailing an academic timeline from Class X to B.Tech at IIT Bhilai.
+- **Library**: Grand library hall with dual wooden book racks categorized across 6 domain shelves (*Languages, Frontend, Backend, Databases, Tools & DevOps, AI & Cloud*).
+- **Post Office**: An L-shaped postal desk displaying an open kraft airmail envelope, a wax seal stamped "A", and a fully visible contact letter.
 
-**Castle** — A dark fortress at the edge of the map. Boss encounter inside.
+### 3. Castle & Boss Arena
+- **Fortress Grounds**: Home to the final Boss encounter with custom dialogue sequences, phase transitions, and unique combat mechanics.
 
 ---
 
-## Interiors
+## 🖼️ Handcrafted Interiors
 
-Every building has a hand-crafted pixel-art interior rendered as a 3/4 orthographic cutaway with exterior walls, grass, trees, and furniture. An "Explore" button toggles between viewing the room art and the interactive overlay.
+Every building features a 3/4 orthographic cutaway interior view with togglable "Explore" and "Return to Town" overlay controls.
 
 <table>
   <tr>
-    <td align="center"><b>Home</b><br><img src="assets/images/environments/home.png" width="250"/></td>
-    <td align="center"><b>Lab</b><br><img src="assets/images/environments/lab.jpg" width="250"/></td>
-    <td align="center"><b>Workshop</b><br><img src="assets/images/environments/workshop.jpg" width="250"/></td>
+    <td align="center"><b>Home Interior</b><br><img src="assets/images/environments/home.png" width="250"/></td>
+    <td align="center"><b>Lab Workstation</b><br><img src="assets/images/environments/lab.jpg" width="250"/></td>
+    <td align="center"><b>Workshop Blueprint Table</b><br><img src="assets/images/environments/workshop.jpg" width="250"/></td>
   </tr>
   <tr>
-    <td align="center"><b>School</b><br><img src="assets/images/environments/school.png" width="250"/></td>
-    <td align="center"><b>Library</b><br><img src="assets/images/environments/library.png" width="250"/></td>
-    <td align="center"><b>Post Office</b><br><img src="assets/images/environments/post.png" width="250"/></td>
+    <td align="center"><b>School Classroom</b><br><img src="assets/images/environments/school.png" width="250"/></td>
+    <td align="center"><b>Library Book Racks</b><br><img src="assets/images/environments/library.png" width="250"/></td>
+    <td align="center"><b>Post Office Desk</b><br><img src="assets/images/environments/post.png" width="250"/></td>
   </tr>
 </table>
 
 ---
 
-## Characters
+## ⚔️ Combat & Boss System
 
-<table>
-  <tr>
-    <td align="center" width="33%">
-      <img src="assets/images/characters/main-character.png" width="160"/>
-      <br><b>The Player</b>
-      <br><sub>4-directional animated sprite with idle, walking, and attack frames. 3-hit combo system with defend stance.</sub>
-    </td>
-    <td align="center" width="33%">
-      <img src="assets/images/characters/akbot-e7.png" width="160"/>
-      <br><b>AKBOT-E7</b>
-      <br><sub>AI companion. Appears in a cinematic intro sequence and narrates each building with contextual speech bubbles.</sub>
-    </td>
-    <td align="center" width="33%">
-      <img src="assets/images/characters/boss.png" width="160"/>
-      <br><b>The Boss</b>
-      <br><sub>Castle guardian with custom AI. Advances, retreats, and faces the player directionally. Two-phase attack pattern with dialogue transitions.</sub>
-    </td>
-  </tr>
-</table>
-
-4 additional NPCs placed across zones with directional animation and interaction prompts.
+- **3-Hit Combo**: Execute directional melee swings with responsive timing and visual attack arcs.
+- **Shield Defend**: Hold `F` to enter a defensive stance, reducing incoming damage from enemy attacks.
+- **Visual Feedback**: Screen shake effects on heavy impacts, red damage flash overlay, and dynamic health bars for player and boss.
+- **Multi-Phase Boss Encounter**:
+  - **Phase 1 (Spike Traps)**: Boss summons warning indicators followed by ground spikes targeting the player.
+  - **Phase 2 (Flame Walls - at 70% HP)**: Triggered via cinematic dialogue transition, spawning horizontal and vertical cross-fire patterns.
+- **Game Over & Victory Overlays**: Custom game state screens allowing instant restart and respawn.
 
 ---
 
-## Combat & Boss Fight
+## 🌦️ Atmospheric Weather & Day/Night Cycles
 
-- 3-hit combo attack system with directional sprite animations
-- Defend stance that blocks incoming damage
-- Health bars for both player and enemies
-- Screen shake on impact, red hurt flash on damage
+### Time of Day (`N` Key)
+- ☀️ **Day**: Crisp lighting with full visibility.
+- 🌅 **Evening**: Warm orange-to-purple gradient with a breathing atmospheric pulse.
+- 🌙 **Night**: Deep night overlay featuring glowing emissive light sources for streetlamps, windows, and player lantern.
+- 🌫️ **Early Morning**: Cool pale-blue morning mist.
 
-**Boss Fight** — A multi-phase encounter in the Castle:
-- **Phase 1** — Boss summons ground spikes targeting the player. Warning markers flash before impact. Attack frequency escalates and multiple simultaneous spikes spawn as the fight progresses.
-- **Phase 2** — Triggers at 70% HP. Boss delivers dialogue, then switches to fire attacks — horizontal and vertical flame walls forming cross patterns, rendered with fire sprite sheets.
-
----
-
-## Atmospheric Systems
-
-**Time of Day** — 4-state cycle toggled with `N`:
-
-| Mode | Effect |
-|:-----|:-------|
-| Day | Clear sky, no overlay |
-| Evening | Warm orange-to-purple gradient with gentle breathing pulse |
-| Night | Deep darkness with light holes for player lantern, streetlamps, and window lights. Emissive glow cores on sources. |
-| Early Morning | Cool pale-blue mist with soft pulsing |
-
-**Seasons** — 4-state cycle toggled with `M`:
-
-| Season | Effect |
-|:-------|:-------|
-| Summer | Converging god-rays fanning from a sun point with radial fade. World-space positioned — you walk through them. |
-| Monsoon | Angled rain, expanding ripple splashes on impact, procedural puddles with specular highlights, gray-blue overcast sky. |
-| Autumn | Wind-blown leaf particles with wobble physics. *(Default)* |
-| Winter | Dense slow-falling snowflakes with horizontal drift. Frosty white-blue overcast sky. |
+### Dynamic Seasons (`M` Key)
+- 🌻 **Summer**: Converging world-space god-rays fanning from the sun.
+- 🌧️ **Monsoon**: Angled rain animation, expanding splash ripples, and specular puddle highlights.
+- 🍂 **Autumn**: Wind-blown falling leaf particles with wobble physics *(Default)*.
+- ❄️ **Winter**: Gentle snow flurry particles with horizontal drift and frosty blue overlay.
 
 ---
 
-## Travel Diary
+## 📖 Travel Diary System
 
-Press `T` to open a page-flippable travel diary. It renders:
-- A statistics page — total trips, total days traveled, total distance (Haversine-calculated), unique places, longest/shortest trip, breakdowns by year, month, and transport.
-- Individual trip pages — dates, places visited, an interactive Leaflet.js map with route lines, and trip highlights.
+Inside the Home interior, interacting with the diary hotspot opens a 3D page-flippable travel book powered by `StPageFlip` and pre-loaded local travel data:
+- **Statistics Overview**: Total trips, total days traveled, Haversine-calculated total distance, unique places visited, longest/shortest journeys, and breakdown charts by year, month, and transport mode.
+- **Interactive Trip Pages**: Detailed logs with dates, highlights, and embedded Leaflet.js interactive maps featuring route polylines and location markers.
 
 ---
 
-## Run Locally
+## 🛠️ Tech Stack & Architecture
 
-No build step required. Just serve the files.
+- **Core**: Vanilla JavaScript (ES6+), HTML5 Canvas, Vanilla CSS3
+- **Page Flip Engine**: `StPageFlip` library
+- **Mapping**: `Leaflet.js` for interactive trip maps
+- **Typography**: Google Fonts (*Share Tech Mono, Permanent Marker, Special Elite, Kalam, Caveat*)
+- **Data Architecture**: Pre-loaded synchronous modular data files (`mapData.js`, `tripsData.js`, collision arrays)
+
+---
+
+## 🚀 Running Locally
+
+No build tools or NPM dependencies required. Simply serve the workspace folder with any static file server:
 
 ```bash
+# Clone the repository
 git clone https://github.com/RavikantiAkshay/my-game.git
 cd my-game
 
-python -m http.server 8080    # or npx serve . or VS Code Live Server
+# Start a local static server
+python -m http.server 8080
+# Or using Node: npx serve .
+# Or open directly with VS Code Live Server extension
 ```
+
+Then open `http://localhost:8080` in your web browser.
 
 ---
 
@@ -161,6 +156,6 @@ python -m http.server 8080    # or npx serve . or VS Code Live Server
 [![GitHub](https://img.shields.io/badge/GitHub-RavikantiAkshay-181717?style=flat-square&logo=github)](https://github.com/RavikantiAkshay)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-ravikanti--akshay-0A66C2?style=flat-square&logo=linkedin)](https://linkedin.com/in/ravikanti-akshay)
 
-<sub>Built with vanilla code, pixel art, and an unreasonable amount of CSS.</sub>
+<sub>Crafted with vanilla JS, pixel art, and passion.</sub>
 
 </div>
