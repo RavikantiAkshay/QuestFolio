@@ -901,9 +901,76 @@ overlay.innerHTML = `
 `;
 document.body.appendChild(overlay);
 
+// Town Map — created dynamically like the 404 overlay
+const townMapOverlay = document.createElement('div');
+townMapOverlay.id = 'town-map-overlay';
+townMapOverlay.style.cssText = 'display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:9999; background:rgba(0,0,0,0.7); backdrop-filter:blur(5px); justify-content:center; align-items:center;';
+townMapOverlay.innerHTML = `
+<div style="width:900px; height:600px; max-width:95vw; max-height:85vh; background:#e8dbb8; border-radius:10px; box-shadow:inset 0 0 50px rgba(100,70,30,0.5), 0 20px 50px rgba(0,0,0,0.8); position:relative; border:8px solid #5a3c1e; overflow:visible;">
+    <!-- Graph paper grid -->
+    <div style="position:absolute;top:0;left:0;right:0;bottom:0;background-image:linear-gradient(rgba(0,0,0,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.05) 1px,transparent 1px);background-size:30px 30px;pointer-events:none;border-radius:5px;"></div>
+
+    <!-- SVG Trails connecting islands -->
+    <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2;">
+        <!-- Trail from Island 1 to Island 2 -->
+        <path d="M 340 400 C 390 350, 400 300, 430 280" stroke="#a08850" stroke-width="8" fill="none" stroke-dasharray="12,8" stroke-linecap="round" opacity="0.7"/>
+        <!-- Trail from Island 2 to Island 3 -->
+        <path d="M 580 240 C 620 180, 640 140, 660 120" stroke="#a08850" stroke-width="8" fill="none" stroke-dasharray="12,8" stroke-linecap="round" opacity="0.7"/>
+    </svg>
+
+    <!-- Island 1: Starting Village (bottom-left) -->
+    <div style="position:absolute;bottom:70px;left:60px;width:260px;height:200px;background:#c2c971;border-radius:40% 60% 70% 30%/40% 50% 60% 50%;border:3px solid #8a7b45;box-shadow:inset -10px -10px 20px rgba(0,0,0,0.1),5px 5px 10px rgba(0,0,0,0.2);z-index:3;">
+        <div style="position:absolute;top:80px;left:40px;width:160px;height:22px;background:#d7c995;border-radius:10px;"></div>
+        <div style="position:absolute;top:80px;left:100px;width:22px;height:90px;background:#d7c995;border-radius:10px;"></div>
+        <div style="position:absolute;top:15px;left:30px;font-size:45px;filter:drop-shadow(2px 4px 2px rgba(0,0,0,0.4));">🏠</div>
+        <div style="position:absolute;top:20px;right:30px;font-size:55px;filter:drop-shadow(2px 4px 2px rgba(0,0,0,0.4));">🏢</div>
+        <div style="position:absolute;bottom:15px;right:40px;font-size:45px;filter:drop-shadow(2px 4px 2px rgba(0,0,0,0.4));">🛖</div>
+        <div style="position:absolute;top:-30px;left:110px;background:#fffadc;border:2px solid #333;border-radius:50%;width:35px;height:35px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-family:monospace;font-size:18px;color:#333;box-shadow:2px 2px 5px rgba(0,0,0,0.3);">1</div>
+    </div>
+
+    <!-- Island 2: Middle Town (center) -->
+    <div style="position:absolute;top:170px;left:330px;width:280px;height:200px;background:#c2c971;border-radius:50% 50% 30% 70%/60% 40% 60% 40%;border:3px solid #8a7b45;box-shadow:inset -10px -10px 20px rgba(0,0,0,0.1),5px 5px 10px rgba(0,0,0,0.2);z-index:3;">
+        <div style="position:absolute;top:95px;left:30px;width:210px;height:22px;background:#d7c995;border-radius:10px;"></div>
+        <div style="position:absolute;top:65px;left:125px;width:22px;height:110px;background:#d7c995;border-radius:10px;"></div>
+        <div style="position:absolute;top:25px;left:20px;font-size:55px;filter:drop-shadow(2px 4px 2px rgba(0,0,0,0.4));">🏛️</div>
+        <div style="position:absolute;top:30px;left:110px;font-size:55px;filter:drop-shadow(2px 4px 2px rgba(0,0,0,0.4));">🏫</div>
+        <div style="position:absolute;top:35px;right:20px;font-size:50px;filter:drop-shadow(2px 4px 2px rgba(0,0,0,0.4));">🏪</div>
+        <div style="position:absolute;top:-35px;left:120px;background:#fffadc;border:2px solid #333;border-radius:50%;width:35px;height:35px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-family:monospace;font-size:18px;color:#333;box-shadow:2px 2px 5px rgba(0,0,0,0.3);">2</div>
+    </div>
+
+    <!-- Island 3: Castle (top-right) -->
+    <div style="position:absolute;top:20px;right:50px;width:230px;height:190px;background:#c2c971;border-radius:45%;border:3px solid #8a7b45;box-shadow:inset -10px -10px 20px rgba(0,0,0,0.1),5px 5px 10px rgba(0,0,0,0.2);z-index:3;">
+        <div style="position:absolute;bottom:10px;left:80px;width:28px;height:80px;background:#d7c995;border-radius:10px;"></div>
+        <div style="position:absolute;top:5px;left:50px;font-size:85px;filter:drop-shadow(2px 4px 2px rgba(0,0,0,0.4));">🏰</div>
+        <div style="position:absolute;top:-18px;left:30px;background:#fffadc;border:2px solid #333;border-radius:50%;width:35px;height:35px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-family:monospace;font-size:18px;color:#333;box-shadow:2px 2px 5px rgba(0,0,0,0.3);">3</div>
+    </div>
+
+    <!-- Legend sticky note (bottom-right) -->
+    <div style="position:absolute;bottom:30px;right:30px;width:180px;background:#fdf5e6;padding:20px;border:1px solid #d3c7a3;box-shadow:2px 4px 12px rgba(0,0,0,0.3);font-family:'Kalam',cursive;font-size:18px;color:#333;transform:rotate(-3deg);z-index:4;">
+        <div style="position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-size:28px;filter:drop-shadow(0px 2px 1px rgba(0,0,0,0.4));">📌</div>
+        <div style="font-weight:bold;margin-bottom:12px;border-bottom:2px dashed #d3c7a3;padding-bottom:5px;font-size:22px;">Legend</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><div style="width:24px;height:24px;border-radius:50%;border:1.5px solid #333;display:flex;align-items:center;justify-content:center;font-size:14px;font-family:monospace;font-weight:bold;">1</div> Starting Village</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><div style="width:24px;height:24px;border-radius:50%;border:1.5px solid #333;display:flex;align-items:center;justify-content:center;font-size:14px;font-family:monospace;font-weight:bold;">2</div> Middle Town</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><div style="width:24px;height:24px;border-radius:50%;border:1.5px solid #333;display:flex;align-items:center;justify-content:center;font-size:14px;font-family:monospace;font-weight:bold;">3</div> Castle</div>
+    </div>
+
+    <!-- Close hint -->
+    <div style="position:absolute;bottom:-40px;width:100%;text-align:center;color:white;font-family:'Press Start 2P',monospace;font-size:12px;text-shadow:2px 2px 0 #000;">Press 'O' or click outside to close map</div>
+</div>
+`;
+document.body.appendChild(townMapOverlay);
+townMapOverlay.addEventListener('click', (e) => {
+    if (e.target === townMapOverlay) townMapOverlay.style.display = 'none';
+});
+
 window.addEventListener("keydown", (e) => {
     let key = e.key.toLowerCase();
     keys[key] = true;
+
+    // Toggle Town Map
+    if (key === 'o') {
+        townMapOverlay.style.display = townMapOverlay.style.display === 'flex' ? 'none' : 'flex';
+    }
 
     // Quick test shortcut for PC UI
     if (key === 'p') {
