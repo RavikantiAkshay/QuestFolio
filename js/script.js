@@ -906,9 +906,9 @@ const townMapOverlay = document.createElement('div');
 townMapOverlay.id = 'town-map-overlay';
 townMapOverlay.style.cssText = 'display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:9999; background:rgba(0,0,0,0.7); backdrop-filter:blur(5px); justify-content:center; align-items:center;';
 townMapOverlay.innerHTML = `
-<div style="width:900px; height:620px; max-width:95vw; max-height:85vh; background:#e8dbb8; border-radius:12px; box-shadow:inset 0 0 60px rgba(100,70,30,0.5), 0 20px 50px rgba(0,0,0,0.8); position:relative; border:8px solid #5a3c1e; overflow:visible;">
-    <!-- Parchment grid -->
-    <div style="position:absolute;top:0;left:0;right:0;bottom:0;background-image:linear-gradient(rgba(0,0,0,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.04) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;border-radius:8px;"></div>
+<div style="width:900px; height:620px; max-width:95vw; max-height:85vh; background-color:#e0d0a0; border-radius: 4px 18px 5px 22px / 20px 6px 15px 8px; box-shadow: inset 0 0 80px rgba(100,70,30,0.7), inset 0 0 20px rgba(80,50,20,0.5), 0 20px 50px rgba(0,0,0,0.8); position:relative; overflow:visible; border: 4px solid #8c734b; transform: rotate(-0.5deg);">
+    <!-- Dirt and noise overlay for old torn effect -->
+    <div style="position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:1;background:radial-gradient(circle at 20% 30%, rgba(100,70,30,0.1) 0%, transparent 40%),radial-gradient(circle at 80% 70%, rgba(100,70,30,0.15) 0%, transparent 50%),url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.25'/%3E%3C/svg%3E&quot;);mix-blend-mode:multiply;border-radius:inherit;"></div>
 
     <!-- SVG Trails between sections -->
     <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2;" viewBox="0 0 900 620">
@@ -921,33 +921,33 @@ townMapOverlay.innerHTML = `
     <!-- Island 1: Starting Village (bottom-left) -->
     <div style="position:absolute;bottom:20px;left:50px;width:220px;height:220px;background:radial-gradient(ellipse at center, #d4da8a, #b8c060);border-radius:50%;border:4px solid #8a7b45;box-shadow:inset 0 -10px 25px rgba(0,0,0,0.1), 6px 8px 15px rgba(0,0,0,0.2);z-index:3;overflow:hidden;">
         <!-- Realistic paths serving buildings -->
-        <div style="position:absolute;top:90px;left:40px;width:180px;height:20px;background:#c8b880;border-radius:4px;border:1px solid #a89860;border-right:none;"></div> <!-- Horizontal out to right -->
-        <div style="position:absolute;top:110px;left:150px;width:20px;height:30px;background:#c8b880;border-radius:4px;border:1px solid #a89860;border-top:none;"></div> <!-- Down to bottom house -->
+        <div style="position:absolute;top:100px;left:50px;width:170px;height:16px;background:#c8b880;border-radius:3px;border:1px solid #a89860;border-right:none;"></div> <!-- Horizontal out to right -->
+        <div style="position:absolute;top:116px;left:145px;width:16px;height:30px;background:#c8b880;border-radius:3px;border:1px solid #a89860;border-top:none;"></div> <!-- Down to bottom house -->
         <!-- Buildings -->
-        <div style="position:absolute;top:30px;left:30px;font-size:48px;filter:drop-shadow(2px 4px 3px rgba(0,0,0,0.4));">🏠</div>
-        <div style="position:absolute;top:25px;left:140px;font-size:52px;filter:drop-shadow(2px 4px 3px rgba(0,0,0,0.4));">🏢</div>
-        <div style="position:absolute;top:130px;left:140px;font-size:44px;filter:drop-shadow(2px 4px 3px rgba(0,0,0,0.4));">🛖</div>
+        <div style="position:absolute;top:45px;left:40px;font-size:40px;filter:drop-shadow(2px 4px 3px rgba(0,0,0,0.4));">🏠</div>
+        <div style="position:absolute;top:40px;left:130px;font-size:44px;filter:drop-shadow(2px 4px 3px rgba(0,0,0,0.4));">🏢</div>
+        <div style="position:absolute;top:140px;left:135px;font-size:36px;filter:drop-shadow(2px 4px 3px rgba(0,0,0,0.4));">🛖</div>
     </div>
     <div style="position:absolute;bottom:221px;left:141px;background:#fffadc;border:2.5px solid #444;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-family:'Share Tech Mono',monospace;font-size:20px;color:#333;box-shadow:2px 3px 6px rgba(0,0,0,0.3);z-index:5;">1</div>
 
     <!-- Island 2: Middle Town (center) -->
     <div style="position:absolute;top:250px;left:340px;width:220px;height:220px;background:radial-gradient(ellipse at center, #d4da8a, #b8c060);border-radius:50%;border:4px solid #8a7b45;box-shadow:inset 0 -10px 25px rgba(0,0,0,0.1), 6px 8px 15px rgba(0,0,0,0.2);z-index:3;overflow:hidden;">
         <!-- Realistic paths serving buildings -->
-        <div style="position:absolute;top:90px;left:0px;width:190px;height:20px;background:#c8b880;border-radius:4px;border:1px solid #a89860;border-left:none;"></div> <!-- Main street from left -->
-        <div style="position:absolute;top:0px;left:135px;width:20px;height:90px;background:#c8b880;border-radius:4px;border:1px solid #a89860;border-bottom:none;border-top:none;"></div> <!-- Path upwards to Castle -->
+        <div style="position:absolute;top:95px;left:0px;width:190px;height:16px;background:#c8b880;border-radius:3px;border:1px solid #a89860;border-left:none;"></div> <!-- Main street from left -->
+        <div style="position:absolute;top:0px;left:135px;width:16px;height:95px;background:#c8b880;border-radius:3px;border:1px solid #a89860;border-bottom:none;border-top:none;"></div> <!-- Path upwards to Castle -->
         <!-- Buildings (All in a row) -->
-        <div style="position:absolute;top:30px;left:15px;font-size:48px;filter:drop-shadow(2px 4px 3px rgba(0,0,0,0.4));">🏛️</div>
-        <div style="position:absolute;top:30px;left:85px;font-size:48px;filter:drop-shadow(2px 4px 3px rgba(0,0,0,0.4));">🏫</div>
-        <div style="position:absolute;top:30px;left:155px;font-size:48px;filter:drop-shadow(2px 4px 3px rgba(0,0,0,0.4));">🏪</div>
+        <div style="position:absolute;top:45px;left:32px;font-size:40px;filter:drop-shadow(2px 4px 3px rgba(0,0,0,0.4));">🏛️</div>
+        <div style="position:absolute;top:45px;left:92px;font-size:40px;filter:drop-shadow(2px 4px 3px rgba(0,0,0,0.4));">🏫</div>
+        <div style="position:absolute;top:45px;left:152px;font-size:40px;filter:drop-shadow(2px 4px 3px rgba(0,0,0,0.4));">🏪</div>
     </div>
     <div style="position:absolute;top:231px;left:431px;background:#fffadc;border:2.5px solid #444;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-family:'Share Tech Mono',monospace;font-size:20px;color:#333;box-shadow:2px 3px 6px rgba(0,0,0,0.3);z-index:5;">2</div>
 
     <!-- Island 3: Castle (top-right) -->
     <div style="position:absolute;top:40px;left:630px;width:220px;height:220px;background:radial-gradient(ellipse at center, #d4da8a, #b8c060);border-radius:50%;border:4px solid #8a7b45;box-shadow:inset 0 -10px 25px rgba(0,0,0,0.1), 6px 8px 15px rgba(0,0,0,0.2);z-index:3;overflow:hidden;">
         <!-- Interior Road (Straight up) -->
-        <div style="position:absolute;top:120px;left:100px;width:20px;height:100px;background:#c8b880;border-radius:4px;border:1px solid #a89860;"></div>
+        <div style="position:absolute;top:125px;left:102px;width:16px;height:95px;background:#c8b880;border-radius:3px;border:1px solid #a89860;"></div>
         <!-- Castle -->
-        <div style="position:absolute;top:30px;left:70px;font-size:80px;filter:drop-shadow(3px 5px 4px rgba(0,0,0,0.4));">🏰</div>
+        <div style="position:absolute;top:45px;left:75px;font-size:70px;filter:drop-shadow(3px 5px 4px rgba(0,0,0,0.4));">🏰</div>
     </div>
     <div style="position:absolute;top:21px;left:721px;background:#fffadc;border:2.5px solid #444;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-family:'Share Tech Mono',monospace;font-size:20px;color:#333;box-shadow:2px 3px 6px rgba(0,0,0,0.3);z-index:5;">3</div>
 
@@ -958,7 +958,7 @@ townMapOverlay.innerHTML = `
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><div style="width:26px;height:26px;border-radius:50%;border:2px solid #444;display:flex;align-items:center;justify-content:center;font-size:14px;font-family:'Share Tech Mono',monospace;font-weight:bold;background:#fffadc;">1</div> Starting Village</div>
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><div style="width:26px;height:26px;border-radius:50%;border:2px solid #444;display:flex;align-items:center;justify-content:center;font-size:14px;font-family:'Share Tech Mono',monospace;font-weight:bold;background:#fffadc;">2</div> Middle Town</div>
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><div style="width:26px;height:26px;border-radius:50%;border:2px solid #444;display:flex;align-items:center;justify-content:center;font-size:14px;font-family:'Share Tech Mono',monospace;font-weight:bold;background:#fffadc;">3</div> Castle</div>
-        <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:#666;"><div style="width:26px;height:0px;border-top:4px dashed #8a7b45;border-radius:0px;"></div> Trail</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:#666;"><div style="width:26px;height:0px;border-top:4px dashed #8a7b45;border-radius:0px;"></div> Path</div>
 
     <!-- Close hint -->
     <div style="position:absolute;bottom:-40px;width:100%;text-align:center;color:white;font-family:'Press Start 2P',monospace;font-size:12px;text-shadow:2px 2px 0 #000;">Press 'O' or click outside to close map</div>
