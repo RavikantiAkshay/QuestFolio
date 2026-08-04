@@ -2269,7 +2269,7 @@ function update() {
 
             if (rectIntersect(spikeBox, playerBox)) {
                 // Deal damage if not defending
-                if (!player.isDefending) {
+                if (!player.isDefending && player.hurtTimer <= 0) {
                     player.hp -= spike.damage;
                     if (player.hp < 0) player.hp = 0;
                     player.hurtTimer = 30; // Flash red for half a second
