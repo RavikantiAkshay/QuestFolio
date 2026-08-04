@@ -24,7 +24,7 @@ function initializeRealTimeEnvironment() {
         const parts = formatter.formatToParts(new Date());
         let currentHour = 12;
         let currentMonth = 1;
-        
+
         parts.forEach(part => {
             if (part.type === 'hour') {
                 currentHour = parseInt(part.value);
@@ -67,7 +67,7 @@ function initializeRealTimeEnvironment() {
         } else {
             timeMode = 2; // Night
         }
-        
+
     } catch (e) {
         console.error("Could not set IST timezone, falling back to defaults.");
     }
@@ -208,7 +208,8 @@ const interactables = {
         { "x": 896, "y": 304, "w": 48, "h": 48, "id": "lab", "text": "Lab" },
         { "x": 280, "y": 408, "w": 40, "h": 48, "id": "home", "text": "Home" },
         { "x": 904, "y": 656, "w": 48, "h": 56, "id": "workshop", "text": "Workshop" },
-        { "x": 450, "y": 140, "w": 60, "h": 60, "id": "map_stand", "text": "Town Map" }
+        { "x": 450, "y": 140, "w": 60, "h": 60, "id": "map_stand", "text": "Town Map" },
+        { "x": 610, "y": 190, "w": 48, "h": 48, "id": "resume_npc", "text": "Stranger" }
     ],
     "school": [
         { "x": 224, "y": 536, "w": 64, "h": 56, "id": "library", "text": "Library" },
@@ -242,14 +243,16 @@ fireVerticalImg.src = 'assets/images/fx/fire_vertical_1.png';
 function advanceSpeechBubble() {
     if (!speechBubbleSequence) return;
     if (speechBubbleIndex >= speechBubbleSequence.length) {
+        let callback = speechBubbleSequence.onComplete;
         currentSpeechBubble = null;
         speechBubbleSequence = null;
         isOverlayActive = false;
 
-        // Start Boss Fight
-        bossFightActive = true;
+        if (callback) callback();
+
         const boss = npcs.find(n => n.isBoss);
         if (boss) {
+            bossFightActive = true;
             boss.bossAttackTimer = 60; // Start attacking in 1 second
             if (boss.isTransitioning) {
                 boss.phase++;
@@ -277,7 +280,7 @@ const diaryHotspot = document.getElementById('diary-hotspot');
 if (diaryHotspot) {
     diaryHotspot.addEventListener('click', (e) => {
         // Prevent click from bubbling up and doing weird things
-        e.stopPropagation(); 
+        e.stopPropagation();
         openDiary();
     });
 }
@@ -304,7 +307,7 @@ if (pcHotspot) {
         pcContainer.onclick = (e) => {
             if (e.target === pcContainer) closePc();
         };
-        
+
         const pcCloseBtn = document.getElementById('sitcom-pc-close');
         if (pcCloseBtn) {
             pcCloseBtn.onclick = (e) => {
@@ -339,10 +342,10 @@ if (interiorClose) {
         if (hotspot) hotspot.style.display = 'none';
         const pcH = document.getElementById('pc-hotspot');
         if (pcH) pcH.style.display = 'none';
-        
+
         const pcContainer = document.getElementById('sitcom-pc-container');
         if (pcContainer) pcContainer.style.display = 'none';
-        
+
         isOverlayActive = false;
         isExploringInterior = false;
     });
@@ -1002,6 +1005,14 @@ window.addEventListener("keydown", (e) => {
         seasonMode = (seasonMode + 1) % 4;
     }
 
+    if (key === 'r') {
+        const resumeOverlay = document.getElementById('resume-overlay');
+        if (resumeOverlay) {
+            resumeOverlay.style.display = resumeOverlay.style.display === 'flex' ? 'none' : 'flex';
+            isOverlayActive = resumeOverlay.style.display === 'flex';
+        }
+    }
+
     // Handle Interaction (E key)
     if (key === 'e') {
         if (activeInteractable && activeInteractable.id === 'map_stand') {
@@ -1236,6 +1247,28 @@ window.addEventListener("keydown", (e) => {
                 });
 
                 if (dialogueBackdrop) dialogueBackdrop.style.display = 'none';
+
+            } else if (activeInteractable.id === 'resume_npc') {
+                if (dialogueBackdrop) dialogueBackdrop.style.display = 'none';
+
+                isOverlayActive = true;
+
+                const stranger = npcs.find(n => n.isStaticNPC) || player;
+
+                speechBubbleSequence = [
+                    { entity: stranger, text: "Hello, traveler! I've been waiting for you." },
+                    { entity: stranger, text: "Akshay left this document with me. I think you might find it interesting." },
+                    { entity: stranger, text: "Here, take his resume!" }
+                ];
+                speechBubbleSequence.onComplete = () => {
+                    const resumeOverlay = document.getElementById('resume-overlay');
+                    if (resumeOverlay) {
+                        resumeOverlay.style.display = 'flex';
+                        isOverlayActive = true;
+                    }
+                };
+                speechBubbleIndex = 0;
+                advanceSpeechBubble();
 
             } else if (activeInteractable.id === 'boss') {
                 if (dialogueBackdrop) dialogueBackdrop.style.display = 'none';
@@ -1581,6 +1614,24 @@ function loadZone(zoneName, startX, startY) {
         }, 100); // slight delay to ensure map load
     }
 
+    if (zoneName === "town") {
+        setTimeout(() => {
+            npcs.push({
+                x: 610,
+                y: 190,
+                size: 48,
+                speed: 0,
+                hp: 100,
+                maxHp: 100,
+                frameX: 0,
+                frameY: 1,
+                isMoving: false,
+                isStaticNPC: true, // Mark it so we don't wander
+                image: npcImages[0] || player.image // default image
+            });
+        }, 150);
+    }
+
     // Ensure player spawns in a walkable area to prevent getting stuck in walls
     if (collisionData.length > 0 && typeof isWalkable === 'function' && !isWalkable(player.x, player.y)) {
         let found = false;
@@ -1789,8 +1840,8 @@ function update() {
             type: 'leaf',
             x: cameraX - 100 + Math.random() * (canvas.width + 100),
             y: cameraY - 50 - Math.random() * 100,
-            vx: 3 + Math.random() * 3, 
-            vy: 2 + Math.random() * 2, 
+            vx: 3 + Math.random() * 3,
+            vy: 2 + Math.random() * 2,
             size: 3 + Math.random() * 4,
             color: Math.random() > 0.5 ? '#d35400' : '#f39c12', // Autumn orange/yellow instead of green
             wobble: Math.random() * Math.PI * 2,
@@ -2042,11 +2093,11 @@ function update() {
                     // Alternate between them to keep pressure high but manageable
                     if (boss.attackCount % 2 !== 0) {
                         // Summon one black hole directly under the player
-                        blackHoles.push({ 
-                            x: player.x + player.size / 2, 
-                            y: player.y + player.size / 2, 
-                            radius: 40, 
-                            pullRadius: 100, 
+                        blackHoles.push({
+                            x: player.x + player.size / 2,
+                            y: player.y + player.size / 2,
+                            radius: 40,
+                            pullRadius: 100,
                             angle: 0,
                             state: 'warning',
                             timer: 45, // 0.75s warning
@@ -2066,12 +2117,12 @@ function update() {
                             lifetime: 240
                         });
                         boss.bossAttackTimer = 90; // shorter cooldown for missiles
-                        
+
                         // Instant attack, skip charging phase
                         boss.isCharging = false;
                         boss.isAttacking = true;
                         boss.attackFrame = (boss.frameY === 1) ? 0 : 1;
-                        
+
                         // Reset attacking state after a short delay
                         setTimeout(() => {
                             if (boss && boss.isAttacking) boss.isAttacking = false;
@@ -2079,7 +2130,7 @@ function update() {
                     }
                 } else if (boss.phase === 4) { // CRAZY RAGE PHASE - DISASTER MODE
                     let choice = Math.floor(Math.random() * 4); // Completely random single spawn
-                    
+
                     if (choice === 0) { // 1 Spike
                         let offsetX = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 120);
                         let offsetY = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 120);
@@ -2108,24 +2159,24 @@ function update() {
                     } else if (choice === 2) { // 1 Black hole
                         let offsetX = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 80);
                         let offsetY = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 80);
-                        blackHoles.push({ 
-                            x: player.x + player.size / 2 + offsetX, 
-                            y: player.y + player.size / 2 + offsetY, 
+                        blackHoles.push({
+                            x: player.x + player.size / 2 + offsetX,
+                            y: player.y + player.size / 2 + offsetY,
                             radius: 40, pullRadius: 100, angle: 0,
-                            state: 'warning', timer: 35, lifetime: 90 
+                            state: 'warning', timer: 35, lifetime: 90
                         });
                     } else if (choice === 3) { // 1 Missile
                         bossMissiles.push({
-                            x: boss.x + boss.size / 2 + (Math.random() * 60 - 30), 
+                            x: boss.x + boss.size / 2 + (Math.random() * 60 - 30),
                             y: boss.y + boss.size / 2 + (Math.random() * 60 - 30),
                             width: 15, height: 15, speed: 5.5, // extremely fast
                             damage: 15, angle: Math.random() * Math.PI * 2, lifetime: 240
                         });
                     }
-                    
+
                     // Very short, continuous stream of attacks
                     boss.bossAttackTimer = 12 + Math.floor(Math.random() * 8); // 12-20 frames
-                    
+
                     // Ensure boss doesn't freeze and looks chaotic
                     boss.isCharging = false;
                     boss.isAttacking = true;
@@ -2172,7 +2223,7 @@ function update() {
                         } else {
                             boss.attackFrame = 1;
                         }
-                        
+
                         // Robustly reset attacking state so AI doesn't freeze
                         setTimeout(() => {
                             if (boss && boss.isAttacking) boss.isAttacking = false;
@@ -2181,7 +2232,7 @@ function update() {
                 }
             } else if (bh.state === 'active') {
                 bh.lifetime--;
-                
+
                 let px = player.x + player.size / 2;
                 let py = player.y + player.size / 2;
                 let dx = bh.x - px;
@@ -2195,13 +2246,13 @@ function update() {
                         player.x = bh.x - player.size / 2;
                         player.y = bh.y - player.size / 2;
                         player.trappedRotation = (player.trappedRotation || 0) + 0.1; // rotate slower like a top
-                        
+
                         if (player.trappedTimer <= 0 || bh.lifetime <= 0) { // release if timer ends or hole fades
                             player.isTrapped = false;
                             player.trappedBh = null;
                             player.trappedRotation = 0;
                             // Spit player out safely
-                            let angles = [0, Math.PI/2, Math.PI, Math.PI*1.5, Math.PI/4, Math.PI*0.75, Math.PI*1.25, Math.PI*1.75];
+                            let angles = [0, Math.PI / 2, Math.PI, Math.PI * 1.5, Math.PI / 4, Math.PI * 0.75, Math.PI * 1.25, Math.PI * 1.75];
                             let safeFound = false;
                             for (let a of angles) {
                                 let testX = bh.x + Math.cos(a) * 90;
@@ -2214,7 +2265,7 @@ function update() {
                                 }
                             }
                             if (!safeFound) { // fallback
-                                player.x = bh.x; 
+                                player.x = bh.x;
                                 player.y = bh.y + 100;
                             }
                         }
@@ -2230,7 +2281,7 @@ function update() {
                         player.hurtTimer = 30;
                     } else {
                         // Constant pulling force
-                        player.x += (dx / dist) * 2.5; 
+                        player.x += (dx / dist) * 2.5;
                         player.y += (dy / dist) * 2.5;
                     }
                 }
@@ -2292,26 +2343,26 @@ function update() {
     for (let i = bossMissiles.length - 1; i >= 0; i--) {
         let m = bossMissiles[i];
         m.lifetime--;
-        
+
         if (bossFightActive) {
             let dx = (player.x + player.size / 2) - m.x;
             let dy = (player.y + player.size / 2) - m.y;
             let targetAngle = Math.atan2(dy, dx);
-            
+
             // Smoothly rotate towards player
             let angleDiff = targetAngle - m.angle;
             // Normalize angle difference to -PI to PI
             angleDiff = (angleDiff + Math.PI * 3) % (2 * Math.PI) - Math.PI;
-            
+
             m.angle += Math.sign(angleDiff) * Math.min(Math.abs(angleDiff), 0.04); // max turn speed (0.04 limits turning sharpness)
         }
-        
+
         // Move forward constantly
         m.x += Math.cos(m.angle) * m.speed;
         m.y += Math.sin(m.angle) * m.speed;
 
         // Collision check
-        let mBox = { x: m.x - m.width/2, y: m.y - m.height/2, w: m.width, h: m.height };
+        let mBox = { x: m.x - m.width / 2, y: m.y - m.height / 2, w: m.width, h: m.height };
         let playerBox = { x: player.x, y: player.y, w: player.size, h: player.size };
         if (rectIntersect(mBox, playerBox)) {
             if (!player.isDefending) {
@@ -2372,6 +2423,7 @@ function update() {
         if (npc.directionTimer <= 0) {
             npc.directionTimer = Math.random() * 120 + 60; // 1-3 seconds
             npc.isMoving = Math.random() > 0.4; // 60% chance to move
+            if (npc.isStaticNPC) npc.isMoving = false; // Override for static NPCs
             if (npc.isMoving) {
                 npc.frameY = Math.floor(Math.random() * 4); // New direction
             }
@@ -2534,7 +2586,7 @@ function draw() {
 
         let drawX = player.x - (displayWidth - player.size) / 2;
         let drawY = player.y - (displayHeight - player.size);
-        
+
         // Spin if trapped
         if (player.isTrapped && player.trappedRotation !== undefined) {
             ctx.translate(player.x + player.size / 2, player.y + player.size / 2);
@@ -2681,7 +2733,9 @@ function draw() {
 
         ctx.lineWidth = 3;
         ctx.strokeStyle = "black";
-        const verb = activeInteractable.id === 'map_stand' ? 'open' : 'enter';
+        let verb = 'enter';
+        if (activeInteractable.id === 'map_stand') verb = 'open';
+        if (activeInteractable.id === 'resume_npc') verb = 'interact with';
         ctx.strokeText(`Press [E] to ${verb} ${activeInteractable.text}`, player.x + player.size / 2, player.y - 15 - pulse);
         ctx.fillText(`Press [E] to ${verb} ${activeInteractable.text}`, player.x + player.size / 2, player.y - 15 - pulse);
     }
@@ -2698,7 +2752,7 @@ function draw() {
     blackHoles.forEach(bh => {
         ctx.save();
         ctx.translate(bh.x, bh.y);
-        
+
         if (bh.state === 'warning') {
             // Draw pulsating warning zone
             ctx.beginPath();
@@ -2736,7 +2790,7 @@ function draw() {
 
             // Rotate for the aura particles ONLY
             ctx.rotate(bh.angle);
-            
+
             // Particle Swirl (Ombre aura of tiny particles)
             ctx.fillStyle = "rgba(180, 80, 255, 0.8)";
             for (let i = 0; i < 50; i++) {
@@ -2744,7 +2798,7 @@ function draw() {
                 let pDist = bh.radius + (i / 50) * bh.radius * 1.5;
                 let px = Math.cos(pAngle) * pDist;
                 let py = Math.sin(pAngle) * pDist;
-                
+
                 // Pulse particle size slightly (made smaller)
                 let pSize = 0.5 + Math.sin(Date.now() / 200 + i) * 1;
                 if (pSize < 0) pSize = 0;
@@ -2893,7 +2947,7 @@ function draw() {
         ctx.save();
         ctx.translate(m.x, m.y);
         ctx.rotate(m.angle);
-        
+
         const scale = 0.55;
         ctx.scale(scale, scale);
 
@@ -2968,9 +3022,9 @@ function draw() {
         ctx.lineTo(16, 0);
         ctx.closePath();
         ctx.fill();
-        
+
         ctx.beginPath(); // Nose tip bright spot
-        ctx.arc(31, -1, 1.5, 0, Math.PI*2);
+        ctx.arc(31, -1, 1.5, 0, Math.PI * 2);
         ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
         ctx.fill();
 
@@ -2980,7 +3034,7 @@ function draw() {
             ctx.beginPath();
             ctx.arc(-28, 0, 4 + Math.random() * 4, 0, Math.PI * 2);
             ctx.fill();
-            
+
             // Inner white hot core
             ctx.fillStyle = "#ffffff";
             ctx.beginPath();
@@ -3153,9 +3207,9 @@ function draw() {
         ctx.globalCompositeOperation = "screen";
 
         // Define the sun's position (high up, slightly left of the camera center)
-        const sunX = cameraX + canvas.width * 0.2; 
-        const sunY = cameraY - 200; 
-        
+        const sunX = cameraX + canvas.width * 0.2;
+        const sunY = cameraY - 200;
+
         // Create a radial gradient so the rays are intense near the sun and fade out near the ground
         const rayGrad = ctx.createRadialGradient(sunX, sunY, 50, sunX, sunY, canvas.height + 400);
         rayGrad.addColorStop(0, "rgba(255, 255, 230, 0.25)"); // Bright at the source
@@ -3164,26 +3218,26 @@ function draw() {
         ctx.fillStyle = rayGrad;
 
         const offset = Math.sin(Date.now() / 3000) * 30; // Gentle sway
-        
+
         // Tile the rays across the map horizontally at ground level.
-        const gridSpacing = 450; 
+        const gridSpacing = 450;
         const startX = Math.floor(cameraX / gridSpacing) * gridSpacing;
 
         ctx.beginPath();
         for (let i = -2; i <= Math.ceil(canvas.width / gridSpacing) + 2; i++) {
             let groundX = startX + (i * gridSpacing) + offset;
-            
+
             // Ray 1 (Main distinct ray fanning out from the sun)
             ctx.moveTo(sunX, sunY);
             ctx.lineTo(groundX - 80, cameraY + canvas.height + 200);
             ctx.lineTo(groundX + 40, cameraY + canvas.height + 200);
-            
+
             // Ray 2 (Secondary thinner ray)
             ctx.moveTo(sunX, sunY);
             ctx.lineTo(groundX + 100, cameraY + canvas.height + 200);
             ctx.lineTo(groundX + 140, cameraY + canvas.height + 200);
         }
-        
+
         ctx.fill();
         ctx.restore();
     }
@@ -3289,7 +3343,7 @@ function draw() {
                         .replace(hintRegex, '')
                         .replace('border: 4px solid #8c734b;', '')
                         .replace('overflow:visible', 'overflow:hidden');
-                    
+
                     // Parchment is 62x46px. Map source is 900x620.
                     // Scale factor: Math.min(62/900, 46/620) = Math.min(0.0689, 0.0742) = 0.0689
                     // Scaled size: 62 x 42.7. Center vertically: (46-42.7)/2 ≈ 1.6px
@@ -3508,8 +3562,8 @@ function openDiary() {
     } else {
         try {
             pageFlipInstance.flip(0);
-        } catch(e) {
-            try { pageFlipInstance.turnToPage(0); } catch(err) {}
+        } catch (e) {
+            try { pageFlipInstance.turnToPage(0); } catch (err) { }
         }
     }
 }

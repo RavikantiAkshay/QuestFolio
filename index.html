@@ -586,6 +586,160 @@
             click edges to turn pages</div>
     </div>
 
+    <!-- Resume Overlay -->
+    <div id="resume-overlay" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1100; align-items: center; justify-content: center; background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(5px);">
+        <button id="resume-close" style="position: absolute; top: 20px; right: 20px; font-size: 20px; padding: 10px 20px; cursor: pointer; background: #333; color: white; border: 2px solid white; font-family: 'Share Tech Mono', monospace; z-index: 1110;" onclick="document.getElementById('resume-overlay').style.display='none'; isOverlayActive=false;">✕ CLOSE</button>
+        
+        <div id="resume-paper" class="parchment-paper">
+            <div class="resume-header">
+                <h1>Ravikanti Akshay</h1>
+                <h2>Electrical Engineering | Full-Stack Development</h2>
+                <div class="contact-info">
+                    <span>📞 +91 6303439395</span>
+                    <span>✉️ ravikantia@iitbhilai.ac.in</span>
+                    <span>
+                        <a href="https://github.com/RavikantiAkshay" target="_blank" style="color: #2c241b; text-decoration: none; display: flex; align-items: center; gap: 4px;">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                            GitHub
+                        </a>
+                    </span>
+                    <span>
+                        <a href="https://linkedin.com/in/ravikanti-akshay" target="_blank" style="color: #2c241b; text-decoration: none; display: flex; align-items: center; gap: 4px;">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 114.127 0 2.062 2.062 0 01-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                            LinkedIn
+                        </a>
+                    </span>
+                    <span>
+                        <a href="https://ravikantiakshay.github.io/QuestFolio/" target="_blank" style="color: #2c241b; text-decoration: none; display: flex; align-items: center; gap: 4px;">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                            Portfolio
+                        </a>
+                    </span>
+                </div>
+            </div>
+            
+            <div class="resume-summary">
+                <strong>Professional Summary:</strong> Electrical Engineering undergraduate at IIT Bhilai with experience in power system protection, circuit simulation, and full-stack software development. Built AI-powered web applications, browser-based engineering simulation tools, and interactive educational platforms using the MERN stack, JavaScript, and modern engineering software.
+            </div>
+            
+            <div class="resume-body">
+                <div class="resume-col-left">
+                    <div class="resume-section">
+                        <h3>Education</h3>
+                        <div class="resume-item">
+                            <div class="resume-item-header">
+                                <strong>Indian Institute of Technology Bhilai</strong>
+                                <span>2023 – 2027</span>
+                            </div>
+                            <div class="resume-item-sub">
+                                <span>B.Tech., Electrical Engineering</span>
+                                <span>CGPA: 8.91 / 10</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="resume-section">
+                        <h3>Skills</h3>
+                        <ul class="skills-list">
+                            <li><strong>Languages:</strong> C, C++, Python, JavaScript, TypeScript, MATLAB, Verilog</li>
+                            <li><strong>Web Dev:</strong> React, Node.js, Express.js, REST APIs, CSS, HTML5 Canvas</li>
+                            <li><strong>Databases:</strong> MongoDB, Microsoft SQL Server</li>
+                            <li><strong>EE Skills:</strong> LTspice, Multisim, Simulink, Circuit Simulation, Schematic Design</li>
+                            <li><strong>Dev Tools:</strong> Git, GitHub, JWT, Google OAuth, Monaco Editor, VS Code</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="resume-section">
+                        <h3>Experience</h3>
+                        <div class="resume-item">
+                            <div class="resume-item-header">
+                                <strong>NTPC Ramagundam</strong>
+                                <span>May 2026 – Jun 2026</span>
+                            </div>
+                            <div class="resume-item-sub">
+                                <span>Summer Intern - Generator Protection</span>
+                            </div>
+                            <ul class="resume-bullets">
+                                <li>Investigated relay coordination and differential protection schemes for large thermal generators.</li>
+                                <li>Analyzed the implementation of stator earth fault, reverse power, and overcurrent relay trip logic mechanisms.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="resume-item">
+                            <div class="resume-item-header">
+                                <strong>NxtWave</strong>
+                                <span>Feb 2026</span>
+                            </div>
+                            <div class="resume-item-sub">
+                                <span>Python Dev - AI Code Review Assistant</span>
+                            </div>
+                            <ul class="resume-bullets">
+                                <li>Developed a Python-based intelligent code review assistant integrating the Groq Llama-3.3-70B model for elite algorithmic analysis.</li>
+                                <li>Engineered automated prompt pipelines that convert complex static analysis and syntax evaluation into highly actionable, step-by-step developer feedback.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="resume-col-right">
+                    <div class="resume-section">
+                        <h3>Projects</h3>
+                        
+                        <div class="resume-item">
+                            <div class="resume-item-header">
+                                <strong>Bhilai EE Labs</strong>
+                                <span>Next.js, Supabase, Chart.js, KaTeX</span>
+                            </div>
+                            <ul class="resume-bullets">
+                                <li>Architected a comprehensive virtual laboratory platform with Supabase cloud-syncing and Next.js Server Components.</li>
+                                <li>Engineered dynamic content rendering supporting KaTeX equations, real-time Chart.js data visualization, and PDF report generation.</li>
+                                <li>Integrated deep-linked circuit simulators using a JSON-based routing framework with seamless one-click launch capabilities.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="resume-item">
+                            <div class="resume-item-header">
+                                <strong>Bhilai EE Circuit Simulator</strong>
+                                <span>JavaScript (ES6), SVG, Canvas API</span>
+                            </div>
+                            <ul class="resume-bullets">
+                                <li>Engineered a custom Simulation Engine implementing Modified Nodal Analysis (MNA), LU decomposition, and Backward Euler integration.</li>
+                                <li>Built a zero-dependency browser circuit simulator utilizing pure ES6 modules and an interactive SVG drag-and-drop workspace.</li>
+                                <li>Created a dual-channel oscilloscope and real-time waveform chart to accurately map DC, AC phasor, and transient analysis data.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="resume-item">
+                            <div class="resume-item-header">
+                                <strong>Smart Code Translator</strong>
+                                <span>MERN Stack, Monaco Editor, Groq API</span>
+                            </div>
+                            <ul class="resume-bullets">
+                                <li>Developed a full-stack code optimization platform integrating the Groq Llama-3.3-70B model for elite algorithmic translation and analysis.</li>
+                                <li>Built a high-performance Monaco Editor workspace with draggable split panes, instant Diff Viewer, and Google OAuth SSO authentication.</li>
+                            </ul>
+                        </div>
+
+                        <div class="resume-item">
+                            <div class="resume-item-header">
+                                <strong>QuestFolio</strong>
+                                <span>Vanilla JS, HTML5 Canvas</span>
+                            </div>
+                            <ul class="resume-bullets">
+                                <li>Designed an immersive 2D top-down RPG engine featuring real-time collision detection, dynamic lighting, and a simulated 24-hour cycle.</li>
+                                <li>Implemented an interactive state management system for dialogue triggers, multi-zone map rendering, and smooth NPC pathfinding.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stain s1"></div>
+            <div class="stain s2"></div>
+            <div class="fold-line"></div>
+        </div>
+    </div>
+
     <script src="js/data/collisionData.js"></script>
     <script src="js/data/collisionDataSchool.js"></script>
     <script src="js/data/collisionDataCastle.js"></script>
