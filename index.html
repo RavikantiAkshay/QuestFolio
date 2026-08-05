@@ -940,9 +940,9 @@
             style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 10, 5, 0.85); backdrop-filter: blur(5px); z-index: -1;">
         </div>
         <button id="workshop-shop-close"
-            onclick="document.getElementById('workshop-shop-overlay').style.display = 'none'; window.isOverlayActive = false;"
+            onclick="document.getElementById('workshop-shop-overlay').style.display = 'none'; isOverlayActive = false;"
             style="position: absolute; top: 20px; right: 20px; font-size: 20px; padding: 10px 20px; cursor: pointer; background: #333; color: white; border: 2px solid white; font-family: 'Share Tech Mono', monospace; z-index: 1210;">✕
-            CLOSE ARMORY</button>
+            CLOSE</button>
 
         <h1
             style="color: #f4e8d3; font-family: 'Georgia', serif; font-size: 48px; text-shadow: 2px 2px 0 #5c4322; margin-bottom: 0px; letter-spacing: 4px; text-align: center;">
@@ -964,14 +964,13 @@
                         style="max-height: 70px; width: auto; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); margin-bottom: 2px;">
                     <div class="armory-tag"
                         style="background: #8b7355; color: #f4e8d3; padding: 0 12px; font-family: 'Share Tech Mono', monospace; font-weight: bold; font-size: 14px; border-left: 2px solid #4a3418; border-right: 2px solid #4a3418; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); position: absolute; bottom: -25px; height: 25px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; z-index: 5;">
-                        10 🪙</div>
+                        10000 🪙</div>
                     <div class="armory-tooltip"
-                        style="position: absolute; top: -10px; left: 110%; background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                        style="position: absolute; top: -10px; left: calc(50% + 70px); background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
                         <p
                             style="color: #e8dcc4; font-family: 'Share Tech Mono', monospace; font-size: 13px; margin: 0 0 15px 0;">
                             DMG: 15 | MELEE</p>
-                        <button class="buy-btn"
-                            style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #5c4322; border: 1px solid #8b7355; color: #f4e8d3; cursor: pointer; border-radius: 2px; font-weight: bold;">BUY</button>
+                        <button class="buy-btn" disabled style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #333; border: 1px solid #555; color: #777; cursor: not-allowed; border-radius: 2px; font-weight: bold;">LOCKED</button>
                     </div>
                 </div>
 
@@ -984,14 +983,13 @@
                         style="max-height: 70px; width: auto; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); margin-bottom: 2px;">
                     <div class="armory-tag"
                         style="background: #8b7355; color: #f4e8d3; padding: 0 12px; font-family: 'Share Tech Mono', monospace; font-weight: bold; font-size: 14px; border-left: 2px solid #4a3418; border-right: 2px solid #4a3418; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); position: absolute; bottom: -25px; height: 25px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; z-index: 5;">
-                        50 🪙</div>
+                        50000 🪙</div>
                     <div class="armory-tooltip"
-                        style="position: absolute; top: -10px; left: 110%; background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                        style="position: absolute; top: -10px; left: calc(50% + 70px); background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
                         <p
                             style="color: #e8dcc4; font-family: 'Share Tech Mono', monospace; font-size: 13px; margin: 0 0 15px 0;">
                             DMG: 30 | LIGHT</p>
-                        <button class="buy-btn"
-                            style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #5c4322; border: 1px solid #8b7355; color: #f4e8d3; cursor: pointer; border-radius: 2px; font-weight: bold;">BUY</button>
+                        <button class="buy-btn" disabled style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #333; border: 1px solid #555; color: #777; cursor: not-allowed; border-radius: 2px; font-weight: bold;">LOCKED</button>
                     </div>
                 </div>
 
@@ -1004,14 +1002,13 @@
                         style="max-height: 70px; width: auto; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); margin-bottom: 2px;">
                     <div class="armory-tag"
                         style="background: #8b7355; color: #f4e8d3; padding: 0 12px; font-family: 'Share Tech Mono', monospace; font-weight: bold; font-size: 14px; border-left: 2px solid #4a3418; border-right: 2px solid #4a3418; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); position: absolute; bottom: -25px; height: 25px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; z-index: 5;">
-                        20 🪙</div>
+                        20000 🪙</div>
                     <div class="armory-tooltip"
-                        style="position: absolute; top: -10px; right: 110%; background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                        style="position: absolute; top: -10px; right: calc(50% + 70px); background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
                         <p
                             style="color: #e8dcc4; font-family: 'Share Tech Mono', monospace; font-size: 13px; margin: 0 0 15px 0;">
                             DMG: 80 | AREA</p>
-                        <button class="buy-btn"
-                            style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #5c4322; border: 1px solid #8b7355; color: #f4e8d3; cursor: pointer; border-radius: 2px; font-weight: bold;">BUY</button>
+                        <button class="buy-btn" disabled style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #333; border: 1px solid #555; color: #777; cursor: not-allowed; border-radius: 2px; font-weight: bold;">LOCKED</button>
                     </div>
                 </div>
             </div>
@@ -1024,18 +1021,18 @@
                     style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; cursor: pointer; height: 100%;">
                     <h4
                         style="color: #2c241b; font-family: 'Georgia', serif; font-size: 16px; font-weight: bold; margin: 0 0 10px 0; text-shadow: 1px 1px 0 rgba(255,255,255,0.3);">
-                        Assault Rifle</h4>
-                    <img src="assets/images/items/ak47.png" alt="Assault Rifle"
+                        AK-47</h4>
+                    <img src="assets/images/items/ak47.png" alt="AK-47"
                         style="max-height: 95px; width: auto; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); margin-bottom: 2px;">
                     <div class="armory-tag"
-                        style="background: #8b7355; color: #f4e8d3; padding: 0 12px; font-family: 'Share Tech Mono', monospace; font-weight: bold; font-size: 14px; border-left: 2px solid #4a3418; border-right: 2px solid #4a3418; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); position: absolute; bottom: -25px; height: 25px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; z-index: 5;">
-                        150 🪙</div>
+                        style="background: #8b7355; color: #f4e8d3; padding: 0 12px; font-family: 'Share Tech Mono', monospace; font-weight: bold; font-size: 14px; border-left: 2px solid #4a3418; border-right: 2px solid #4a3418; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); position: absolute; bottom: -25px; height: 25px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; z-index: 5; white-space: nowrap;">
+                        400 🪙 <span style="font-size: 10px; color: #ffd700; margin-left: 6px;">(AK discount)</span></div>
                     <div class="armory-tooltip"
-                        style="position: absolute; top: -10px; left: 110%; background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                        style="position: absolute; top: -10px; left: calc(50% + 70px); background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
                         <p
                             style="color: #e8dcc4; font-family: 'Share Tech Mono', monospace; font-size: 13px; margin: 0 0 15px 0;">
                             DMG: 45 | AUTO</p>
-                        <button class="buy-btn"
+                        <button class="buy-btn" id="buy-ak47-btn" onclick="buyAK47()"
                             style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #5c4322; border: 1px solid #8b7355; color: #f4e8d3; cursor: pointer; border-radius: 2px; font-weight: bold;">BUY</button>
                     </div>
                 </div>
@@ -1049,14 +1046,13 @@
                         style="max-height: 95px; width: auto; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); margin-bottom: 2px;">
                     <div class="armory-tag"
                         style="background: #8b7355; color: #f4e8d3; padding: 0 12px; font-family: 'Share Tech Mono', monospace; font-weight: bold; font-size: 14px; border-left: 2px solid #4a3418; border-right: 2px solid #4a3418; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); position: absolute; bottom: -25px; height: 25px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; z-index: 5;">
-                        500 🪙</div>
+                        50000 🪙</div>
                     <div class="armory-tooltip"
-                        style="position: absolute; top: -10px; left: 110%; background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                        style="position: absolute; top: -10px; left: calc(50% + 70px); background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
                         <p
                             style="color: #e8dcc4; font-family: 'Share Tech Mono', monospace; font-size: 13px; margin: 0 0 15px 0;">
                             DMG: 120 | LONG RANGE</p>
-                        <button class="buy-btn"
-                            style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #5c4322; border: 1px solid #8b7355; color: #f4e8d3; cursor: pointer; border-radius: 2px; font-weight: bold;">BUY</button>
+                        <button class="buy-btn" disabled style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #333; border: 1px solid #555; color: #777; cursor: not-allowed; border-radius: 2px; font-weight: bold;">LOCKED</button>
                     </div>
                 </div>
 
@@ -1069,14 +1065,13 @@
                         style="max-height: 95px; width: auto; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); margin-bottom: 2px;">
                     <div class="armory-tag"
                         style="background: #8b7355; color: #f4e8d3; padding: 0 12px; font-family: 'Share Tech Mono', monospace; font-weight: bold; font-size: 14px; border-left: 2px solid #4a3418; border-right: 2px solid #4a3418; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); position: absolute; bottom: -25px; height: 25px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; z-index: 5;">
-                        1000 🪙</div>
+                        100000 🪙</div>
                     <div class="armory-tooltip"
-                        style="position: absolute; top: -10px; right: 110%; background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                        style="position: absolute; top: -10px; right: calc(50% + 70px); background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
                         <p
                             style="color: #e8dcc4; font-family: 'Share Tech Mono', monospace; font-size: 13px; margin: 0 0 15px 0;">
                             DMG: 300 | EXPLOSIVE</p>
-                        <button class="buy-btn"
-                            style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #5c4322; border: 1px solid #8b7355; color: #f4e8d3; cursor: pointer; border-radius: 2px; font-weight: bold;">BUY</button>
+                        <button class="buy-btn" disabled style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #333; border: 1px solid #555; color: #777; cursor: not-allowed; border-radius: 2px; font-weight: bold;">LOCKED</button>
                     </div>
                 </div>
             </div>
@@ -1094,14 +1089,13 @@
                         style="max-height: 70px; width: auto; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); margin-bottom: 2px;">
                     <div class="armory-tag"
                         style="background: #8b7355; color: #f4e8d3; padding: 0 12px; font-family: 'Share Tech Mono', monospace; font-weight: bold; font-size: 14px; border-left: 2px solid #4a3418; border-right: 2px solid #4a3418; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); position: absolute; bottom: -25px; height: 25px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; z-index: 5;">
-                        80 🪙</div>
+                        80000 🪙</div>
                     <div class="armory-tooltip"
-                        style="position: absolute; top: -10px; left: 110%; background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                        style="position: absolute; top: -10px; left: calc(50% + 70px); background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
                         <p
                             style="color: #e8dcc4; font-family: 'Share Tech Mono', monospace; font-size: 13px; margin: 0 0 15px 0;">
                             DEF: +20 | HEADSHOT RES</p>
-                        <button class="buy-btn"
-                            style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #5c4322; border: 1px solid #8b7355; color: #f4e8d3; cursor: pointer; border-radius: 2px; font-weight: bold;">BUY</button>
+                        <button class="buy-btn" disabled style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #333; border: 1px solid #555; color: #777; cursor: not-allowed; border-radius: 2px; font-weight: bold;">LOCKED</button>
                     </div>
                 </div>
 
@@ -1114,14 +1108,13 @@
                         style="max-height: 70px; width: auto; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); margin-bottom: 2px;">
                     <div class="armory-tag"
                         style="background: #8b7355; color: #f4e8d3; padding: 0 12px; font-family: 'Share Tech Mono', monospace; font-weight: bold; font-size: 14px; border-left: 2px solid #4a3418; border-right: 2px solid #4a3418; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); position: absolute; bottom: -25px; height: 25px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; z-index: 5;">
-                        100 🪙</div>
+                        100000 🪙</div>
                     <div class="armory-tooltip"
-                        style="position: absolute; top: -10px; left: 110%; background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                        style="position: absolute; top: -10px; left: calc(50% + 70px); background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
                         <p
                             style="color: #e8dcc4; font-family: 'Share Tech Mono', monospace; font-size: 13px; margin: 0 0 15px 0;">
                             DEF: +50 | BODY ARMOR</p>
-                        <button class="buy-btn"
-                            style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #5c4322; border: 1px solid #8b7355; color: #f4e8d3; cursor: pointer; border-radius: 2px; font-weight: bold;">BUY</button>
+                        <button class="buy-btn" disabled style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #333; border: 1px solid #555; color: #777; cursor: not-allowed; border-radius: 2px; font-weight: bold;">LOCKED</button>
                     </div>
                 </div>
 
@@ -1134,14 +1127,13 @@
                         style="max-height: 70px; width: auto; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); margin-bottom: 2px;">
                     <div class="armory-tag"
                         style="background: #8b7355; color: #f4e8d3; padding: 0 12px; font-family: 'Share Tech Mono', monospace; font-weight: bold; font-size: 14px; border-left: 2px solid #4a3418; border-right: 2px solid #4a3418; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); position: absolute; bottom: -25px; height: 25px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; z-index: 5;">
-                        30 🪙</div>
+                        30000 🪙</div>
                     <div class="armory-tooltip"
-                        style="position: absolute; top: -10px; right: 110%; background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                        style="position: absolute; top: -10px; right: calc(50% + 70px); background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
                         <p
                             style="color: #e8dcc4; font-family: 'Share Tech Mono', monospace; font-size: 13px; margin: 0 0 15px 0;">
                             HP: +100 | CONSUMABLE</p>
-                        <button class="buy-btn"
-                            style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #5c4322; border: 1px solid #8b7355; color: #f4e8d3; cursor: pointer; border-radius: 2px; font-weight: bold;">BUY</button>
+                        <button class="buy-btn" disabled style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #333; border: 1px solid #555; color: #777; cursor: not-allowed; border-radius: 2px; font-weight: bold;">LOCKED</button>
                     </div>
                 </div>
 

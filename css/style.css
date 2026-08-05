@@ -2180,19 +2180,14 @@ canvas {
 
 .armory-item {
     z-index: 10;
+    flex: 1;
+    width: 33.33%;
 }
 
 .armory-item:hover {
     z-index: 60;
 }
 
-.armory-item img {
-    transition: transform 0.2s;
-}
-
-.armory-item:hover img {
-    transform: translateY(-10px);
-}
 
 .armory-item:hover .armory-tooltip {
     display: block !important;

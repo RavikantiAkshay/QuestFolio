@@ -190,14 +190,60 @@ const player = {
     attackImage: new Image(),
     frameX: 0,
     frameY: 0,
+    frameY: 0,
     isMoving: false,
-    animTimer: 0
+    animTimer: 0,
+    hasVest: false,
+    hasHelmet: false,
+    hasAK47: false
 };
 player.image = new Image();
 player.image.src = "assets/images/characters/main-character.png";
 
 player.attackImage = new Image();
 player.attackImage.src = "assets/images/characters/main-character-attack.png";
+
+player.imageAK47 = new Image();
+player.imageAK47.src = "assets/images/characters/main-character-ak47.png";
+
+player.attackImageAK47 = new Image();
+player.attackImageAK47.src = "assets/images/characters/main-character-ak47-attack.png";
+
+
+
+
+window.buyVest = function() {
+    player.hasVest = true;
+    const btn = document.getElementById('buy-vest-btn');
+    if (btn) {
+        btn.innerText = "OWNED";
+        btn.style.background = "#2c241b";
+        btn.style.color = "#8b7355";
+        btn.disabled = true;
+    }
+};
+
+window.buyHelmet = function() {
+    player.hasHelmet = true;
+    const btn = document.getElementById('buy-helmet-btn');
+    if (btn) {
+        btn.innerText = "OWNED";
+        btn.style.background = "#2c241b";
+        btn.style.color = "#8b7355";
+        btn.disabled = true;
+    }
+};
+
+window.buyAK47 = function() {
+    player.hasAK47 = true;
+    const btn = document.getElementById('buy-ak47-btn');
+    if (btn) {
+        btn.innerText = "OWNED";
+        btn.style.background = "#2c241b";
+        btn.style.color = "#8b7355";
+        btn.disabled = true;
+    }
+};
 
 // You can tweak these or remove this block since we handle it dynamically now
 const playerSpriteConfig = {
@@ -2660,7 +2706,13 @@ function draw() {
 
     // Draw the Player
     const useAttackSprite = player.isAttacking || player.isDefending;
-    const currentImg = useAttackSprite ? player.attackImage : player.image;
+    let currentImg;
+    if (useAttackSprite) {
+        currentImg = player.hasAK47 ? player.attackImageAK47 : player.attackImage;
+    } else {
+        currentImg = player.hasAK47 ? player.imageAK47 : player.image;
+    }
+
     if (currentImg.complete && currentImg.width > 0) {
         let fW, fH, sX, sY, displayWidth, displayHeight;
 
@@ -2724,6 +2776,7 @@ function draw() {
             drawX, drawY,
             displayWidth, displayHeight
         );
+
         ctx.restore();
     } else {
         // Fallback if image not loaded
