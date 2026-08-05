@@ -308,6 +308,7 @@ function closeResume() {
 }
 
 let bossSpikes = [];
+let playerProjectiles = [];
 let blackHoles = []; // Added for testing Phase 3
 let bossMissiles = []; // Added for homing missiles
 const spikeImg = new Image();
@@ -2462,6 +2463,43 @@ function update() {
     // Clean up expired black holes
     blackHoles = blackHoles.filter(bh => bh.state !== 'active' || bh.lifetime > 0 || (player.isTrapped && player.trappedBh === bh));
 
+    // Update Player Projectiles
+    for (let i = playerProjectiles.length - 1; i >= 0; i--) {
+        let proj = playerProjectiles[i];
+        proj.x += proj.vx;
+        proj.y += proj.vy;
+        proj.life--;
+
+        if (proj.life <= 0) {
+            playerProjectiles.splice(i, 1);
+            continue;
+        }
+
+        let projBox = { x: proj.x - 5, y: proj.y - 5, w: 10, h: 10 };
+        let hit = false;
+        
+        npcs.forEach(npc => {
+            if (npc.hp > 0 && !npc.isInvincible) {
+                let npcBox = { x: npc.x, y: npc.y, w: npc.size, h: npc.size };
+                if (rectIntersect(projBox, npcBox)) {
+                    npc.hp -= proj.damage;
+                    if (npc.hp <= 0) {
+                        npc.hp = 0;
+                        npc.deathTimer = 30; // 30 frames for death animation
+                    }
+                    // pushback
+                    npc.x += Math.sign(proj.vx) * 15;
+                    npc.y += Math.sign(proj.vy) * 15;
+                    hit = true;
+                }
+            }
+        });
+
+        if (hit) {
+            playerProjectiles.splice(i, 1);
+        }
+    }
+
     // Update Spikes
     for (let i = bossSpikes.length - 1; i >= 0; i--) {
         let spike = bossSpikes[i];
@@ -2840,7 +2878,8 @@ function draw() {
 
     // Helper to draw health bars
     function drawHealthBar(entity, isPlayer = false) {
-        if (entity.hp === undefined || entity.hp <= 0 || entity.isInvincible) return;
+        if (entity.hp === undefined || entity.isInvincible) return;
+        if (entity.hp <= 0 && (!entity.deathTimer || entity.deathTimer <= 0)) return;
 
         // For NPCs, only show if damaged or player is very close (within 75 pixels)
         if (!isPlayer) {
@@ -3008,6 +3047,22 @@ function draw() {
             }
         }
 
+        ctx.restore();
+    });
+
+    // Draw Player Projectiles
+    playerProjectiles.forEach(proj => {
+        ctx.save();
+        ctx.fillStyle = "#ffff00";
+        ctx.shadowColor = "#ffaa00";
+        ctx.shadowBlur = 10;
+        ctx.beginPath();
+        if (proj.vx !== 0) {
+            ctx.ellipse(proj.x, proj.y, 8, 3, 0, 0, Math.PI * 2);
+        } else {
+            ctx.ellipse(proj.x, proj.y, 3, 8, 0, 0, Math.PI * 2);
+        }
+        ctx.fill();
         ctx.restore();
     });
 
@@ -3629,37 +3684,59 @@ canvas.addEventListener('mousedown', (e) => {
             player.animTimer = 0;
             player.comboTimer = 60; // 1 second combo window
 
-            // Attack hitbox logic
-            let attackBox = { x: player.x, y: player.y, w: player.size, h: player.size };
-            const range = 15; // Shorter attack range for fists (previously 40)
+            if (player.hasAK47) {
+                // Spawn projectile
+                let speed = 15;
+                let vx = 0, vy = 0;
+                let px = player.x + player.size/2;
+                let py = player.y + 25; // Shifted slightly lower
 
-            if (player.frameY === 2) { attackBox.y -= range; attackBox.h += range; } // up
-            if (player.frameY === 0) { attackBox.y += range; attackBox.h += range; } // down
-            if (player.frameY === 1) { attackBox.x -= range; attackBox.w += range; } // left
-            if (player.frameY === 3) { attackBox.x += range; attackBox.w += range; } // right
+                if (player.frameY === 2) { vy = -speed; px += 10; py -= 15; } // up
+                if (player.frameY === 0) { vy = speed; px -= 15; py += 15; } // down
+                if (player.frameY === 1) { vx = -speed; px -= 25; } // left
+                if (player.frameY === 3) { vx = speed; px += 25; } // right
 
-            // Check if NPCs got hit
-            npcs.forEach(npc => {
-                if (npc.hp > 0 && !npc.isInvincible) {
-                    let npcBox = { x: npc.x, y: npc.y, w: npc.size, h: npc.size };
-                    if (rectIntersect(attackBox, npcBox)) {
-                        npc.hp -= player.attack;
-                        if (npc.hp <= 0) {
-                            npc.hp = 0;
-                            npc.deathTimer = 30; // 30 frames for death animation
-                            if (!window.gameDrops) window.gameDrops = [];
-                            window.gameDrops.push({
-                                x: npc.x + npc.size / 2,
-                                y: npc.y + npc.size / 2,
-                                vx: (Math.random() - 0.5) * 6,
-                                vy: -5,
-                                life: 0,
-                                amount: 1
-                            });
+                playerProjectiles.push({
+                    x: px,
+                    y: py,
+                    vx: vx,
+                    vy: vy,
+                    life: 60,
+                    damage: 45 // Tooltip says DMG: 45
+                });
+            } else {
+                // Attack hitbox logic (fists)
+                let attackBox = { x: player.x, y: player.y, w: player.size, h: player.size };
+                const range = 15; // Shorter attack range for fists (previously 40)
+
+                if (player.frameY === 2) { attackBox.y -= range; attackBox.h += range; } // up
+                if (player.frameY === 0) { attackBox.y += range; attackBox.h += range; } // down
+                if (player.frameY === 1) { attackBox.x -= range; attackBox.w += range; } // left
+                if (player.frameY === 3) { attackBox.x += range; attackBox.w += range; } // right
+
+                // Check if NPCs got hit
+                npcs.forEach(npc => {
+                    if (npc.hp > 0 && !npc.isInvincible) {
+                        let npcBox = { x: npc.x, y: npc.y, w: npc.size, h: npc.size };
+                        if (rectIntersect(attackBox, npcBox)) {
+                            npc.hp -= player.attack;
+                            if (npc.hp <= 0) {
+                                npc.hp = 0;
+                                npc.deathTimer = 30; // 30 frames for death animation
+                                if (!window.gameDrops) window.gameDrops = [];
+                                window.gameDrops.push({
+                                    x: npc.x + npc.size / 2,
+                                    y: npc.y + npc.size / 2,
+                                    vx: (Math.random() - 0.5) * 6,
+                                    vy: -5,
+                                    life: 0,
+                                    amount: 1
+                                });
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
         }
     }
     isDragging = true;
