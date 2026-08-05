@@ -208,7 +208,6 @@ const interactables = {
         { "x": 896, "y": 304, "w": 48, "h": 48, "id": "lab", "text": "Lab" },
         { "x": 280, "y": 408, "w": 40, "h": 48, "id": "home", "text": "Home" },
         { "x": 904, "y": 656, "w": 48, "h": 56, "id": "workshop", "text": "Workshop" },
-        { "x": 450, "y": 140, "w": 60, "h": 60, "id": "map_stand", "text": "Town Map" },
         { "x": 610, "y": 190, "w": 48, "h": 48, "id": "resume_npc", "text": "Stranger" }
     ],
     "school": [
@@ -230,6 +229,35 @@ let speechBubbleSequence = null;
 let speechBubbleIndex = 0;
 
 let bossFightActive = false;
+let awaitingResumeFollowUp = false;
+
+function closeResume() {
+    const resumeOverlay = document.getElementById('resume-overlay');
+    if (resumeOverlay && resumeOverlay.style.display !== 'none') {
+        resumeOverlay.style.display = 'none';
+        isOverlayActive = false;
+
+        if (awaitingResumeFollowUp) {
+            awaitingResumeFollowUp = false;
+            const stranger = npcs.find(n => n.isStaticNPC) || player;
+            speechBubbleSequence = [
+                { entity: stranger, text: "If you think that isn't enough, feel free to explore this town..." },
+                { entity: stranger, text: "Here's a small view of the town, to help you get around." }
+            ];
+            speechBubbleSequence.onComplete = () => {
+                const townMapOverlay = document.getElementById('town-map-overlay');
+                if (townMapOverlay) {
+                    townMapOverlay.style.display = 'flex';
+                    isOverlayActive = true;
+                }
+            };
+            speechBubbleIndex = 0;
+            isOverlayActive = true;
+            advanceSpeechBubble();
+        }
+    }
+}
+
 let bossSpikes = [];
 let blackHoles = []; // Added for testing Phase 3
 let bossMissiles = []; // Added for homing missiles
@@ -910,6 +938,7 @@ const townMapOverlay = document.createElement('div');
 townMapOverlay.id = 'town-map-overlay';
 townMapOverlay.style.cssText = 'display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:9999; background:rgba(0,0,0,0.7); backdrop-filter:blur(5px); justify-content:center; align-items:center;';
 const townMapContent = `
+<button id="town-map-close" style="position: absolute; top: 20px; right: 20px; font-size: 20px; padding: 10px 20px; cursor: pointer; background: #333; color: white; border: 2px solid white; font-family: 'Share Tech Mono', monospace; z-index: 1110;" onclick="document.getElementById('town-map-overlay').style.display='none'; isOverlayActive=false;">✕ CLOSE</button>
 <div style="width:900px; height:620px; max-width:95vw; max-height:85vh; background-color:#e0d0a0; border-radius: 4px 18px 5px 22px / 20px 6px 15px 8px; box-shadow: inset 0 0 80px rgba(100,70,30,0.7), inset 0 0 20px rgba(80,50,20,0.5), 0 20px 50px rgba(0,0,0,0.8); position:relative; overflow:visible; border: 4px solid #8c734b; transform: rotate(-0.5deg);">
     <!-- Dirt and noise overlay for old torn effect -->
     <div style="position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:1;background:radial-gradient(circle at 20% 30%, rgba(100,70,30,0.1) 0%, transparent 40%),radial-gradient(circle at 80% 70%, rgba(100,70,30,0.15) 0%, transparent 50%),url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.25'/%3E%3C/svg%3E&quot;);mix-blend-mode:multiply;border-radius:inherit;"></div>
@@ -964,15 +993,11 @@ const townMapContent = `
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><div style="width:26px;height:26px;border-radius:50%;border:2px solid #444;display:flex;align-items:center;justify-content:center;font-size:14px;font-family:'Share Tech Mono',monospace;font-weight:bold;background:#fffadc;">3</div> Castle</div>
         <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:#666;"><div style="width:26px;height:0px;border-top:4px dashed #8a7b45;border-radius:0px;"></div> Path</div>
 
-    <!-- Close hint -->
-    <div style="position:absolute;bottom:-40px;width:100%;text-align:center;color:white;font-family:'Press Start 2P',monospace;font-size:12px;text-shadow:2px 2px 0 #000;">Press 'O' or click outside to close map</div>
+    <!-- Close hint removed -->
 </div>
 `;
 townMapOverlay.innerHTML = townMapContent;
 document.body.appendChild(townMapOverlay);
-townMapOverlay.addEventListener('click', (e) => {
-    if (e.target === townMapOverlay) townMapOverlay.style.display = 'none';
-});
 
 window.addEventListener("keydown", (e) => {
     let key = e.key.toLowerCase();
@@ -980,7 +1005,13 @@ window.addEventListener("keydown", (e) => {
 
     // Toggle Town Map
     if (key === 'o') {
-        townMapOverlay.style.display = townMapOverlay.style.display === 'flex' ? 'none' : 'flex';
+        if (townMapOverlay.style.display === 'flex') {
+            townMapOverlay.style.display = 'none';
+            isOverlayActive = false;
+        } else {
+            townMapOverlay.style.display = 'flex';
+            isOverlayActive = true;
+        }
     }
 
     // Quick test shortcut for PC UI
@@ -1008,17 +1039,19 @@ window.addEventListener("keydown", (e) => {
     if (key === 'r') {
         const resumeOverlay = document.getElementById('resume-overlay');
         if (resumeOverlay) {
-            resumeOverlay.style.display = resumeOverlay.style.display === 'flex' ? 'none' : 'flex';
-            isOverlayActive = resumeOverlay.style.display === 'flex';
+            if (resumeOverlay.style.display === 'flex') {
+                closeResume();
+            } else {
+                resumeOverlay.style.display = 'flex';
+                isOverlayActive = true;
+                awaitingResumeFollowUp = false;
+            }
         }
     }
 
     // Handle Interaction (E key)
     if (key === 'e') {
-        if (activeInteractable && activeInteractable.id === 'map_stand') {
-            townMapOverlay.style.display = townMapOverlay.style.display === 'flex' ? 'none' : 'flex';
-            return;
-        }
+        // Map stand logic removed
         if (!isOverlayActive && activeInteractable) {
             isOverlayActive = true;
             isExploringInterior = false;
@@ -1256,15 +1289,15 @@ window.addEventListener("keydown", (e) => {
                 const stranger = npcs.find(n => n.isStaticNPC) || player;
 
                 speechBubbleSequence = [
-                    { entity: stranger, text: "Hello, traveler! I've been waiting for you." },
-                    { entity: stranger, text: "Akshay left this document with me. I think you might find it interesting." },
-                    { entity: stranger, text: "Here, take his resume!" }
+                    { entity: stranger, text: "Hello traveler, I think you are here to know about Akshay." },
+                    { entity: stranger, text: "Here is his resume..." }
                 ];
                 speechBubbleSequence.onComplete = () => {
                     const resumeOverlay = document.getElementById('resume-overlay');
                     if (resumeOverlay) {
                         resumeOverlay.style.display = 'flex';
                         isOverlayActive = true;
+                        awaitingResumeFollowUp = true;
                     }
                 };
                 speechBubbleIndex = 0;
@@ -1510,9 +1543,7 @@ function loadZone(zoneName, startX, startY) {
         setTimeout(() => {
             showDialogue("AKBOT-E7", [
                 "Hi there! You've just entered the Town of Akshay.",
-                "Every building you see holds hidden details and information about him.",
-                "Use W, A, S, D to move around. Left-Click to attack, and hold 'F' to defend if you run into trouble.",
-                "Go on, uncover his story... the more you know, the better it gets!"
+                "Use W, A, S, D to move around. Left-Click to attack, and hold 'F' to defend if you run into trouble."
             ]);
         }, 500);
     }
@@ -2734,7 +2765,6 @@ function draw() {
         ctx.lineWidth = 3;
         ctx.strokeStyle = "black";
         let verb = 'enter';
-        if (activeInteractable.id === 'map_stand') verb = 'open';
         if (activeInteractable.id === 'resume_npc') verb = 'interact with';
         ctx.strokeText(`Press [E] to ${verb} ${activeInteractable.text}`, player.x + player.size / 2, player.y - 15 - pulse);
         ctx.fillText(`Press [E] to ${verb} ${activeInteractable.text}`, player.x + player.size / 2, player.y - 15 - pulse);
@@ -3310,70 +3340,7 @@ function draw() {
         ctx.restore();
     }
 
-    // Sync In-World Map Stand UI
-    const mapStand = document.getElementById('in-world-map-stand');
-    if (mapStand && currentZone === "town") {
-        const standX = 475;
-        const standY = 162;
-        const screenX = standX - cameraX;
-        const screenY = standY - cameraY;
-
-        if (screenX > -150 && screenX < canvas.width + 150 && screenY > -150 && screenY < canvas.height + 150) {
-            mapStand.style.display = 'block';
-            // Position the stand's bottom-center at the world coordinate
-            mapStand.style.left = (screenX * scale) + 'px';
-            mapStand.style.top = ((screenY - 42) * scale) + 'px';
-            // Scale with the game's zoom but keep the 3D on the child .map-stand-unit
-            mapStand.style.transform = `scale(${scale})`;
-            mapStand.style.transformOrigin = 'center center';
-
-            // Inject mini map once
-            if (!mapStand.dataset.initialized) {
-                mapStand.style.cursor = 'pointer';
-                mapStand.title = 'Click or press E to view Town Map';
-                mapStand.addEventListener('click', () => {
-                    if (townMapOverlay) {
-                        townMapOverlay.style.display = townMapOverlay.style.display === 'flex' ? 'none' : 'flex';
-                    }
-                });
-                const standMapContent = mapStand.querySelector('.stand-map-content');
-                if (standMapContent) {
-                    const hintRegex = /<!-- Close hint -->[\s\S]*?<\/div>/;
-                    let miniHTML = townMapContent
-                        .replace(hintRegex, '')
-                        .replace('border: 4px solid #8c734b;', '')
-                        .replace('overflow:visible', 'overflow:hidden');
-
-                    // Parchment is 62x46px. Map source is 900x620.
-                    // Scale factor: Math.min(62/900, 46/620) = Math.min(0.0689, 0.0742) = 0.0689
-                    // Scaled size: 62 x 42.7. Center vertically: (46-42.7)/2 ≈ 1.6px
-                    const mapScale = 0.069;
-                    standMapContent.innerHTML = `<div style="
-                        transform: scale(${mapScale});
-                        transform-origin: top left;
-                        width: 900px;
-                        height: 620px;
-                        filter: sepia(0.3) blur(0.8px);
-                        opacity: 0.9;
-                        pointer-events: none;
-                        margin-top: 1px;
-                    ">${miniHTML}</div>`;
-                    mapStand.dataset.initialized = 'true';
-                }
-            }
-
-            // Depth sorting
-            if (player.y > standY - 20) {
-                mapStand.style.zIndex = 1;
-            } else {
-                mapStand.style.zIndex = 5;
-            }
-        } else {
-            mapStand.style.display = 'none';
-        }
-    } else if (mapStand) {
-        mapStand.style.display = 'none';
-    }
+    // Map Stand removed, NPC now handles map display.
 
     ctx.restore();
 }

@@ -16,31 +16,7 @@
 <body>
     <canvas id="gameCanvas" width="800" height="800"></canvas>
 
-    <!-- In-World Map Stand -->
-    <div id="in-world-map-stand" style="display: none;">
-        <div class="map-stand-unit">
-            <!-- The parchment map nailed to the board -->
-            <div class="stand-board">
-                <!-- Nail top-left -->
-                <div class="stand-nail" style="top:3px;left:4px;"></div>
-                <!-- Nail top-right -->
-                <div class="stand-nail" style="top:3px;right:4px;"></div>
-                <!-- The aged parchment -->
-                <div class="stand-parchment">
-                    <div class="stand-map-content">
-                        <!-- Mini map injected by JS -->
-                    </div>
-                    <!-- Aged overlay -->
-                    <div class="stand-parchment-aging"></div>
-                </div>
-            </div>
-            <!-- Wooden post/legs -->
-            <div class="stand-legs">
-                <div class="stand-leg stand-leg-left"></div>
-                <div class="stand-leg stand-leg-right"></div>
-            </div>
-        </div>
-    </div>
+
     <!-- Dialogue System Overlay -->
     <div id="dialogue-backdrop"></div>
     <div id="dialogue-box" class="dialogue-box" style="display: none;">
@@ -588,7 +564,7 @@
 
     <!-- Resume Overlay -->
     <div id="resume-overlay" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1100; align-items: center; justify-content: center; background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(5px);">
-        <button id="resume-close" style="position: absolute; top: 20px; right: 20px; font-size: 20px; padding: 10px 20px; cursor: pointer; background: #333; color: white; border: 2px solid white; font-family: 'Share Tech Mono', monospace; z-index: 1110;" onclick="document.getElementById('resume-overlay').style.display='none'; isOverlayActive=false;">✕ CLOSE</button>
+        <button id="resume-close" style="position: absolute; top: 20px; right: 20px; font-size: 20px; padding: 10px 20px; cursor: pointer; background: #333; color: white; border: 2px solid white; font-family: 'Share Tech Mono', monospace; z-index: 1110;" onclick="if(typeof closeResume === 'function') closeResume(); else { document.getElementById('resume-overlay').style.display='none'; isOverlayActive=false; }">✕ CLOSE</button>
         
         <div id="resume-paper" class="parchment-paper">
             <div class="resume-header">
