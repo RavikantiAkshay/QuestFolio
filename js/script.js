@@ -1431,8 +1431,8 @@ window.addEventListener("keydown", (e) => {
                         y: 600,
                         size: 80, // Bigger than player
                         speed: 0,
-                        hp: 500,
-                        maxHp: 500,
+                        hp: 1000,
+                        maxHp: 1000,
                         frameX: 0, // Idle
                         frameY: 1, // Left
                         isMoving: false,
