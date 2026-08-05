@@ -3927,11 +3927,19 @@ window.awardBounty = function(type, amount, element) {
     if (element.dataset.claimed === 'true') return;
     
     // Get the active project link based on type
-    const linkId = type === 'github' ? 'project-github' : 'project-live';
+    const linkId = (type === 'github' || type === 'star') ? 'project-github' : 'project-live';
     const linkElement = document.getElementById(linkId);
     
     if (linkElement && linkElement.href && linkElement.href !== '#' && !linkElement.href.endsWith('#')) {
-        window.open(linkElement.href, '_blank');
+        let finalUrl = linkElement.href;
+        
+        // Custom logic for Bhilaee Labs account creation
+        const titleElement = document.getElementById('project-title');
+        if (type === 'create-account' && titleElement && titleElement.innerText.toUpperCase() === 'BHILAEE LABS') {
+            finalUrl = finalUrl.replace(/\/$/, '') + '/login';
+        }
+        
+        window.open(finalUrl, '_blank');
         window.addCoins(amount);
         
         element.dataset.claimed = 'true';
