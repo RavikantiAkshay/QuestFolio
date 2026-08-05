@@ -17,9 +17,11 @@
     <canvas id="gameCanvas" width="800" height="800"></canvas>
 
     <!-- Game HUD -->
-    <div id="game-hud" style="position: fixed; top: 20px; left: 20px; z-index: 1000; display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.6); padding: 10px 20px; border-radius: 8px; border: 2px solid #8c734b; pointer-events: none; backdrop-filter: blur(4px);">
+    <div id="game-hud"
+        style="position: fixed; top: 20px; left: 20px; z-index: 1000; display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.6); padding: 10px 20px; border-radius: 8px; border: 2px solid #8c734b; pointer-events: none; backdrop-filter: blur(4px);">
         <span style="font-size: 24px;">🪙</span>
-        <span id="coin-counter" style="color: #ffd700; font-family: 'Press Start 2P', monospace; font-size: 20px; text-shadow: 2px 2px 0 #000;">0</span>
+        <span id="coin-counter"
+            style="color: #ffd700; font-family: 'Press Start 2P', monospace; font-size: 20px; text-shadow: 2px 2px 0 #000;">0</span>
     </div>
 
 
@@ -176,16 +178,24 @@
                                     BOUNTIES</h2>
                                 <ul class="terminal-list"
                                     style="font-size: 14px; color:#baffb3; list-style-type:none; padding-left:16px; margin:0;">
-                                    <li class="bounty-item" data-bounty-type="visit-live" data-amount="10" onclick="window.awardBounty('visit-live', 10, this)" style="display:flex; justify-content:space-between; padding-right:16px; cursor: pointer;">
+                                    <li class="bounty-item" data-bounty-type="visit-live" data-amount="10"
+                                        onclick="window.awardBounty('visit-live', 10, this)"
+                                        style="display:flex; justify-content:space-between; padding-right:16px; cursor: pointer;">
                                         <span>Access Application</span><span style="color:#ffb86c;">+10 🪙</span>
                                     </li>
-                                    <li class="bounty-item" data-bounty-type="visit-github" data-amount="10" onclick="window.awardBounty('visit-github', 10, this)" style="display:flex; justify-content:space-between; padding-right:16px; cursor: pointer;">
+                                    <li class="bounty-item" data-bounty-type="visit-github" data-amount="10"
+                                        onclick="window.awardBounty('visit-github', 10, this)"
+                                        style="display:flex; justify-content:space-between; padding-right:16px; cursor: pointer;">
                                         <span>Review Source Code</span><span style="color:#ffb86c;">+10 🪙</span>
                                     </li>
-                                    <li class="bounty-item" data-bounty-type="create-account" data-amount="30" onclick="window.awardBounty('create-account', 30, this)" style="display:flex; justify-content:space-between; padding-right:16px; cursor: pointer;">
+                                    <li class="bounty-item" data-bounty-type="create-account" data-amount="30"
+                                        onclick="window.awardBounty('create-account', 30, this)"
+                                        style="display:flex; justify-content:space-between; padding-right:16px; cursor: pointer;">
                                         <span>Create an Account</span><span style="color:#ffb86c;">+30 🪙</span>
                                     </li>
-                                    <li class="bounty-item" data-bounty-type="star-github" data-amount="30" onclick="window.awardBounty('star-github', 30, this)" style="display:flex; justify-content:space-between; padding-right:16px; cursor: pointer;">
+                                    <li class="bounty-item" data-bounty-type="star-github" data-amount="30"
+                                        onclick="window.awardBounty('star-github', 30, this)"
+                                        style="display:flex; justify-content:space-between; padding-right:16px; cursor: pointer;">
                                         <span>Star Repository</span><span style="color:#ffb86c;">+30 🪙</span>
                                     </li>
                                 </ul>
@@ -373,183 +383,351 @@
             </div>
 
             <!-- SITCOM PC INTERIOR -->
-            <div id="sitcom-pc-container" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 950; align-items: center; justify-content: center; background: rgba(0,0,0,0.85);">
-                <button id="sitcom-pc-close" style="position: absolute; top: 20px; right: 20px; font-size: 20px; padding: 10px 20px; cursor: pointer; background: #333; color: white; border: 2px solid white; font-family: 'Share Tech Mono', monospace; z-index: 960;">✕ CLOSE</button>
+            <div id="sitcom-pc-container"
+                style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 950; align-items: center; justify-content: center; background: rgba(0,0,0,0.85);">
+                <button id="sitcom-pc-close"
+                    style="position: absolute; top: 20px; right: 20px; font-size: 20px; padding: 10px 20px; cursor: pointer; background: #333; color: white; border: 2px solid white; font-family: 'Share Tech Mono', monospace; z-index: 960;">✕
+                    CLOSE</button>
                 <!-- Retro TV Wrapper -->
-                <div style="position: relative; display: flex; flex-direction: column; align-items: center; width: 1400px; max-width: 98vw; height: 760px; max-height: 90vh; transform: scale(0.75); transform-origin: center; margin-top: -60px;">
-                    
+                <div
+                    style="position: relative; display: flex; flex-direction: column; align-items: center; width: 1400px; max-width: 98vw; height: 760px; max-height: 90vh; transform: scale(0.75); transform-origin: center; margin-top: -60px;">
+
                     <!-- Antennas -->
                     <div style="position: absolute; top: -80px; left: 35%; width: 100px; height: 100px; z-index: 1;">
-                        <div style="position: absolute; bottom: 0; left: 20px; width: 6px; height: 120px; background: linear-gradient(90deg, #999, #eee, #999); transform: rotate(-35deg); transform-origin: bottom center; border-radius: 3px;">
-                            <div style="position: absolute; top: -6px; left: -4px; width: 14px; height: 14px; background: #666; border-radius: 50%;"></div>
+                        <div
+                            style="position: absolute; bottom: 0; left: 20px; width: 6px; height: 120px; background: linear-gradient(90deg, #999, #eee, #999); transform-origin: bottom center; border-radius: 3px;">
+                            <div
+                                style="position: absolute; top: -6px; left: -4px; width: 14px; height: 14px; background: #666; border-radius: 50%;">
+                            </div>
                         </div>
-                        <div style="position: absolute; bottom: 0; left: 40px; width: 6px; height: 100px; background: linear-gradient(90deg, #999, #eee, #999); transform: rotate(45deg); transform-origin: bottom center; border-radius: 3px;">
-                            <div style="position: absolute; top: -6px; left: -4px; width: 14px; height: 14px; background: #666; border-radius: 50%;"></div>
+                        <div
+                            style="position: absolute; bottom: 0; left: 40px; width: 6px; height: 100px; background: linear-gradient(90deg, #999, #eee, #999); transform-origin: bottom center; border-radius: 3px;">
+                            <div
+                                style="position: absolute; top: -6px; left: -4px; width: 14px; height: 14px; background: #666; border-radius: 50%;">
+                            </div>
                         </div>
-                        <div style="position: absolute; bottom: -10px; left: 10px; width: 50px; height: 20px; background: #222; border-radius: 10px 10px 0 0; border: 2px solid #111;"></div>
+                        <div
+                            style="position: absolute; bottom: -10px; left: 10px; width: 50px; height: 20px; background: #222; border-radius: 10px 10px 0 0; border: 2px solid #111;">
+                        </div>
                     </div>
 
                     <!-- TV Outer Casing -->
-                    <div style="flex: 1; width: 100%; background: #8b5a2b; background-image: linear-gradient(105deg, #7c4c24, #966735, #683c18); border-radius: 40px; border: 12px solid #3e2712; display: flex; flex-direction: row; padding: 25px; box-shadow: 0 30px 60px rgba(0,0,0,0.9), inset 0 0 30px rgba(0,0,0,0.8); position: relative; z-index: 2;">
-                        
+                    <div
+                        style="flex: 1; width: 100%; background: #8b5a2b; background-image: linear-gradient(105deg, #7c4c24, #966735, #683c18); border-radius: 40px; border: 12px solid #3e2712; display: flex; flex-direction: row; padding: 25px; box-shadow: 0 30px 60px rgba(0,0,0,0.9), inset 0 0 30px rgba(0,0,0,0.8); position: relative; z-index: 2;">
+
                         <!-- TV Screen Bezel -->
-                        <div style="flex: 1; border-radius: 30px 15px 15px 30px; background: #0a0a0a; padding: 20px; box-shadow: inset 0 0 40px #000, 0 5px 15px rgba(255,255,255,0.1); border: 2px solid #222; display: flex; position: relative;">
-                            
+                        <div
+                            style="flex: 1; border-radius: 30px 15px 15px 30px; background: #0a0a0a; padding: 20px; box-shadow: inset 0 0 40px #000, 0 5px 15px rgba(255,255,255,0.1); border: 2px solid #222; display: flex; position: relative;">
+
                             <!-- Screen Content (Inner) -->
-                            <div style="flex: 1; background: #faf9f5; display: flex; gap: 20px; border-radius: 15px; padding: 15px; position: relative; overflow: hidden; box-shadow: inset 0 0 30px rgba(0,0,0,0.3);">
-                                
+                            <div
+                                style="flex: 1; background: #faf9f5; display: flex; gap: 20px; border-radius: 15px; padding: 15px; position: relative; overflow: hidden; box-shadow: inset 0 0 30px rgba(0,0,0,0.3);">
+
                                 <!-- CRT Glare Overlay -->
-                                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 100%); pointer-events: none; z-index: 50;"></div>
-                        
-                        <!-- Left Panel: DNA (Friendly / Magazine style) -->
-                        <div style="flex: 1.2; background: #ffffff; border: 2px solid #e0e0e0; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column;">
-                            
-                            <h2 style="font-family: 'Permanent Marker', cursive; color: #ff6b6b; text-align: center; margin: 0 0 15px 0; font-size: 30px; transform: rotate(-1deg);">My Sitcom DNA</h2>
-                            
-                            <div style="flex: 1; display: flex; flex-direction: column; justify-content: space-evenly; color: #333;">
-                                <!-- Phil -->
-                                <div>
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: bold; color: #2c3e50; font-family: sans-serif; font-size: 15px;"><span>Phil Dunphy (Modern Family)</span><span>30%</span></div>
-                                    <div style="width: 100%; height: 12px; background: #f0f0f0; border-radius: 6px; overflow: hidden;"><div style="width: 30%; height: 100%; background: #ff9ff3;"></div></div>
-                                    <div style="margin-top: 5px; line-height: 1.2; font-family: 'Caveat', cursive; font-size: 22px;">"1% inspiration, 98% perspiration, 2% attention to detail."</div>
+                                <div
+                                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 100%); pointer-events: none; z-index: 50;">
                                 </div>
-                                <!-- Ron -->
-                                <div>
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: bold; color: #2c3e50; font-family: sans-serif; font-size: 15px;"><span>Ron Swanson (Parks & Rec)</span><span>25%</span></div>
-                                    <div style="width: 100%; height: 12px; background: #f0f0f0; border-radius: 6px; overflow: hidden;"><div style="width: 25%; height: 100%; background: #54a0ff;"></div></div>
-                                    <div style="margin-top: 5px; line-height: 1.2; font-family: 'Caveat', cursive; font-size: 22px;">"Focusing only on what actually works and completely ignoring the small, unnecessary drama."</div>
+
+                                <!-- Left Panel: DNA (Friendly / Magazine style) -->
+                                <div
+                                    style="flex: 1.2; background: #ffffff; border: 2px solid #e0e0e0; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column;">
+
+                                    <h2
+                                        style="font-family: 'Permanent Marker', cursive; color: #ff6b6b; text-align: center; margin: 0 0 15px 0; font-size: 30px; transform: rotate(-1deg);">
+                                        My Sitcom DNA</h2>
+
+                                    <div
+                                        style="flex: 1; display: flex; flex-direction: column; justify-content: space-evenly; color: #333;">
+                                        <!-- Phil -->
+                                        <div>
+                                            <div
+                                                style="display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: bold; color: #2c3e50; font-family: sans-serif; font-size: 15px;">
+                                                <span>Phil Dunphy (Modern Family)</span><span>30%</span>
+                                            </div>
+                                            <div
+                                                style="width: 100%; height: 12px; background: #f0f0f0; border-radius: 6px; overflow: hidden;">
+                                                <div style="width: 30%; height: 100%; background: #ff9ff3;"></div>
+                                            </div>
+                                            <div
+                                                style="margin-top: 5px; line-height: 1.2; font-family: 'Caveat', cursive; font-size: 22px;">
+                                                "1% inspiration, 98% perspiration, 2% attention to detail."</div>
+                                        </div>
+                                        <!-- Ron -->
+                                        <div>
+                                            <div
+                                                style="display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: bold; color: #2c3e50; font-family: sans-serif; font-size: 15px;">
+                                                <span>Ron Swanson (Parks & Rec)</span><span>25%</span>
+                                            </div>
+                                            <div
+                                                style="width: 100%; height: 12px; background: #f0f0f0; border-radius: 6px; overflow: hidden;">
+                                                <div style="width: 25%; height: 100%; background: #54a0ff;"></div>
+                                            </div>
+                                            <div
+                                                style="margin-top: 5px; line-height: 1.2; font-family: 'Caveat', cursive; font-size: 22px;">
+                                                "Focusing only on what actually works and completely ignoring the small,
+                                                unnecessary drama."</div>
+                                        </div>
+                                        <!-- Axl -->
+                                        <div>
+                                            <div
+                                                style="display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: bold; color: #2c3e50; font-family: sans-serif; font-size: 15px;">
+                                                <span>Axl Heck (The Middle)</span><span>20%</span>
+                                            </div>
+                                            <div
+                                                style="width: 100%; height: 12px; background: #f0f0f0; border-radius: 6px; overflow: hidden;">
+                                                <div style="width: 20%; height: 100%; background: #1dd1a1;"></div>
+                                            </div>
+                                            <div
+                                                style="margin-top: 5px; line-height: 1.2; font-family: 'Caveat', cursive; font-size: 22px;">
+                                                "Finding the absolute laziest, yet most brutally efficient way to solve
+                                                a complex problem."</div>
+                                        </div>
+                                        <!-- Haley -->
+                                        <div>
+                                            <div
+                                                style="display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: bold; color: #2c3e50; font-family: sans-serif; font-size: 15px;">
+                                                <span>Haley Dunphy (Modern Family)</span><span>15%</span>
+                                            </div>
+                                            <div
+                                                style="width: 100%; height: 12px; background: #f0f0f0; border-radius: 6px; overflow: hidden;">
+                                                <div style="width: 15%; height: 100%; background: #feca57;"></div>
+                                            </div>
+                                            <div
+                                                style="margin-top: 5px; line-height: 1.2; font-family: 'Caveat', cursive; font-size: 22px;">
+                                                "Convincing the project manager that the UI glitch is actually a trendy
+                                                new feature."</div>
+                                        </div>
+                                        <!-- Jake -->
+                                        <div>
+                                            <div
+                                                style="display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: bold; color: #2c3e50; font-family: sans-serif; font-size: 15px;">
+                                                <span>Jake Peralta (B99)</span><span>10%</span>
+                                            </div>
+                                            <div
+                                                style="width: 100%; height: 12px; background: #f0f0f0; border-radius: 6px; overflow: hidden;">
+                                                <div style="width: 10%; height: 100%; background: #ff6b6b;"></div>
+                                            </div>
+                                            <div
+                                                style="margin-top: 5px; line-height: 1.2; font-family: 'Caveat', cursive; font-size: 22px;">
+                                                "Turning every boring, repetitive task into some kind of high-stakes
+                                                game."</div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <!-- Axl -->
-                                <div>
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: bold; color: #2c3e50; font-family: sans-serif; font-size: 15px;"><span>Axl Heck (The Middle)</span><span>20%</span></div>
-                                    <div style="width: 100%; height: 12px; background: #f0f0f0; border-radius: 6px; overflow: hidden;"><div style="width: 20%; height: 100%; background: #1dd1a1;"></div></div>
-                                    <div style="margin-top: 5px; line-height: 1.2; font-family: 'Caveat', cursive; font-size: 22px;">"Finding the absolute laziest, yet most brutally efficient way to solve a complex problem."</div>
+
+                                <!-- Right Panel: Quotes (Corkboard/Sticky Notes) -->
+                                <div
+                                    style="flex: 1.4; background: #d4a373; border: 10px solid #8b5a2b; border-radius: 8px; padding: 15px; position: relative; box-shadow: inset 0 0 20px rgba(0,0,0,0.4); display: grid; grid-template-columns: 1fr 1fr; gap: 15px; align-content: start;">
+
+                                    <h2
+                                        style="grid-column: span 2; font-family: 'Permanent Marker', cursive; text-align: center; margin: 0 0 10px 0; color: #3d2b1f; font-size: 26px;">
+                                        QUOTES I CODE BY</h2>
+
+                                    <!-- Sticky 1 -->
+                                    <div
+                                        style="background: #fcfc99; padding: 10px; box-shadow: 2px 4px 6px rgba(0,0,0,0.2); color: #111;">
+                                        <div
+                                            style="font-weight: bold; font-size: 22px; font-family: 'Caveat', cursive; line-height: 1.1;">
+                                            "Title of your sex tape." <span
+                                                style="font-family: 'Kalam', cursive; font-size: 14px; font-weight: normal; color: #555;">-
+                                                Jake Peralta</span></div>
+                                        <div
+                                            style="font-family: 'Kalam', cursive; font-size: 14px; margin-top: 6px; color: #333; line-height: 1.1;">
+                                            Me when a teammate says, "It’s way too big to push all at once."</div>
+                                    </div>
+
+                                    <!-- Sticky 2 -->
+                                    <div
+                                        style="background: #ffb3ba; padding: 10px; box-shadow: 2px 4px 6px rgba(0,0,0,0.2); color: #111;">
+                                        <div
+                                            style="font-weight: bold; font-size: 22px; font-family: 'Caveat', cursive; line-height: 1.1;">
+                                            "I have no idea what I'm doing, but I know I'm doing it really well." <span
+                                                style="font-family: 'Kalam', cursive; font-size: 14px; font-weight: normal; color: #555;">-
+                                                Andy Dwyer</span></div>
+                                        <div
+                                            style="font-family: 'Kalam', cursive; font-size: 14px; margin-top: 6px; color: #333; line-height: 1.1;">
+                                            Me explaining my code during a senior review.</div>
+                                    </div>
+
+                                    <!-- Sticky 3 -->
+                                    <div
+                                        style="background: #bae1ff; padding: 10px; box-shadow: 2px 4px 6px rgba(0,0,0,0.2); color: #111;">
+                                        <div
+                                            style="font-weight: bold; font-size: 22px; font-family: 'Caveat', cursive; line-height: 1.1;">
+                                            "Cool, cool, cool, cool, no doubt, no doubt." <span
+                                                style="font-family: 'Kalam', cursive; font-size: 14px; font-weight: normal; color: #555;">-
+                                                Jake Peralta</span></div>
+                                        <div
+                                            style="font-family: 'Kalam', cursive; font-size: 14px; margin-top: 6px; color: #333; line-height: 1.1;">
+                                            Fixing 1 bug and immediately getting 196 new errors.</div>
+                                    </div>
+
+                                    <!-- Sticky 4 -->
+                                    <div
+                                        style="background: #baffc9; padding: 10px; box-shadow: 2px 4px 6px rgba(0,0,0,0.2); color: #111;">
+                                        <div
+                                            style="font-weight: bold; font-size: 22px; font-family: 'Caveat', cursive; line-height: 1.1;">
+                                            "WE WERE ON A BREAK!" <span
+                                                style="font-family: 'Kalam', cursive; font-size: 14px; font-weight: normal; color: #555;">-
+                                                Ross Geller</span></div>
+                                        <div
+                                            style="font-family: 'Kalam', cursive; font-size: 14px; margin-top: 6px; color: #333; line-height: 1.1;">
+                                            Explaining to the PM why the server went offline.</div>
+                                    </div>
+
+                                    <!-- Sticky 5 -->
+                                    <div
+                                        style="background: #e8baff; padding: 10px; box-shadow: 2px 4px 6px rgba(0,0,0,0.2); color: #111;">
+                                        <div
+                                            style="font-weight: bold; font-size: 22px; font-family: 'Caveat', cursive; line-height: 1.1;">
+                                            "It sended! Please come back." <span
+                                                style="font-family: 'Kalam', cursive; font-size: 14px; font-weight: normal; color: #555;">-
+                                                Gloria</span></div>
+                                        <div
+                                            style="font-family: 'Kalam', cursive; font-size: 14px; margin-top: 6px; color: #333; line-height: 1.1;">
+                                            Me right after accidentally pushing my .env file to a public repo.</div>
+                                    </div>
+
+                                    <!-- Sticky 6 -->
+                                    <div
+                                        style="background: #ffdfba; padding: 10px; box-shadow: 2px 4px 6px rgba(0,0,0,0.2); color: #111;">
+                                        <div
+                                            style="font-weight: bold; font-size: 22px; font-family: 'Caveat', cursive; line-height: 1.1;">
+                                            "You're just gonna have to lower your expectations." <span
+                                                style="font-family: 'Kalam', cursive; font-size: 14px; font-weight: normal; color: #555;">-
+                                                Mike Heck</span></div>
+                                        <div
+                                            style="font-family: 'Kalam', cursive; font-size: 14px; margin-top: 6px; color: #333; line-height: 1.1;">
+                                            Giving the project manager the initial MVP timeline.</div>
+                                    </div>
+
+                                    <!-- Sticky 7 -->
+                                    <div
+                                        style="background: #bafff3; padding: 10px; box-shadow: 2px 4px 6px rgba(0,0,0,0.2); color: #111;">
+                                        <div
+                                            style="font-weight: bold; font-size: 22px; font-family: 'Caveat', cursive; line-height: 1.1;">
+                                            "I am the truest repairman!" <span
+                                                style="font-family: 'Kalam', cursive; font-size: 14px; font-weight: normal; color: #555;">-
+                                                Troy Barnes</span></div>
+                                        <div
+                                            style="font-family: 'Kalam', cursive; font-size: 14px; margin-top: 6px; color: #333; line-height: 1.1;">
+                                            Me taking full credit after letting ChatGPT fix every single bug in my code.
+                                        </div>
+                                    </div>
+
+                                    <!-- Sticky 8 -->
+                                    <div
+                                        style="background: #ffbaba; padding: 10px; box-shadow: 2px 4px 6px rgba(0,0,0,0.2); color: #111;">
+                                        <div
+                                            style="font-weight: bold; font-size: 22px; font-family: 'Caveat', cursive; line-height: 1.1;">
+                                            "I typed your symptoms into the thing up here and it says..." <span
+                                                style="font-family: 'Kalam', cursive; font-size: 14px; font-weight: normal; color: #555;">-
+                                                Andy Dwyer</span></div>
+                                        <div
+                                            style="font-family: 'Kalam', cursive; font-size: 14px; margin-top: 6px; color: #333; line-height: 1.1;">
+                                            Me telling my coding AI the result I got from pasting its errors into my
+                                            debugging AI.</div>
+                                    </div>
+
+                                </div> <!-- Closes Screen Content Inner -->
+                            </div> <!-- Closes TV Screen Bezel -->
+
+                            <!-- TV Control Panel (Right Side) -->
+                            <div
+                                style="width: 120px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 40px 0; background: linear-gradient(180deg, #333, #1a1a1a); margin-left: 25px; border-radius: 20px; border: 3px solid #222; box-shadow: inset 2px 2px 8px rgba(255,255,255,0.15), inset -2px -2px 8px rgba(0,0,0,0.7), 0 5px 15px rgba(0,0,0,0.5);">
+
+                                <!-- Knobs -->
+                                <div style="display: flex; flex-direction: column; gap: 30px;">
+                                    <div
+                                        style="width: 70px; height: 70px; background: radial-gradient(circle, #555, #111); border-radius: 50%; border: 3px solid #000; box-shadow: 0 8px 15px rgba(0,0,0,0.6), inset 0 3px 6px rgba(255,255,255,0.2); position: relative; cursor: pointer;">
+                                        <div
+                                            style="position: absolute; top: 8px; left: 32px; width: 6px; height: 24px; background: #aaa; border-radius: 3px; box-shadow: inset 0 1px 2px rgba(255,255,255,0.5);">
+                                        </div>
+                                    </div>
+                                    <div
+                                        style="width: 70px; height: 70px; background: radial-gradient(circle, #555, #111); border-radius: 50%; border: 3px solid #000; box-shadow: 0 8px 15px rgba(0,0,0,0.6), inset 0 3px 6px rgba(255,255,255,0.2); position: relative; cursor: pointer; transform: rotate(45deg);">
+                                        <div
+                                            style="position: absolute; top: 8px; left: 32px; width: 6px; height: 24px; background: #aaa; border-radius: 3px; box-shadow: inset 0 1px 2px rgba(255,255,255,0.5);">
+                                        </div>
+                                    </div>
                                 </div>
-                                <!-- Haley -->
-                                <div>
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: bold; color: #2c3e50; font-family: sans-serif; font-size: 15px;"><span>Haley Dunphy (Modern Family)</span><span>15%</span></div>
-                                    <div style="width: 100%; height: 12px; background: #f0f0f0; border-radius: 6px; overflow: hidden;"><div style="width: 15%; height: 100%; background: #feca57;"></div></div>
-                                    <div style="margin-top: 5px; line-height: 1.2; font-family: 'Caveat', cursive; font-size: 22px;">"Convincing the project manager that the UI glitch is actually a trendy new feature."</div>
+
+                                <!-- Speaker Grille -->
+                                <div
+                                    style="display: flex; flex-direction: column; gap: 8px; margin-top: 50px; width: 100%; align-items: center;">
+                                    <div
+                                        style="width: 65%; height: 5px; background: #0a0a0a; border-radius: 3px; box-shadow: inset 0 2px 3px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.1);">
+                                    </div>
+                                    <div
+                                        style="width: 65%; height: 5px; background: #0a0a0a; border-radius: 3px; box-shadow: inset 0 2px 3px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.1);">
+                                    </div>
+                                    <div
+                                        style="width: 65%; height: 5px; background: #0a0a0a; border-radius: 3px; box-shadow: inset 0 2px 3px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.1);">
+                                    </div>
+                                    <div
+                                        style="width: 65%; height: 5px; background: #0a0a0a; border-radius: 3px; box-shadow: inset 0 2px 3px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.1);">
+                                    </div>
+                                    <div
+                                        style="width: 65%; height: 5px; background: #0a0a0a; border-radius: 3px; box-shadow: inset 0 2px 3px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.1);">
+                                    </div>
+                                    <div
+                                        style="width: 65%; height: 5px; background: #0a0a0a; border-radius: 3px; box-shadow: inset 0 2px 3px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.1);">
+                                    </div>
+                                    <div
+                                        style="width: 65%; height: 5px; background: #0a0a0a; border-radius: 3px; box-shadow: inset 0 2px 3px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.1);">
+                                    </div>
+                                    <div
+                                        style="width: 65%; height: 5px; background: #0a0a0a; border-radius: 3px; box-shadow: inset 0 2px 3px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.1);">
+                                    </div>
                                 </div>
-                                <!-- Jake -->
-                                <div>
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: bold; color: #2c3e50; font-family: sans-serif; font-size: 15px;"><span>Jake Peralta (B99)</span><span>10%</span></div>
-                                    <div style="width: 100%; height: 12px; background: #f0f0f0; border-radius: 6px; overflow: hidden;"><div style="width: 10%; height: 100%; background: #ff6b6b;"></div></div>
-                                    <div style="margin-top: 5px; line-height: 1.2; font-family: 'Caveat', cursive; font-size: 22px;">"Turning every boring, repetitive task into some kind of high-stakes game."</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Right Panel: Quotes (Corkboard/Sticky Notes) -->
-                        <div style="flex: 1.4; background: #d4a373; border: 10px solid #8b5a2b; border-radius: 8px; padding: 15px; position: relative; box-shadow: inset 0 0 20px rgba(0,0,0,0.4); display: grid; grid-template-columns: 1fr 1fr; gap: 15px; align-content: start;">
-                            
-                            <h2 style="grid-column: span 2; font-family: 'Permanent Marker', cursive; text-align: center; margin: 0 0 10px 0; color: #3d2b1f; transform: rotate(1deg); font-size: 26px;">QUOTES I CODE BY</h2>
 
-                            <!-- Sticky 1 -->
-                            <div style="background: #fcfc99; padding: 10px; box-shadow: 2px 4px 6px rgba(0,0,0,0.2); transform: rotate(2deg); color: #111;">
-                                <div style="font-weight: bold; font-size: 22px; font-family: 'Caveat', cursive; line-height: 1.1;">"Title of your sex tape." <span style="font-family: 'Kalam', cursive; font-size: 14px; font-weight: normal; color: #555;">- Jake Peralta</span></div>
-                                <div style="font-family: 'Kalam', cursive; font-size: 14px; margin-top: 6px; color: #333; line-height: 1.1;">Me when a teammate says, "It’s way too big to push all at once."</div>
-                            </div>
-
-                            <!-- Sticky 2 -->
-                            <div style="background: #ffb3ba; padding: 10px; box-shadow: 2px 4px 6px rgba(0,0,0,0.2); transform: rotate(-3deg); color: #111;">
-                                <div style="font-weight: bold; font-size: 22px; font-family: 'Caveat', cursive; line-height: 1.1;">"I have no idea what I'm doing, but I know I'm doing it really well." <span style="font-family: 'Kalam', cursive; font-size: 14px; font-weight: normal; color: #555;">- Andy Dwyer</span></div>
-                                <div style="font-family: 'Kalam', cursive; font-size: 14px; margin-top: 6px; color: #333; line-height: 1.1;">Me explaining my code during a senior review.</div>
-                            </div>
-                            
-                            <!-- Sticky 3 -->
-                            <div style="background: #bae1ff; padding: 10px; box-shadow: 2px 4px 6px rgba(0,0,0,0.2); transform: rotate(1deg); color: #111;">
-                                <div style="font-weight: bold; font-size: 22px; font-family: 'Caveat', cursive; line-height: 1.1;">"Cool, cool, cool, cool, no doubt, no doubt." <span style="font-family: 'Kalam', cursive; font-size: 14px; font-weight: normal; color: #555;">- Jake Peralta</span></div>
-                                <div style="font-family: 'Kalam', cursive; font-size: 14px; margin-top: 6px; color: #333; line-height: 1.1;">Fixing 1 bug and immediately getting 196 new errors.</div>
-                            </div>
-
-                            <!-- Sticky 4 -->
-                            <div style="background: #baffc9; padding: 10px; box-shadow: 2px 4px 6px rgba(0,0,0,0.2); transform: rotate(-2deg); color: #111;">
-                                <div style="font-weight: bold; font-size: 22px; font-family: 'Caveat', cursive; line-height: 1.1;">"WE WERE ON A BREAK!" <span style="font-family: 'Kalam', cursive; font-size: 14px; font-weight: normal; color: #555;">- Ross Geller</span></div>
-                                <div style="font-family: 'Kalam', cursive; font-size: 14px; margin-top: 6px; color: #333; line-height: 1.1;">Explaining to the PM why the server went offline.</div>
-                            </div>
-
-                            <!-- Sticky 5 -->
-                            <div style="background: #e8baff; padding: 10px; box-shadow: 2px 4px 6px rgba(0,0,0,0.2); transform: rotate(3deg); color: #111;">
-                                <div style="font-weight: bold; font-size: 22px; font-family: 'Caveat', cursive; line-height: 1.1;">"It sended! Please come back." <span style="font-family: 'Kalam', cursive; font-size: 14px; font-weight: normal; color: #555;">- Gloria</span></div>
-                                <div style="font-family: 'Kalam', cursive; font-size: 14px; margin-top: 6px; color: #333; line-height: 1.1;">Me right after accidentally pushing my .env file to a public repo.</div>
-                            </div>
-
-                            <!-- Sticky 6 -->
-                            <div style="background: #ffdfba; padding: 10px; box-shadow: 2px 4px 6px rgba(0,0,0,0.2); transform: rotate(-1deg); color: #111;">
-                                <div style="font-weight: bold; font-size: 22px; font-family: 'Caveat', cursive; line-height: 1.1;">"You're just gonna have to lower your expectations." <span style="font-family: 'Kalam', cursive; font-size: 14px; font-weight: normal; color: #555;">- Mike Heck</span></div>
-                                <div style="font-family: 'Kalam', cursive; font-size: 14px; margin-top: 6px; color: #333; line-height: 1.1;">Giving the project manager the initial MVP timeline.</div>
-                            </div>
-
-                            <!-- Sticky 7 -->
-                            <div style="background: #bafff3; padding: 10px; box-shadow: 2px 4px 6px rgba(0,0,0,0.2); transform: rotate(2deg); color: #111;">
-                                <div style="font-weight: bold; font-size: 22px; font-family: 'Caveat', cursive; line-height: 1.1;">"I am the truest repairman!" <span style="font-family: 'Kalam', cursive; font-size: 14px; font-weight: normal; color: #555;">- Troy Barnes</span></div>
-                                <div style="font-family: 'Kalam', cursive; font-size: 14px; margin-top: 6px; color: #333; line-height: 1.1;">Me taking full credit after letting ChatGPT fix every single bug in my code.</div>
-                            </div>
-
-                            <!-- Sticky 8 -->
-                            <div style="background: #ffbaba; padding: 10px; box-shadow: 2px 4px 6px rgba(0,0,0,0.2); transform: rotate(-2deg); color: #111;">
-                                <div style="font-weight: bold; font-size: 22px; font-family: 'Caveat', cursive; line-height: 1.1;">"I typed your symptoms into the thing up here and it says..." <span style="font-family: 'Kalam', cursive; font-size: 14px; font-weight: normal; color: #555;">- Andy Dwyer</span></div>
-                                <div style="font-family: 'Kalam', cursive; font-size: 14px; margin-top: 6px; color: #333; line-height: 1.1;">Me telling my coding AI the result I got from pasting its errors into my debugging AI.</div>
-                            </div>
-
-                            </div> <!-- Closes Screen Content Inner -->
-                        </div> <!-- Closes TV Screen Bezel -->
-
-                        <!-- TV Control Panel (Right Side) -->
-                        <div style="width: 120px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 40px 0; background: linear-gradient(180deg, #333, #1a1a1a); margin-left: 25px; border-radius: 20px; border: 3px solid #222; box-shadow: inset 2px 2px 8px rgba(255,255,255,0.15), inset -2px -2px 8px rgba(0,0,0,0.7), 0 5px 15px rgba(0,0,0,0.5);">
-                            
-                            <!-- Knobs -->
-                            <div style="display: flex; flex-direction: column; gap: 30px;">
-                                <div style="width: 70px; height: 70px; background: radial-gradient(circle, #555, #111); border-radius: 50%; border: 3px solid #000; box-shadow: 0 8px 15px rgba(0,0,0,0.6), inset 0 3px 6px rgba(255,255,255,0.2); position: relative; cursor: pointer;">
-                                    <div style="position: absolute; top: 8px; left: 32px; width: 6px; height: 24px; background: #aaa; border-radius: 3px; box-shadow: inset 0 1px 2px rgba(255,255,255,0.5);"></div>
-                                </div>
-                                <div style="width: 70px; height: 70px; background: radial-gradient(circle, #555, #111); border-radius: 50%; border: 3px solid #000; box-shadow: 0 8px 15px rgba(0,0,0,0.6), inset 0 3px 6px rgba(255,255,255,0.2); position: relative; cursor: pointer; transform: rotate(45deg);">
-                                    <div style="position: absolute; top: 8px; left: 32px; width: 6px; height: 24px; background: #aaa; border-radius: 3px; box-shadow: inset 0 1px 2px rgba(255,255,255,0.5);"></div>
+                                <!-- Power Button & Brand -->
+                                <div
+                                    style="display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: auto;">
+                                    <div
+                                        style="font-family: 'Share Tech Mono', Courier, monospace; color: #b89a68; font-size: 14px; letter-spacing: 2px; text-shadow: 0 1px 2px #000;">
+                                        SITCOM</div>
+                                    <div
+                                        style="width: 45px; height: 25px; background: #cc3333; border-radius: 12px; border: 3px solid #111; box-shadow: 0 4px 8px rgba(0,0,0,0.8), inset 0 2px 5px rgba(255,255,255,0.4); cursor: pointer;">
+                                    </div>
                                 </div>
                             </div>
-                            
-                            <!-- Speaker Grille -->
-                            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 50px; width: 100%; align-items: center;">
-                                <div style="width: 65%; height: 5px; background: #0a0a0a; border-radius: 3px; box-shadow: inset 0 2px 3px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.1);"></div>
-                                <div style="width: 65%; height: 5px; background: #0a0a0a; border-radius: 3px; box-shadow: inset 0 2px 3px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.1);"></div>
-                                <div style="width: 65%; height: 5px; background: #0a0a0a; border-radius: 3px; box-shadow: inset 0 2px 3px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.1);"></div>
-                                <div style="width: 65%; height: 5px; background: #0a0a0a; border-radius: 3px; box-shadow: inset 0 2px 3px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.1);"></div>
-                                <div style="width: 65%; height: 5px; background: #0a0a0a; border-radius: 3px; box-shadow: inset 0 2px 3px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.1);"></div>
-                                <div style="width: 65%; height: 5px; background: #0a0a0a; border-radius: 3px; box-shadow: inset 0 2px 3px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.1);"></div>
-                                <div style="width: 65%; height: 5px; background: #0a0a0a; border-radius: 3px; box-shadow: inset 0 2px 3px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.1);"></div>
-                                <div style="width: 65%; height: 5px; background: #0a0a0a; border-radius: 3px; box-shadow: inset 0 2px 3px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.1);"></div>
-                            </div>
-                            
-                            <!-- Power Button & Brand -->
-                            <div style="display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: auto;">
-                                <div style="font-family: 'Share Tech Mono', Courier, monospace; color: #b89a68; font-size: 14px; letter-spacing: 2px; text-shadow: 0 1px 2px #000;">SITCOM</div>
-                                <div style="width: 45px; height: 25px; background: #cc3333; border-radius: 12px; border: 3px solid #111; box-shadow: 0 4px 8px rgba(0,0,0,0.8), inset 0 2px 5px rgba(255,255,255,0.4); cursor: pointer;"></div>
-                            </div>
-                        </div>
-                    </div> <!-- Closes TV Outer Casing -->
-                </div> <!-- Closes Retro TV Wrapper -->
+                        </div> <!-- Closes TV Outer Casing -->
+                    </div> <!-- Closes Retro TV Wrapper -->
+                </div>
+
+                <div class="sparkle"></div>
             </div>
-
-            <div class="sparkle"></div>
         </div>
-    </div>
     </div>
 
     <!-- Victory Overlay -->
-    <div id="victory-overlay" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; align-items: center; justify-content: center; flex-direction: column; background: rgba(60, 45, 10, 0.85); backdrop-filter: blur(4px);">
+    <div id="victory-overlay"
+        style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; align-items: center; justify-content: center; flex-direction: column; background: rgba(60, 45, 10, 0.85); backdrop-filter: blur(4px);">
         <div style="font-size: 80px; margin-bottom: 20px;">🏆</div>
-        <div style="color: #fffacd; font-family: 'Permanent Marker', cursive; font-size: 48px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); margin-bottom: 10px;">VICTORY ACHIEVED</div>
-        <div style="color: #fff; font-family: 'Share Tech Mono', monospace; font-size: 20px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin-bottom: 30px;">You have proven your worth.</div>
-        <button onclick="location.reload()" style="padding: 10px 25px; font-family: 'Share Tech Mono', monospace; font-size: 18px; background: transparent; border: 2px solid #fff; color: #fff; cursor: pointer; transition: all 0.3s; box-shadow: 0 0 10px rgba(255,255,255,0.2);">RETURN TO WORLD</button>
+        <div
+            style="color: #fffacd; font-family: 'Permanent Marker', cursive; font-size: 48px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); margin-bottom: 10px;">
+            VICTORY ACHIEVED</div>
+        <div
+            style="color: #fff; font-family: 'Share Tech Mono', monospace; font-size: 20px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin-bottom: 30px;">
+            You have proven your worth.</div>
+        <button onclick="location.reload()"
+            style="padding: 10px 25px; font-family: 'Share Tech Mono', monospace; font-size: 18px; background: transparent; border: 2px solid #fff; color: #fff; cursor: pointer; transition: all 0.3s; box-shadow: 0 0 10px rgba(255,255,255,0.2);">RETURN
+            TO WORLD</button>
     </div>
 
     <!-- Game Over Overlay -->
-    <div id="game-over-overlay" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; align-items: center; justify-content: center; flex-direction: column; background: rgba(20, 10, 5, 0.7); backdrop-filter: blur(4px);">
+    <div id="game-over-overlay"
+        style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; align-items: center; justify-content: center; flex-direction: column; background: rgba(20, 10, 5, 0.7); backdrop-filter: blur(4px);">
         <div style="font-size: 80px; margin-bottom: 20px;">💀</div>
-        <div style="color: #ffcccc; font-family: 'Permanent Marker', cursive; font-size: 48px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); margin-bottom: 10px;">YOU DIED</div>
-        <div style="color: #fff; font-family: 'Share Tech Mono', monospace; font-size: 20px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin-bottom: 30px;">Try harder next time.</div>
-        <button onclick="location.reload()" style="padding: 10px 25px; font-family: 'Share Tech Mono', monospace; font-size: 18px; background: transparent; border: 2px solid #fff; color: #fff; cursor: pointer; transition: all 0.3s; box-shadow: 0 0 10px rgba(255,255,255,0.2);">RESPAWN</button>
+        <div
+            style="color: #ffcccc; font-family: 'Permanent Marker', cursive; font-size: 48px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); margin-bottom: 10px;">
+            YOU DIED</div>
+        <div
+            style="color: #fff; font-family: 'Share Tech Mono', monospace; font-size: 20px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin-bottom: 30px;">
+            Try harder next time.</div>
+        <button onclick="location.reload()"
+            style="padding: 10px 25px; font-family: 'Share Tech Mono', monospace; font-size: 18px; background: transparent; border: 2px solid #fff; color: #fff; cursor: pointer; transition: all 0.3s; box-shadow: 0 0 10px rgba(255,255,255,0.2);">RESPAWN</button>
     </div>
 
 
@@ -569,9 +747,13 @@
     </div>
 
     <!-- Resume Overlay -->
-    <div id="resume-overlay" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1100; align-items: center; justify-content: center; background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(5px);">
-        <button id="resume-close" style="position: absolute; top: 20px; right: 20px; font-size: 20px; padding: 10px 20px; cursor: pointer; background: #333; color: white; border: 2px solid white; font-family: 'Share Tech Mono', monospace; z-index: 1110;" onclick="if(typeof closeResume === 'function') closeResume(); else { document.getElementById('resume-overlay').style.display='none'; isOverlayActive=false; }">✕ CLOSE</button>
-        
+    <div id="resume-overlay"
+        style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1100; align-items: center; justify-content: center; background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(5px);">
+        <button id="resume-close"
+            style="position: absolute; top: 20px; right: 20px; font-size: 20px; padding: 10px 20px; cursor: pointer; background: #333; color: white; border: 2px solid white; font-family: 'Share Tech Mono', monospace; z-index: 1110;"
+            onclick="if(typeof closeResume === 'function') closeResume(); else { document.getElementById('resume-overlay').style.display='none'; isOverlayActive=false; }">✕
+            CLOSE</button>
+
         <div id="resume-paper" class="parchment-paper">
             <div class="resume-header">
                 <h1>Ravikanti Akshay</h1>
@@ -580,30 +762,45 @@
                     <span>📞 +91 6303439395</span>
                     <span>✉️ ravikantia@iitbhilai.ac.in</span>
                     <span>
-                        <a href="https://github.com/RavikantiAkshay" target="_blank" style="color: #2c241b; text-decoration: none; display: flex; align-items: center; gap: 4px;">
-                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                        <a href="https://github.com/RavikantiAkshay" target="_blank"
+                            style="color: #2c241b; text-decoration: none; display: flex; align-items: center; gap: 4px;">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                                <path
+                                    d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+                            </svg>
                             GitHub
                         </a>
                     </span>
                     <span>
-                        <a href="https://linkedin.com/in/ravikanti-akshay" target="_blank" style="color: #2c241b; text-decoration: none; display: flex; align-items: center; gap: 4px;">
-                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 114.127 0 2.062 2.062 0 01-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                        <a href="https://linkedin.com/in/ravikanti-akshay" target="_blank"
+                            style="color: #2c241b; text-decoration: none; display: flex; align-items: center; gap: 4px;">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                                <path
+                                    d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 114.127 0 2.062 2.062 0 01-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                            </svg>
                             LinkedIn
                         </a>
                     </span>
                     <span>
-                        <a href="https://ravikantiakshay.github.io/QuestFolio/" target="_blank" style="color: #2c241b; text-decoration: none; display: flex; align-items: center; gap: 4px;">
-                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                        <a href="https://ravikantiakshay.github.io/QuestFolio/" target="_blank"
+                            style="color: #2c241b; text-decoration: none; display: flex; align-items: center; gap: 4px;">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                                <path
+                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+                            </svg>
                             Portfolio
                         </a>
                     </span>
                 </div>
             </div>
-            
+
             <div class="resume-summary">
-                <strong>Professional Summary:</strong> Electrical Engineering undergraduate at IIT Bhilai with experience in power system protection, circuit simulation, and full-stack software development. Built AI-powered web applications, browser-based engineering simulation tools, and interactive educational platforms using the MERN stack, JavaScript, and modern engineering software.
+                <strong>Professional Summary:</strong> Electrical Engineering undergraduate at IIT Bhilai with
+                experience in power system protection, circuit simulation, and full-stack software development. Built
+                AI-powered web applications, browser-based engineering simulation tools, and interactive educational
+                platforms using the MERN stack, JavaScript, and modern engineering software.
             </div>
-            
+
             <div class="resume-body">
                 <div class="resume-col-left">
                     <div class="resume-section">
@@ -619,18 +816,19 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="resume-section">
                         <h3>Skills</h3>
                         <ul class="skills-list">
                             <li><strong>Languages:</strong> C, C++, Python, JavaScript, TypeScript, MATLAB, Verilog</li>
                             <li><strong>Web Dev:</strong> React, Node.js, Express.js, REST APIs, CSS, HTML5 Canvas</li>
                             <li><strong>Databases:</strong> MongoDB, Microsoft SQL Server</li>
-                            <li><strong>EE Skills:</strong> LTspice, Multisim, Simulink, Circuit Simulation, Schematic Design</li>
+                            <li><strong>EE Skills:</strong> LTspice, Multisim, Simulink, Circuit Simulation, Schematic
+                                Design</li>
                             <li><strong>Dev Tools:</strong> Git, GitHub, JWT, Google OAuth, Monaco Editor, VS Code</li>
                         </ul>
                     </div>
-                    
+
                     <div class="resume-section">
                         <h3>Experience</h3>
                         <div class="resume-item">
@@ -642,11 +840,13 @@
                                 <span>Summer Intern - Generator Protection</span>
                             </div>
                             <ul class="resume-bullets">
-                                <li>Investigated relay coordination and differential protection schemes for large thermal generators.</li>
-                                <li>Analyzed the implementation of stator earth fault, reverse power, and overcurrent relay trip logic mechanisms.</li>
+                                <li>Investigated relay coordination and differential protection schemes for large
+                                    thermal generators.</li>
+                                <li>Analyzed the implementation of stator earth fault, reverse power, and overcurrent
+                                    relay trip logic mechanisms.</li>
                             </ul>
                         </div>
-                        
+
                         <div class="resume-item">
                             <div class="resume-item-header">
                                 <strong>NxtWave</strong>
@@ -656,49 +856,59 @@
                                 <span>Python Dev - AI Code Review Assistant</span>
                             </div>
                             <ul class="resume-bullets">
-                                <li>Developed a Python-based intelligent code review assistant integrating the Groq Llama-3.3-70B model for elite algorithmic analysis.</li>
-                                <li>Engineered automated prompt pipelines that convert complex static analysis and syntax evaluation into highly actionable, step-by-step developer feedback.</li>
+                                <li>Developed a Python-based intelligent code review assistant integrating the Groq
+                                    Llama-3.3-70B model for elite algorithmic analysis.</li>
+                                <li>Engineered automated prompt pipelines that convert complex static analysis and
+                                    syntax evaluation into highly actionable, step-by-step developer feedback.</li>
                             </ul>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="resume-col-right">
                     <div class="resume-section">
                         <h3>Projects</h3>
-                        
+
                         <div class="resume-item">
                             <div class="resume-item-header">
                                 <strong>Bhilai EE Labs</strong>
                                 <span>Next.js, Supabase, Chart.js, KaTeX</span>
                             </div>
                             <ul class="resume-bullets">
-                                <li>Architected a comprehensive virtual laboratory platform with Supabase cloud-syncing and Next.js Server Components.</li>
-                                <li>Engineered dynamic content rendering supporting KaTeX equations, real-time Chart.js data visualization, and PDF report generation.</li>
-                                <li>Integrated deep-linked circuit simulators using a JSON-based routing framework with seamless one-click launch capabilities.</li>
+                                <li>Architected a comprehensive virtual laboratory platform with Supabase cloud-syncing
+                                    and Next.js Server Components.</li>
+                                <li>Engineered dynamic content rendering supporting KaTeX equations, real-time Chart.js
+                                    data visualization, and PDF report generation.</li>
+                                <li>Integrated deep-linked circuit simulators using a JSON-based routing framework with
+                                    seamless one-click launch capabilities.</li>
                             </ul>
                         </div>
-                        
+
                         <div class="resume-item">
                             <div class="resume-item-header">
                                 <strong>Bhilai EE Circuit Simulator</strong>
                                 <span>JavaScript (ES6), SVG, Canvas API</span>
                             </div>
                             <ul class="resume-bullets">
-                                <li>Engineered a custom Simulation Engine implementing Modified Nodal Analysis (MNA), LU decomposition, and Backward Euler integration.</li>
-                                <li>Built a zero-dependency browser circuit simulator utilizing pure ES6 modules and an interactive SVG drag-and-drop workspace.</li>
-                                <li>Created a dual-channel oscilloscope and real-time waveform chart to accurately map DC, AC phasor, and transient analysis data.</li>
+                                <li>Engineered a custom Simulation Engine implementing Modified Nodal Analysis (MNA), LU
+                                    decomposition, and Backward Euler integration.</li>
+                                <li>Built a zero-dependency browser circuit simulator utilizing pure ES6 modules and an
+                                    interactive SVG drag-and-drop workspace.</li>
+                                <li>Created a dual-channel oscilloscope and real-time waveform chart to accurately map
+                                    DC, AC phasor, and transient analysis data.</li>
                             </ul>
                         </div>
-                        
+
                         <div class="resume-item">
                             <div class="resume-item-header">
                                 <strong>Smart Code Translator</strong>
                                 <span>MERN Stack, Monaco Editor, Groq API</span>
                             </div>
                             <ul class="resume-bullets">
-                                <li>Developed a full-stack code optimization platform integrating the Groq Llama-3.3-70B model for elite algorithmic translation and analysis.</li>
-                                <li>Built a high-performance Monaco Editor workspace with draggable split panes, instant Diff Viewer, and Google OAuth SSO authentication.</li>
+                                <li>Developed a full-stack code optimization platform integrating the Groq Llama-3.3-70B
+                                    model for elite algorithmic translation and analysis.</li>
+                                <li>Built a high-performance Monaco Editor workspace with draggable split panes, instant
+                                    Diff Viewer, and Google OAuth SSO authentication.</li>
                             </ul>
                         </div>
 
@@ -708,17 +918,234 @@
                                 <span>Vanilla JS, HTML5 Canvas</span>
                             </div>
                             <ul class="resume-bullets">
-                                <li>Designed an immersive 2D top-down RPG engine featuring real-time collision detection, dynamic lighting, and a simulated 24-hour cycle.</li>
-                                <li>Implemented an interactive state management system for dialogue triggers, multi-zone map rendering, and smooth NPC pathfinding.</li>
+                                <li>Designed an immersive 2D top-down RPG engine featuring real-time collision
+                                    detection, dynamic lighting, and a simulated 24-hour cycle.</li>
+                                <li>Implemented an interactive state management system for dialogue triggers, multi-zone
+                                    map rendering, and smooth NPC pathfinding.</li>
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="stain s1"></div>
             <div class="stain s2"></div>
             <div class="fold-line"></div>
+        </div>
+    </div>
+    <!-- Workshop Shop Overlay -->
+    <div id="workshop-shop-overlay"
+        style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1200; align-items: center; justify-content: center; background: url('assets/images/environments/workshop.jpg') center/cover no-repeat; flex-direction: column;">
+        <div
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 10, 5, 0.85); backdrop-filter: blur(5px); z-index: -1;">
+        </div>
+        <button id="workshop-shop-close"
+            onclick="document.getElementById('workshop-shop-overlay').style.display = 'none'; window.isOverlayActive = false;"
+            style="position: absolute; top: 20px; right: 20px; font-size: 20px; padding: 10px 20px; cursor: pointer; background: #333; color: white; border: 2px solid white; font-family: 'Share Tech Mono', monospace; z-index: 1210;">✕
+            CLOSE ARMORY</button>
+
+        <h1
+            style="color: #f4e8d3; font-family: 'Georgia', serif; font-size: 48px; text-shadow: 2px 2px 0 #5c4322; margin-bottom: 0px; letter-spacing: 4px; text-align: center;">
+            THE ARMORY</h1>
+
+        <div class="armory-wall"
+            style="transform: scale(0.85); transform-origin: center center; display: flex; flex-direction: column; width: 90%; max-width: 1200px; margin: 0 auto; padding: 20px 40px 40px 40px; background: #e8dcc4; background-image: radial-gradient(circle at 10% 20%, rgba(139, 115, 85, 0.1) 0%, transparent 40%), radial-gradient(circle at 80% 80%, rgba(139, 115, 85, 0.15) 0%, transparent 50%), linear-gradient(to right, rgba(0, 0, 0, 0.05) 0%, transparent 5%, transparent 95%, rgba(0, 0, 0, 0.05) 100%); box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 40px rgba(139, 115, 85, 0.4), inset 0 0 10px rgba(100, 70, 40, 0.5); border: 6px solid #5c4322; border-radius: 8px;">
+
+            <!-- Shelf 1: Small Arms & Throwables -->
+            <div class="armory-shelf"
+                style="display: flex; justify-content: space-around; align-items: flex-end; border-bottom: 25px solid #5c4322; border-top: 2px solid rgba(255,255,255,0.2); box-shadow: 0 15px 15px -10px rgba(0,0,0,0.6), inset 0 5px 10px rgba(0,0,0,0.1); border-radius: 2px; margin-bottom: 30px; padding: 0 20px; height: 140px;">
+
+                <div class="armory-item group relative"
+                    style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; cursor: pointer; height: 100%;">
+                    <h4
+                        style="color: #2c241b; font-family: 'Georgia', serif; font-size: 16px; font-weight: bold; margin: 0 0 10px 0; text-shadow: 1px 1px 0 rgba(255,255,255,0.3);">
+                        Combat Knife</h4>
+                    <img src="assets/images/items/knife.png" alt="Combat Knife"
+                        style="max-height: 70px; width: auto; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); margin-bottom: 2px;">
+                    <div class="armory-tag"
+                        style="background: #8b7355; color: #f4e8d3; padding: 0 12px; font-family: 'Share Tech Mono', monospace; font-weight: bold; font-size: 14px; border-left: 2px solid #4a3418; border-right: 2px solid #4a3418; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); position: absolute; bottom: -25px; height: 25px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; z-index: 5;">
+                        10 🪙</div>
+                    <div class="armory-tooltip"
+                        style="position: absolute; top: -10px; left: 110%; background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                        <p
+                            style="color: #e8dcc4; font-family: 'Share Tech Mono', monospace; font-size: 13px; margin: 0 0 15px 0;">
+                            DMG: 15 | MELEE</p>
+                        <button class="buy-btn"
+                            style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #5c4322; border: 1px solid #8b7355; color: #f4e8d3; cursor: pointer; border-radius: 2px; font-weight: bold;">BUY</button>
+                    </div>
+                </div>
+
+                <div class="armory-item group relative"
+                    style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; cursor: pointer; height: 100%;">
+                    <h4
+                        style="color: #2c241b; font-family: 'Georgia', serif; font-size: 16px; font-weight: bold; margin: 0 0 10px 0; text-shadow: 1px 1px 0 rgba(255,255,255,0.3);">
+                        Pistol</h4>
+                    <img src="assets/images/items/pistol.png" alt="Pistol"
+                        style="max-height: 70px; width: auto; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); margin-bottom: 2px;">
+                    <div class="armory-tag"
+                        style="background: #8b7355; color: #f4e8d3; padding: 0 12px; font-family: 'Share Tech Mono', monospace; font-weight: bold; font-size: 14px; border-left: 2px solid #4a3418; border-right: 2px solid #4a3418; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); position: absolute; bottom: -25px; height: 25px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; z-index: 5;">
+                        50 🪙</div>
+                    <div class="armory-tooltip"
+                        style="position: absolute; top: -10px; left: 110%; background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                        <p
+                            style="color: #e8dcc4; font-family: 'Share Tech Mono', monospace; font-size: 13px; margin: 0 0 15px 0;">
+                            DMG: 30 | LIGHT</p>
+                        <button class="buy-btn"
+                            style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #5c4322; border: 1px solid #8b7355; color: #f4e8d3; cursor: pointer; border-radius: 2px; font-weight: bold;">BUY</button>
+                    </div>
+                </div>
+
+                <div class="armory-item group relative"
+                    style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; cursor: pointer; height: 100%;">
+                    <h4
+                        style="color: #2c241b; font-family: 'Georgia', serif; font-size: 16px; font-weight: bold; margin: 0 0 10px 0; text-shadow: 1px 1px 0 rgba(255,255,255,0.3);">
+                        Grenade</h4>
+                    <img src="assets/images/items/grenade.png" alt="Grenade"
+                        style="max-height: 70px; width: auto; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); margin-bottom: 2px;">
+                    <div class="armory-tag"
+                        style="background: #8b7355; color: #f4e8d3; padding: 0 12px; font-family: 'Share Tech Mono', monospace; font-weight: bold; font-size: 14px; border-left: 2px solid #4a3418; border-right: 2px solid #4a3418; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); position: absolute; bottom: -25px; height: 25px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; z-index: 5;">
+                        20 🪙</div>
+                    <div class="armory-tooltip"
+                        style="position: absolute; top: -10px; right: 110%; background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                        <p
+                            style="color: #e8dcc4; font-family: 'Share Tech Mono', monospace; font-size: 13px; margin: 0 0 15px 0;">
+                            DMG: 80 | AREA</p>
+                        <button class="buy-btn"
+                            style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #5c4322; border: 1px solid #8b7355; color: #f4e8d3; cursor: pointer; border-radius: 2px; font-weight: bold;">BUY</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shelf 2: Heavy Weapons -->
+            <div class="armory-shelf"
+                style="display: flex; justify-content: space-around; align-items: flex-end; border-bottom: 25px solid #5c4322; border-top: 2px solid rgba(255,255,255,0.2); box-shadow: 0 15px 15px -10px rgba(0,0,0,0.6), inset 0 5px 10px rgba(0,0,0,0.1); border-radius: 2px; margin-bottom: 30px; padding: 0 20px; height: 160px;">
+
+                <div class="armory-item group relative"
+                    style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; cursor: pointer; height: 100%;">
+                    <h4
+                        style="color: #2c241b; font-family: 'Georgia', serif; font-size: 16px; font-weight: bold; margin: 0 0 10px 0; text-shadow: 1px 1px 0 rgba(255,255,255,0.3);">
+                        Assault Rifle</h4>
+                    <img src="assets/images/items/ak47.png" alt="Assault Rifle"
+                        style="max-height: 95px; width: auto; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); margin-bottom: 2px;">
+                    <div class="armory-tag"
+                        style="background: #8b7355; color: #f4e8d3; padding: 0 12px; font-family: 'Share Tech Mono', monospace; font-weight: bold; font-size: 14px; border-left: 2px solid #4a3418; border-right: 2px solid #4a3418; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); position: absolute; bottom: -25px; height: 25px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; z-index: 5;">
+                        150 🪙</div>
+                    <div class="armory-tooltip"
+                        style="position: absolute; top: -10px; left: 110%; background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                        <p
+                            style="color: #e8dcc4; font-family: 'Share Tech Mono', monospace; font-size: 13px; margin: 0 0 15px 0;">
+                            DMG: 45 | AUTO</p>
+                        <button class="buy-btn"
+                            style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #5c4322; border: 1px solid #8b7355; color: #f4e8d3; cursor: pointer; border-radius: 2px; font-weight: bold;">BUY</button>
+                    </div>
+                </div>
+
+                <div class="armory-item group relative"
+                    style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; cursor: pointer; height: 100%;">
+                    <h4
+                        style="color: #2c241b; font-family: 'Georgia', serif; font-size: 16px; font-weight: bold; margin: 0 0 10px 0; text-shadow: 1px 1px 0 rgba(255,255,255,0.3);">
+                        Sniper Rifle</h4>
+                    <img src="assets/images/items/sniper.png" alt="Sniper Rifle"
+                        style="max-height: 95px; width: auto; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); margin-bottom: 2px;">
+                    <div class="armory-tag"
+                        style="background: #8b7355; color: #f4e8d3; padding: 0 12px; font-family: 'Share Tech Mono', monospace; font-weight: bold; font-size: 14px; border-left: 2px solid #4a3418; border-right: 2px solid #4a3418; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); position: absolute; bottom: -25px; height: 25px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; z-index: 5;">
+                        500 🪙</div>
+                    <div class="armory-tooltip"
+                        style="position: absolute; top: -10px; left: 110%; background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                        <p
+                            style="color: #e8dcc4; font-family: 'Share Tech Mono', monospace; font-size: 13px; margin: 0 0 15px 0;">
+                            DMG: 120 | LONG RANGE</p>
+                        <button class="buy-btn"
+                            style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #5c4322; border: 1px solid #8b7355; color: #f4e8d3; cursor: pointer; border-radius: 2px; font-weight: bold;">BUY</button>
+                    </div>
+                </div>
+
+                <div class="armory-item group relative"
+                    style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; cursor: pointer; height: 100%;">
+                    <h4
+                        style="color: #2c241b; font-family: 'Georgia', serif; font-size: 16px; font-weight: bold; margin: 0 0 10px 0; text-shadow: 1px 1px 0 rgba(255,255,255,0.3);">
+                        RPG Launcher</h4>
+                    <img src="assets/images/items/launcher.png" alt="RPG Launcher"
+                        style="max-height: 95px; width: auto; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); margin-bottom: 2px;">
+                    <div class="armory-tag"
+                        style="background: #8b7355; color: #f4e8d3; padding: 0 12px; font-family: 'Share Tech Mono', monospace; font-weight: bold; font-size: 14px; border-left: 2px solid #4a3418; border-right: 2px solid #4a3418; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); position: absolute; bottom: -25px; height: 25px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; z-index: 5;">
+                        1000 🪙</div>
+                    <div class="armory-tooltip"
+                        style="position: absolute; top: -10px; right: 110%; background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                        <p
+                            style="color: #e8dcc4; font-family: 'Share Tech Mono', monospace; font-size: 13px; margin: 0 0 15px 0;">
+                            DMG: 300 | EXPLOSIVE</p>
+                        <button class="buy-btn"
+                            style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #5c4322; border: 1px solid #8b7355; color: #f4e8d3; cursor: pointer; border-radius: 2px; font-weight: bold;">BUY</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shelf 3: Gear & Support -->
+            <div class="armory-shelf"
+                style="display: flex; justify-content: space-around; align-items: flex-end; border-bottom: 25px solid #5c4322; border-top: 2px solid rgba(255,255,255,0.2); box-shadow: 0 15px 15px -10px rgba(0,0,0,0.6), inset 0 5px 10px rgba(0,0,0,0.1); border-radius: 2px; margin-bottom: 20px; padding: 0 20px; height: 140px;">
+
+                <div class="armory-item group relative"
+                    style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; cursor: pointer; height: 100%;">
+                    <h4
+                        style="color: #2c241b; font-family: 'Georgia', serif; font-size: 16px; font-weight: bold; margin: 0 0 10px 0; text-shadow: 1px 1px 0 rgba(255,255,255,0.3);">
+                        Tactical Helmet</h4>
+                    <img src="assets/images/items/helmet.png" alt="Tactical Helmet"
+                        style="max-height: 70px; width: auto; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); margin-bottom: 2px;">
+                    <div class="armory-tag"
+                        style="background: #8b7355; color: #f4e8d3; padding: 0 12px; font-family: 'Share Tech Mono', monospace; font-weight: bold; font-size: 14px; border-left: 2px solid #4a3418; border-right: 2px solid #4a3418; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); position: absolute; bottom: -25px; height: 25px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; z-index: 5;">
+                        80 🪙</div>
+                    <div class="armory-tooltip"
+                        style="position: absolute; top: -10px; left: 110%; background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                        <p
+                            style="color: #e8dcc4; font-family: 'Share Tech Mono', monospace; font-size: 13px; margin: 0 0 15px 0;">
+                            DEF: +20 | HEADSHOT RES</p>
+                        <button class="buy-btn"
+                            style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #5c4322; border: 1px solid #8b7355; color: #f4e8d3; cursor: pointer; border-radius: 2px; font-weight: bold;">BUY</button>
+                    </div>
+                </div>
+
+                <div class="armory-item group relative"
+                    style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; cursor: pointer; height: 100%;">
+                    <h4
+                        style="color: #2c241b; font-family: 'Georgia', serif; font-size: 16px; font-weight: bold; margin: 0 0 10px 0; text-shadow: 1px 1px 0 rgba(255,255,255,0.3);">
+                        Kevlar Vest</h4>
+                    <img src="assets/images/items/armor.png" alt="Kevlar Vest"
+                        style="max-height: 70px; width: auto; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); margin-bottom: 2px;">
+                    <div class="armory-tag"
+                        style="background: #8b7355; color: #f4e8d3; padding: 0 12px; font-family: 'Share Tech Mono', monospace; font-weight: bold; font-size: 14px; border-left: 2px solid #4a3418; border-right: 2px solid #4a3418; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); position: absolute; bottom: -25px; height: 25px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; z-index: 5;">
+                        100 🪙</div>
+                    <div class="armory-tooltip"
+                        style="position: absolute; top: -10px; left: 110%; background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                        <p
+                            style="color: #e8dcc4; font-family: 'Share Tech Mono', monospace; font-size: 13px; margin: 0 0 15px 0;">
+                            DEF: +50 | BODY ARMOR</p>
+                        <button class="buy-btn"
+                            style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #5c4322; border: 1px solid #8b7355; color: #f4e8d3; cursor: pointer; border-radius: 2px; font-weight: bold;">BUY</button>
+                    </div>
+                </div>
+
+                <div class="armory-item group relative"
+                    style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; cursor: pointer; height: 100%;">
+                    <h4
+                        style="color: #2c241b; font-family: 'Georgia', serif; font-size: 16px; font-weight: bold; margin: 0 0 10px 0; text-shadow: 1px 1px 0 rgba(255,255,255,0.3);">
+                        Medkit</h4>
+                    <img src="assets/images/items/medkit.png" alt="Medkit"
+                        style="max-height: 70px; width: auto; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); margin-bottom: 2px;">
+                    <div class="armory-tag"
+                        style="background: #8b7355; color: #f4e8d3; padding: 0 12px; font-family: 'Share Tech Mono', monospace; font-weight: bold; font-size: 14px; border-left: 2px solid #4a3418; border-right: 2px solid #4a3418; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); position: absolute; bottom: -25px; height: 25px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; z-index: 5;">
+                        30 🪙</div>
+                    <div class="armory-tooltip"
+                        style="position: absolute; top: -10px; right: 110%; background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                        <p
+                            style="color: #e8dcc4; font-family: 'Share Tech Mono', monospace; font-size: 13px; margin: 0 0 15px 0;">
+                            HP: +100 | CONSUMABLE</p>
+                        <button class="buy-btn"
+                            style="width: 100%; padding: 8px; font-family: 'Share Tech Mono', monospace; background: #5c4322; border: 1px solid #8b7355; color: #f4e8d3; cursor: pointer; border-radius: 2px; font-weight: bold;">BUY</button>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 

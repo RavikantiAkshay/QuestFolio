@@ -1078,6 +1078,20 @@ window.addEventListener("keydown", (e) => {
         }
     }
 
+    // Toggle Workshop Shop UI
+    if (key === 'u') {
+        const shopOverlay = document.getElementById('workshop-shop-overlay');
+        if (shopOverlay) {
+            if (shopOverlay.style.display === 'flex') {
+                shopOverlay.style.display = 'none';
+                isOverlayActive = false;
+            } else {
+                shopOverlay.style.display = 'flex';
+                isOverlayActive = true;
+            }
+        }
+    }
+
     // Handle Interaction (E key)
     if (key === 'e') {
         // Map stand logic removed

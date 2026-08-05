@@ -2164,3 +2164,45 @@ canvas {
 .skills-list li {
     margin-bottom: 2px;
 }
+
+/* --- Workshop Shop UI Styles --- */
+.shop-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(255, 184, 108, 0.2) !important;
+    border-color: #ffb86c !important;
+}
+
+.buy-btn:hover {
+    background: #50fa7b !important;
+    color: #282a36 !important;
+    box-shadow: 0 0 15px rgba(80, 250, 123, 0.5);
+}
+
+.armory-item {
+    z-index: 10;
+}
+
+.armory-item:hover {
+    z-index: 60;
+}
+
+.armory-item img {
+    transition: transform 0.2s;
+}
+
+.armory-item:hover img {
+    transform: translateY(-10px);
+}
+
+.armory-item:hover .armory-tooltip {
+    display: block !important;
+}
+
+.armory-tag {
+    transition: background 0.2s, color 0.2s;
+}
+
+.armory-item:hover .armory-tag {
+    background: #ffb86c !important;
+    color: #111 !important;
+}
