@@ -1287,6 +1287,9 @@ window.addEventListener("keydown", (e) => {
                 isOverlayActive = true;
 
                 const stranger = npcs.find(n => n.isStaticNPC) || player;
+                if (stranger !== player) {
+                    stranger.hasInteracted = true;
+                }
 
                 speechBubbleSequence = [
                     { entity: stranger, text: "Hello traveler, I think you are here to know about Akshay." },
@@ -1658,6 +1661,8 @@ function loadZone(zoneName, startX, startY) {
                 frameY: 1,
                 isMoving: false,
                 isStaticNPC: true, // Mark it so we don't wander
+                isInvincible: true,
+                hasInteracted: false,
                 image: npcImages[0] || player.image // default image
             });
         }, 150);
@@ -2694,7 +2699,7 @@ function draw() {
 
     // Helper to draw health bars
     function drawHealthBar(entity, isPlayer = false) {
-        if (entity.hp === undefined || entity.hp <= 0) return;
+        if (entity.hp === undefined || entity.hp <= 0 || entity.isInvincible) return;
 
         // For NPCs, only show if damaged or player is very close (within 75 pixels)
         if (!isPlayer) {
@@ -2719,9 +2724,22 @@ function draw() {
         ctx.fillRect(bx, by, barWidth * hpPercent, barHeight);
     }
 
-    // Draw Health Bars
+    // Draw Health Bars & Indicators
     drawHealthBar(player, true);
-    npcs.forEach(npc => drawHealthBar(npc, false));
+    npcs.forEach(npc => {
+        drawHealthBar(npc, false);
+        if (npc.isStaticNPC && !npc.hasInteracted) {
+            const exX = npc.x + npc.size / 2;
+            const exY = npc.y - 12 - (Math.sin(Date.now() / 250) * 3);
+            ctx.fillStyle = "#ffde00";
+            ctx.font = "bold 20px 'Press Start 2P', monospace";
+            ctx.textAlign = "center";
+            ctx.strokeStyle = "black";
+            ctx.lineWidth = 3;
+            ctx.strokeText("!", exX, exY);
+            ctx.fillText("!", exX, exY);
+        }
+    });
 
     // Draw Weather Particles
     particles.forEach(p => {
@@ -3471,7 +3489,7 @@ canvas.addEventListener('mousedown', (e) => {
 
             // Check if NPCs got hit
             npcs.forEach(npc => {
-                if (npc.hp > 0) {
+                if (npc.hp > 0 && !npc.isInvincible) {
                     let npcBox = { x: npc.x, y: npc.y, w: npc.size, h: npc.size };
                     if (rectIntersect(attackBox, npcBox)) {
                         npc.hp -= player.attack;
