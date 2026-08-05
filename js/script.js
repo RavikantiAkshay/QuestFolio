@@ -312,6 +312,7 @@ if (diaryHotspot) {
     diaryHotspot.addEventListener('click', (e) => {
         // Prevent click from bubbling up and doing weird things
         e.stopPropagation();
+        if (window.giveSecretReward) window.giveSecretReward('diary', 15);
         openDiary();
     });
 }
@@ -323,6 +324,8 @@ if (pcHotspot) {
         const pcContainer = document.getElementById('sitcom-pc-container');
         const interiorButtons = document.querySelector('.interior-buttons');
         const interiorInteractiveLayer = document.querySelector('.interior-interactive-layer');
+
+        if (window.giveSecretReward) window.giveSecretReward('tv', 15);
 
         pcContainer.style.display = 'flex';
         if (interiorButtons) interiorButtons.style.display = 'none';
@@ -1083,6 +1086,7 @@ window.addEventListener("keydown", (e) => {
             isExploringInterior = false;
 
             if (activeInteractable.id === 'home') {
+                if (window.giveSecretReward) window.giveSecretReward(activeInteractable.id, 5);
                 if (interiorBg) {
                     interiorBg.style.backgroundImage = "url('assets/images/environments/home.png')";
                     interiorBg.style.filter = "none"; // clear image during dialogue
@@ -1129,6 +1133,7 @@ window.addEventListener("keydown", (e) => {
                 if (dialogueBackdrop) dialogueBackdrop.style.display = 'none';
 
             } else if (activeInteractable.id === 'lab') {
+                if (window.giveSecretReward) window.giveSecretReward(activeInteractable.id, 5);
                 if (interiorBg) {
                     interiorBg.style.backgroundImage = "url('assets/images/environments/lab.jpg')";
                     interiorBg.style.filter = "none";
@@ -1164,6 +1169,7 @@ window.addEventListener("keydown", (e) => {
                 if (dialogueBackdrop) dialogueBackdrop.style.display = 'none';
 
             } else if (activeInteractable.id === 'workshop') {
+                if (window.giveSecretReward) window.giveSecretReward(activeInteractable.id, 5);
                 if (interiorBg) {
                     interiorBg.style.backgroundImage = "url('assets/images/environments/workshop.jpg')";
                     interiorBg.style.filter = "none";
@@ -1198,6 +1204,7 @@ window.addEventListener("keydown", (e) => {
 
                 if (dialogueBackdrop) dialogueBackdrop.style.display = 'none';
             } else if (activeInteractable.id === 'school') {
+                if (window.giveSecretReward) window.giveSecretReward(activeInteractable.id, 5);
                 if (interiorBg) {
                     interiorBg.style.backgroundImage = "url('assets/images/environments/school.png')";
                     interiorBg.style.backgroundColor = "transparent";
@@ -1235,6 +1242,7 @@ window.addEventListener("keydown", (e) => {
                 if (dialogueBackdrop) dialogueBackdrop.style.display = 'none';
 
             } else if (activeInteractable.id === 'library') {
+                if (window.giveSecretReward) window.giveSecretReward(activeInteractable.id, 5);
                 if (interiorBg) {
                     interiorBg.style.backgroundImage = "url('assets/images/environments/library.png')";
                     interiorBg.style.backgroundColor = "transparent";
@@ -1272,6 +1280,7 @@ window.addEventListener("keydown", (e) => {
                 if (dialogueBackdrop) dialogueBackdrop.style.display = 'none';
 
             } else if (activeInteractable.id === 'post') {
+                if (window.giveSecretReward) window.giveSecretReward(activeInteractable.id, 5);
                 if (interiorBg) {
                     interiorBg.style.backgroundImage = "url('assets/images/environments/post.png')";
                     interiorBg.style.backgroundColor = "transparent";
@@ -3980,6 +3989,14 @@ window.awardBounty = function(type, amount, element) {
         if (span) span.innerText = 'CLAIMED';
     } else {
         alert("This project doesn't have a link available right now.");
+    }
+};
+
+window.secretRewards = {};
+window.giveSecretReward = function(key, amount) {
+    if (!window.secretRewards[key]) {
+        window.secretRewards[key] = true;
+        window.addCoins(amount);
     }
 };
 
