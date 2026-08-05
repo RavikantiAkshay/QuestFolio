@@ -176,16 +176,16 @@
                                     BOUNTIES</h2>
                                 <ul class="terminal-list"
                                     style="font-size: 14px; color:#baffb3; list-style-type:none; padding-left:16px; margin:0;">
-                                    <li class="bounty-item" onclick="window.awardBounty('live', 10, this)" style="display:flex; justify-content:space-between; padding-right:16px; cursor: pointer;">
+                                    <li class="bounty-item" data-bounty-type="visit-live" data-amount="10" onclick="window.awardBounty('visit-live', 10, this)" style="display:flex; justify-content:space-between; padding-right:16px; cursor: pointer;">
                                         <span>Access Application</span><span style="color:#ffb86c;">+10 🪙</span>
                                     </li>
-                                    <li class="bounty-item" onclick="window.awardBounty('github', 10, this)" style="display:flex; justify-content:space-between; padding-right:16px; cursor: pointer;">
+                                    <li class="bounty-item" data-bounty-type="visit-github" data-amount="10" onclick="window.awardBounty('visit-github', 10, this)" style="display:flex; justify-content:space-between; padding-right:16px; cursor: pointer;">
                                         <span>Review Source Code</span><span style="color:#ffb86c;">+10 🪙</span>
                                     </li>
-                                    <li class="bounty-item" onclick="window.awardBounty('create-account', 30, this)" style="display:flex; justify-content:space-between; padding-right:16px; cursor: pointer;">
+                                    <li class="bounty-item" data-bounty-type="create-account" data-amount="30" onclick="window.awardBounty('create-account', 30, this)" style="display:flex; justify-content:space-between; padding-right:16px; cursor: pointer;">
                                         <span>Create an Account</span><span style="color:#ffb86c;">+30 🪙</span>
                                     </li>
-                                    <li class="bounty-item" onclick="window.awardBounty('github', 30, this)" style="display:flex; justify-content:space-between; padding-right:16px; cursor: pointer;">
+                                    <li class="bounty-item" data-bounty-type="star-github" data-amount="30" onclick="window.awardBounty('star-github', 30, this)" style="display:flex; justify-content:space-between; padding-right:16px; cursor: pointer;">
                                         <span>Star Repository</span><span style="color:#ffb86c;">+30 🪙</span>
                                     </li>
                                 </ul>

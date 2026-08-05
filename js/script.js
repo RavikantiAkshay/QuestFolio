@@ -171,6 +171,7 @@ npcImageSrcs.forEach(src => {
 });
 
 window.playerCoins = 0;
+window.claimedBounties = {};
 
 const player = {
     x: 575,
@@ -715,6 +716,29 @@ function updateLabComputer() {
             pPrev.innerHTML = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#0a0a0a; color:#555; border-radius:4px;">NO PREVIEW AVAILABLE</div>`;
         }
     }
+
+    // Refresh Bounty UI
+    const bountyItems = document.querySelectorAll('.bounty-item');
+    bountyItems.forEach(item => {
+        const bType = item.getAttribute('data-bounty-type');
+        const originalAmount = item.getAttribute('data-amount');
+        const bKey = p.title + "_" + bType;
+        const span = item.querySelector('span:last-child');
+        
+        if (window.claimedBounties && window.claimedBounties[bKey]) {
+            item.dataset.claimed = 'true';
+            item.style.opacity = '0.5';
+            item.style.textDecoration = 'line-through';
+            item.style.cursor = 'default';
+            if (span) span.innerText = 'CLAIMED';
+        } else {
+            item.dataset.claimed = 'false';
+            item.style.opacity = '1';
+            item.style.textDecoration = 'none';
+            item.style.cursor = 'pointer';
+            if (span && originalAmount) span.innerText = `+${originalAmount} 🪙`;
+        }
+    });
 }
 
 const prevBtn = document.getElementById('prev-project-btn');
@@ -3926,22 +3950,28 @@ window.addCoins = function(amount) {
 window.awardBounty = function(type, amount, element) {
     if (element.dataset.claimed === 'true') return;
     
+    const titleElement = document.getElementById('project-title');
+    const pTitle = titleElement ? titleElement.innerText : 'Unknown';
+    const bKey = pTitle + "_" + type;
+    
+    if (window.claimedBounties[bKey]) return;
+    
     // Get the active project link based on type
-    const linkId = (type === 'github' || type === 'star') ? 'project-github' : 'project-live';
+    const linkId = (type.includes('github')) ? 'project-github' : 'project-live';
     const linkElement = document.getElementById(linkId);
     
     if (linkElement && linkElement.href && linkElement.href !== '#' && !linkElement.href.endsWith('#')) {
         let finalUrl = linkElement.href;
         
         // Custom logic for Bhilaee Labs account creation
-        const titleElement = document.getElementById('project-title');
-        if (type === 'create-account' && titleElement && titleElement.innerText.toUpperCase() === 'BHILAEE LABS') {
+        if (type === 'create-account' && pTitle.toUpperCase() === 'BHILAEE LABS') {
             finalUrl = finalUrl.replace(/\/$/, '') + '/login';
         }
         
         window.open(finalUrl, '_blank');
         window.addCoins(amount);
         
+        window.claimedBounties[bKey] = true;
         element.dataset.claimed = 'true';
         element.style.opacity = '0.5';
         element.style.textDecoration = 'line-through';
