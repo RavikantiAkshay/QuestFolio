@@ -170,6 +170,8 @@ npcImageSrcs.forEach(src => {
     npcImages.push(img);
 });
 
+window.playerCoins = 0;
+
 const player = {
     x: 575,
     y: 94,
@@ -1869,6 +1871,45 @@ function update() {
     // Update hurt timer
     if (player.hurtTimer > 0) player.hurtTimer--;
 
+    // --- DROPS PHYSICS & AUTO-PICKUP ---
+    if (window.gameDrops) {
+        window.gameDrops.forEach(drop => {
+            if (drop.collected) return;
+            
+            // Physics
+            drop.x += drop.vx;
+            drop.y += drop.vy;
+            drop.vy += 0.3; // Gravity
+            
+            drop.life++;
+            
+            // Floor bounce
+            if (drop.vy > 0 && drop.life > 15 && drop.vy < 2) {
+                drop.vy = 0;
+                drop.vx = 0;
+            } else if (drop.vy > 0 && drop.life > 15) {
+                drop.vy *= -0.5; // Bounce
+            }
+            
+            // Auto pickup after a short delay
+            if (drop.life > 40) {
+                let dx = (player.x + player.size / 2) - drop.x;
+                let dy = (player.y + player.size / 2) - drop.y;
+                let dist = Math.hypot(dx, dy);
+                
+                if (dist < 20) {
+                    drop.collected = true;
+                    if (window.addCoins) window.addCoins(drop.amount);
+                } else {
+                    // Fly towards player
+                    drop.x += (dx / dist) * 12;
+                    drop.y += (dy / dist) * 12;
+                }
+            }
+        });
+        window.gameDrops = window.gameDrops.filter(d => !d.collected);
+    }
+
     // --- WEATHER PARTICLES ---
     globalTime++;
     if (seasonMode === 2 && Math.random() < 0.2) { // Autumn Leaves
@@ -2773,6 +2814,16 @@ function draw() {
         }
     });
 
+    // Draw Drops
+    if (window.gameDrops) {
+        window.gameDrops.forEach(drop => {
+            ctx.font = "20px sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("🪙", drop.x, drop.y);
+        });
+    }
+
     // Draw Interaction Prompt
     if (activeInteractable && !isOverlayActive) {
         const pulse = Math.abs(Math.sin(Date.now() / 200)) * 5;
@@ -3496,6 +3547,15 @@ canvas.addEventListener('mousedown', (e) => {
                         if (npc.hp <= 0) {
                             npc.hp = 0;
                             npc.deathTimer = 30; // 30 frames for death animation
+                            if (!window.gameDrops) window.gameDrops = [];
+                            window.gameDrops.push({
+                                x: npc.x + npc.size / 2,
+                                y: npc.y + npc.size / 2,
+                                vx: (Math.random() - 0.5) * 6,
+                                vy: -5,
+                                life: 0,
+                                amount: 1
+                            });
                         }
                     }
                 }
@@ -3850,4 +3910,38 @@ function initDiary() {
         }
     }, 50);
 }
+
+// --- COIN SYSTEM ---
+window.addCoins = function(amount) {
+    window.playerCoins += amount;
+    const counter = document.getElementById('coin-counter');
+    if (counter) {
+        counter.innerText = window.playerCoins;
+        counter.style.transition = 'transform 0.1s';
+        counter.style.transform = 'scale(1.5)';
+        setTimeout(() => counter.style.transform = 'scale(1)', 150);
+    }
+};
+
+window.awardBounty = function(type, amount, element) {
+    if (element.dataset.claimed === 'true') return;
+    
+    // Get the active project link based on type
+    const linkId = type === 'github' ? 'project-github' : 'project-live';
+    const linkElement = document.getElementById(linkId);
+    
+    if (linkElement && linkElement.href && linkElement.href !== '#' && !linkElement.href.endsWith('#')) {
+        window.open(linkElement.href, '_blank');
+        window.addCoins(amount);
+        
+        element.dataset.claimed = 'true';
+        element.style.opacity = '0.5';
+        element.style.textDecoration = 'line-through';
+        element.style.cursor = 'default';
+        const span = element.querySelector('span:last-child');
+        if (span) span.innerText = 'CLAIMED';
+    } else {
+        alert("This project doesn't have a link available right now.");
+    }
+};
 
