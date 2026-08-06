@@ -235,6 +235,11 @@ window.buyHelmet = function() {
 };
 
 window.buyAK47 = function() {
+    if (player.hasAK47) {
+        alert("You already own this weapon!");
+        return;
+    }
+    
     if (window.playerCoins >= 100) {
         window.playerCoins -= 100;
         const counter = document.getElementById('coin-counter');
@@ -2513,6 +2518,16 @@ function update() {
                     if (npc.hp <= 0) {
                         npc.hp = 0;
                         npc.deathTimer = 30; // 30 frames for death animation
+                        if (!window.gameDrops) window.gameDrops = [];
+                        window.gameDrops.push({
+                            x: npc.x + npc.size / 2,
+                            y: npc.y + npc.size / 2,
+                            vx: (Math.random() - 0.5) * 6,
+                            vy: -4 - Math.random() * 2,
+                            life: 0,
+                            amount: 1, // 1 coin
+                            collected: false
+                        });
                     }
                     // pushback
                     npc.x += Math.sign(proj.vx) * 15;
