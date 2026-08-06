@@ -2201,3 +2201,30 @@ canvas {
     background: #ffb86c !important;
     color: #111 !important;
 }
+/* Armory Hotspot */
+.armory-hotspot {
+    position: absolute;
+    left: 110.86%;
+    top: 56.33%;
+    width: 6.57%;
+    height: 4.7%;
+    cursor: pointer;
+    pointer-events: auto;
+    background: rgba(255, 69, 0, 0.15);
+    animation: armory-pulse 0.8s infinite alternate;
+    z-index: 10;
+    transition: background 0.3s ease;
+}
+
+.armory-hotspot:hover {
+    background: rgba(255, 69, 0, 0.65);
+}
+
+@keyframes armory-pulse {
+    0% {
+        background: rgba(255, 69, 0, 0.15);
+    }
+    100% {
+        background: rgba(255, 69, 0, 0.4);
+    }
+}

@@ -44,6 +44,7 @@
         <div class="interior-interactive-layer">
             <div id="diary-hotspot" class="diary-hotspot" style="display: none;" title="Read Travel Diary"></div>
             <div id="pc-hotspot" class="pc-hotspot" style="display: none;" title="Access Sitcom OS"></div>
+            <div id="armory-hotspot" class="armory-hotspot" style="display: none;" title="Access Armory"></div>
         </div>
         <div class="interior-buttons">
             <button class="interior-btn" id="interior-explore"><span class="x">🔍</span> Explore Home</button>
@@ -940,7 +941,7 @@
             style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 10, 5, 0.85); backdrop-filter: blur(5px); z-index: -1;">
         </div>
         <button id="workshop-shop-close"
-            onclick="document.getElementById('workshop-shop-overlay').style.display = 'none'; isOverlayActive = false;"
+            onclick="document.getElementById('workshop-shop-overlay').style.display = 'none'; if(document.getElementById('interior-overlay').style.display === 'none') { isOverlayActive = false; }"
             style="position: absolute; top: 20px; right: 20px; font-size: 20px; padding: 10px 20px; cursor: pointer; background: #333; color: white; border: 2px solid white; font-family: 'Share Tech Mono', monospace; z-index: 1210;">✕
             CLOSE</button>
 
@@ -1026,7 +1027,7 @@
                         style="max-height: 95px; width: auto; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); margin-bottom: 2px;">
                     <div class="armory-tag"
                         style="background: #8b7355; color: #f4e8d3; padding: 0 12px; font-family: 'Share Tech Mono', monospace; font-weight: bold; font-size: 14px; border-left: 2px solid #4a3418; border-right: 2px solid #4a3418; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); position: absolute; bottom: -25px; height: 25px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; z-index: 5; white-space: nowrap;">
-                        400 🪙 <span style="font-size: 10px; color: #ffd700; margin-left: 6px;">(AK discount)</span></div>
+                        10 🪙 <span style="font-size: 10px; color: #ffd700; margin-left: 6px;">(AK discount)</span></div>
                     <div class="armory-tooltip"
                         style="position: absolute; top: -10px; left: calc(50% + 70px); background: #2c241b; border: 2px solid #8b7355; padding: 15px; border-radius: 4px; width: 200px; display: none; z-index: 50; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
                         <p

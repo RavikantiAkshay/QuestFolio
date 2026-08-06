@@ -235,13 +235,21 @@ window.buyHelmet = function() {
 };
 
 window.buyAK47 = function() {
-    player.hasAK47 = true;
-    const btn = document.getElementById('buy-ak47-btn');
-    if (btn) {
-        btn.innerText = "OWNED";
-        btn.style.background = "#2c241b";
-        btn.style.color = "#8b7355";
-        btn.disabled = true;
+    if (window.playerCoins >= 10) {
+        window.playerCoins -= 10;
+        const counter = document.getElementById('coin-counter');
+        if (counter) counter.innerText = window.playerCoins;
+        
+        player.hasAK47 = true;
+        const btn = document.getElementById('buy-ak47-btn');
+        if (btn) {
+            btn.innerText = "OWNED";
+            btn.style.background = "#2c241b";
+            btn.style.color = "#8b7355";
+            btn.disabled = true;
+        }
+    } else {
+        alert("Not enough coins! You need 10 coins.");
     }
 };
 
@@ -399,9 +407,20 @@ if (pcHotspot) {
     });
 }
 
+const armoryHotspot = document.getElementById('armory-hotspot');
+if (armoryHotspot) {
+    armoryHotspot.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const shopOverlay = document.getElementById('workshop-shop-overlay');
+        if (shopOverlay) {
+            shopOverlay.style.display = 'flex';
+        }
+    });
+}
+
 // Click logger to find diary coordinates
 interiorOverlay.addEventListener('click', (e) => {
-    if (activeInteractable && activeInteractable.id === 'home' && isExploringInterior) {
+    if (activeInteractable && (activeInteractable.id === 'home' || activeInteractable.id === 'workshop') && isExploringInterior) {
         const interactiveLayer = document.querySelector('.interior-interactive-layer');
         if (interactiveLayer) {
             const rect = interactiveLayer.getBoundingClientRect();
@@ -423,6 +442,8 @@ if (interiorClose) {
         if (hotspot) hotspot.style.display = 'none';
         const pcH = document.getElementById('pc-hotspot');
         if (pcH) pcH.style.display = 'none';
+        const armH = document.getElementById('armory-hotspot');
+        if (armH) armH.style.display = 'none';
 
         const pcContainer = document.getElementById('sitcom-pc-container');
         if (pcContainer) pcContainer.style.display = 'none';
@@ -460,6 +481,10 @@ if (interiorExplore) {
                     const pcH = document.getElementById('pc-hotspot');
                     if (pcH) pcH.style.display = 'block';
                 }
+                if (activeInteractable.id === 'workshop') {
+                    const armoryH = document.getElementById('armory-hotspot');
+                    if (armoryH) armoryH.style.display = 'block';
+                }
 
                 if (activeInteractable.id === 'post') {
                     interiorExplore.innerHTML = '<span class="x">✉️</span> View Letter';
@@ -481,6 +506,8 @@ if (interiorExplore) {
             if (hotspot) hotspot.style.display = 'none';
             const pcH = document.getElementById('pc-hotspot');
             if (pcH) pcH.style.display = 'none';
+            const armoryH = document.getElementById('armory-hotspot');
+            if (armoryH) armoryH.style.display = 'none';
 
             if (activeInteractable) {
                 if (interiorBg) {
