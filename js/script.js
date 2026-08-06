@@ -246,13 +246,7 @@ window.buyAK47 = function() {
         if (counter) counter.innerText = window.playerCoins;
         
         player.hasAK47 = true;
-        const btn = document.getElementById('buy-ak47-btn');
-        if (btn) {
-            btn.innerText = "OWNED";
-            btn.style.background = "#2c241b";
-            btn.style.color = "#8b7355";
-            btn.disabled = true;
-        }
+        if (window.updateShopButtons) window.updateShopButtons();
     } else {
         alert("Not enough coins! You need 100 coins.");
     }
@@ -419,6 +413,7 @@ if (armoryHotspot) {
         const shopOverlay = document.getElementById('workshop-shop-overlay');
         if (shopOverlay) {
             shopOverlay.style.display = 'flex';
+            if (window.updateShopButtons) window.updateShopButtons();
         }
     });
 }
@@ -1167,6 +1162,7 @@ window.addEventListener("keydown", (e) => {
             } else {
                 shopOverlay.style.display = 'flex';
                 isOverlayActive = true;
+                if (window.updateShopButtons) window.updateShopButtons();
             }
         }
     }
@@ -4138,8 +4134,53 @@ window.addCoins = function(amount) {
         counter.innerText = window.playerCoins;
         counter.style.transition = 'transform 0.1s';
         counter.style.transform = 'scale(1.5)';
-        setTimeout(() => counter.style.transform = 'scale(1)', 150);
+        setTimeout(() => {
+            counter.style.transform = 'scale(1)';
+        }, 150);
     }
+    if (window.updateShopButtons) window.updateShopButtons();
+};
+
+window.updateShopButtons = function() {
+    const items = document.querySelectorAll('.armory-item');
+    items.forEach(item => {
+        const tag = item.querySelector('.armory-tag');
+        const btn = item.querySelector('.buy-btn');
+        if (!tag || !btn) return;
+        
+        if (btn.id === 'buy-ak47-btn') {
+            if (player.hasAK47) {
+                btn.innerText = "OWNED";
+                btn.style.background = "#2c241b";
+                btn.style.color = "#8b7355";
+                btn.disabled = true;
+                btn.style.cursor = "not-allowed";
+                return;
+            }
+        }
+        
+        const priceText = tag.innerText.replace(/[^0-9]/g, '');
+        const price = parseInt(priceText, 10);
+        
+        if (!isNaN(price) && window.playerCoins >= price) {
+            btn.innerText = "BUY";
+            btn.style.background = "#5c4322";
+            btn.style.color = "#f4e8d3";
+            btn.disabled = false;
+            btn.style.cursor = "pointer";
+            if (btn.id !== 'buy-ak47-btn') {
+                btn.onclick = function() {
+                    alert("😭 This is not implemented! Idk how you got these many coins. I didn't create visuals for all others so I just made them expensive thinking no one can buy...");
+                };
+            }
+        } else {
+            btn.innerText = "INSUFFICIENT COINS";
+            btn.style.background = "#333";
+            btn.style.color = "#777";
+            btn.disabled = true;
+            btn.style.cursor = "not-allowed";
+        }
+    });
 };
 
 window.awardBounty = function(type, amount, element) {
