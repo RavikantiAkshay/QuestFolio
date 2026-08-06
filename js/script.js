@@ -235,8 +235,8 @@ window.buyHelmet = function() {
 };
 
 window.buyAK47 = function() {
-    if (window.playerCoins >= 10) {
-        window.playerCoins -= 10;
+    if (window.playerCoins >= 100) {
+        window.playerCoins -= 100;
         const counter = document.getElementById('coin-counter');
         if (counter) counter.innerText = window.playerCoins;
         
@@ -249,7 +249,7 @@ window.buyAK47 = function() {
             btn.disabled = true;
         }
     } else {
-        alert("Not enough coins! You need 10 coins.");
+        alert("Not enough coins! You need 100 coins.");
     }
 };
 
