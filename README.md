@@ -4,8 +4,8 @@
 
 **A browser-based 2D pixel-art RPG that doubles as an interactive developer portfolio.**
 
-[![Play Now](https://img.shields.io/badge/▶_Play_Now-Visit_QuestFolio-2ea44f?style=for-the-badge&logo=googlechrome&logoColor=white)](https://ravikantiakshay.github.io/my-game/)
-[![GitHub Stars](https://img.shields.io/github/stars/RavikantiAkshay/my-game?style=for-the-badge&logo=github)](https://github.com/RavikantiAkshay/my-game)
+[![Play Now](https://img.shields.io/badge/▶_Play_Now-Visit_QuestFolio-2ea44f?style=for-the-badge&logo=googlechrome&logoColor=white)](https://ravikantiakshay.github.io/QuestFolio/)
+[![GitHub Stars](https://img.shields.io/github/stars/RavikantiAkshay/QuestFolio?style=for-the-badge&logo=github)](https://github.com/RavikantiAkshay/QuestFolio)
 
 *Explore a handcrafted world. Enter buildings. Discover a developer's journey through interactive interiors — typewriters, retro Sitcom TV monitor, CRT workstations, chalkboards, skill bookshelves, blueprints, sealed letters, and a page-flippable travel diary.*
 
@@ -20,7 +20,7 @@
 Every building you enter opens a custom-designed interactive experience:
 - 🏡 **Home**: Personal intro on a vintage typewriter, Sitcom OS retro TV, and a realistic Travel Diary.
 - 🧪 **Lab Workstation**: Multi-device terminal (Tablet, Monitor, Phone) to view live projects and gamified bounties.
-- 🛠️ **Workshop**: Architectural drafting table with blueprints of active and stashed projects.
+- 🛠️ **Workshop**: Architectural drafting table displaying project blueprints, and a fully functional interactive Armory shop with a dynamic coin-based economy for purchasing weapons.
 - 🏫 **School**: Animated chalkboard displaying an education timeline from Class X through B.Tech at IIT Bhilai.
 - 📚 **Library**: Floor-to-ceiling wooden racks showcasing technical skills categorized into 6 technology shelves.
 - ✉️ **Post Office**: Kraft envelope with a wax seal, airmail borders, paperclip, and direct contact directory.
@@ -38,6 +38,7 @@ Every building you enter opens a custom-designed interactive experience:
 | `ESC` | Close Active Overlay / Return to Overworld |
 | `Left Click` | Attack (3-hit combo sequence) |
 | `F` | Defend Stance (Block incoming damage) |
+| `U` | Toggle Workshop Armory Shop (When inside Workshop) |
 | `N` | Cycle Time of Day (*Day ➔ Evening ➔ Night ➔ Early Morning*) |
 | `M` | Cycle Season (*Summer ➔ Monsoon ➔ Autumn ➔ Winter*) |
 
@@ -53,7 +54,7 @@ The game world features three distinct zones, each with dedicated tilesets, coll
   - **Sitcom OS (Retro TV)**: An 80s CRT television featuring developer "Sitcom DNA" and a corkboard of developer quotes styled as sticky notes from popular sitcoms (*Modern Family, B99, Parks & Rec, Friends, The Middle, Community*).
   - **Travel Diary**: A realistic 3D page-flippable book showcasing travel statistics, trip histories, and Leaflet.js interactive maps.
 - **Lab Workstation**: A high-tech research station featuring a Tablet (description/features), PC Monitor (project preview & navigation), and Phone (tech stack, repository links, and active bounties).
-- **Workshop**: A blacksmith forge turned drafting table lined with drafting tools (rulers, pencils, graphite dust, coffee stains) displaying project blueprints.
+- **Workshop**: A blacksmith forge turned drafting table lined with drafting tools displaying project blueprints. Features an interactive Armory hotspot where you can spend collected coins to unlock new weapons (like the AK-47).
 - **Town Map Stand**: An outdoor wooden display board nailed with an aged parchment mini-map. Proximity prompts appear when standing nearby (`Press E to open Map`).
 
 ### 2. School Campus
@@ -85,9 +86,10 @@ Every building features a 3/4 orthographic cutaway interior view with togglable 
 
 ---
 
-## ⚔️ Combat & Boss System
+## ⚔️ Combat & Economy System
 
-- **3-Hit Combo**: Execute directional melee swings with responsive timing and visual attack arcs.
+- **Melee & Ranged Combat**: Execute a 3-hit melee combo, or purchase and equip ranged weapons like the AK-47 from the Armory to fire projectiles.
+- **Coin Economy**: Defeating NPCs causes them to drop coins. Collect these dropped coins to build your wealth and purchase upgrades.
 - **Shield Defend**: Hold `F` to enter a defensive stance, reducing incoming damage from enemy attacks.
 - **Visual Feedback**: Screen shake effects on heavy impacts, red damage flash overlay, and dynamic health bars for player and boss.
 - **Multi-Phase Boss Encounter**:
@@ -137,8 +139,8 @@ No build tools or NPM dependencies required. Simply serve the workspace folder w
 
 ```bash
 # Clone the repository
-git clone https://github.com/RavikantiAkshay/my-game.git
-cd my-game
+git clone https://github.com/RavikantiAkshay/QuestFolio.git
+cd QuestFolio
 
 # Start a local static server
 python -m http.server 8080
