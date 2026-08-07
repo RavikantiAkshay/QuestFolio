@@ -212,6 +212,9 @@ player.attackImageAK47.src = "assets/images/characters/main-character-ak47-attac
 const akbotImg = new Image();
 akbotImg.src = "assets/images/characters/akbot-e7.png";
 
+const ak47WeaponImg = new Image();
+ak47WeaponImg.src = "assets/images/items/ak47.png";
+
 
 
 
@@ -2111,19 +2114,41 @@ function update() {
     // --- BOSS FIGHT LOGIC ---
     if (bossFightActive) {
         const boss = npcs.find(n => n.isBoss);
-        if (boss && boss.hp > 0) {
+        if (!boss || boss.hp <= 0) {
+            bossFightActive = false; // Boss is dead
+            blackHoles.length = 0;
+            bossSpikes.length = 0;
+            bossMissiles.length = 0;
+            window.bossTarget = null;
+            isOverlayActive = true;
+            player.isInvincible = false;
 
-            let dx = player.x - boss.x;
-            let dy = player.y - boss.y;
+            // Remove boss from npcs array so he vanishes
+            if (boss) {
+                const bossIndex = npcs.indexOf(boss);
+                if (bossIndex > -1) {
+                    npcs.splice(bossIndex, 1);
+                }
+            }
 
-            // Boss looks at player
+            const victoryOverlay = document.getElementById('victory-overlay');
+            if (victoryOverlay) {
+                victoryOverlay.style.display = 'flex';
+            }
+        } else {
+            let activeTarget = (window.bossTarget && window.bossTarget.hp > 0) ? window.bossTarget : player;
+
+            let dx = activeTarget.x - boss.x;
+            let dy = activeTarget.y - boss.y;
+
+            // Boss looks at activeTarget
             if (Math.abs(dx) > Math.abs(dy)) {
                 boss.frameY = dx > 0 ? 3 : 1;
             } else {
                 boss.frameY = dy > 0 ? 0 : 2;
             }
 
-            // Boss movement AI
+            // Boss movement AI relative to activeTarget
             if (!boss.isAttacking && !boss.isCharging) {
                 let dist = Math.hypot(dx, dy);
                 let moving = false;
@@ -2183,7 +2208,7 @@ function update() {
                 } else if (boss.phase === 3 && (boss.attackCount >= 15 || boss.hp <= boss.maxHp * 0.10)) {
                     // Transition to Phase 4 (Rage Phase) after 15 voids/missiles OR if boss HP <= 10%
                     boss.isTransitioning = true;
-                    isOverlayActive = true;
+                    isOverlayActive = true; // Freeze the game
                     boss.frameX = 0;
 
                     speechBubbleSequence = [
@@ -2213,8 +2238,8 @@ function update() {
                         }
 
                         bossSpikes.push({
-                            x: player.x - 10 + offsetX,
-                            y: player.y + player.size - 40 + offsetY, // target near feet
+                            x: activeTarget.x - 10 + offsetX,
+                            y: activeTarget.y + activeTarget.size - 40 + offsetY, // target near feet
                             width: 70,
                             height: 70,
                             state: 'warning',
@@ -2236,8 +2261,8 @@ function update() {
 
                     if (isCross) {
                         bossSpikes.push({
-                            x: player.x - 150 + (player.size / 2),
-                            y: player.y + player.size - 30,
+                            x: activeTarget.x - 150 + (activeTarget.size / 2),
+                            y: activeTarget.y + activeTarget.size - 30,
                             width: 300,
                             height: 60,
                             state: 'warning',
@@ -2247,8 +2272,8 @@ function update() {
                             orientation: 'horizontal'
                         });
                         bossSpikes.push({
-                            x: player.x + (player.size / 2) - 30,
-                            y: player.y - 150,
+                            x: activeTarget.x + (activeTarget.size / 2) - 30,
+                            y: activeTarget.y - 150,
                             width: 60,
                             height: 300,
                             state: 'warning',
@@ -2262,8 +2287,8 @@ function update() {
 
                         if (isHorizontal) {
                             bossSpikes.push({
-                                x: player.x - 150 + (player.size / 2),
-                                y: player.y + player.size - 30,
+                                x: activeTarget.x - 150 + (activeTarget.size / 2),
+                                y: activeTarget.y + activeTarget.size - 30,
                                 width: 300,
                                 height: 60,
                                 state: 'warning',
@@ -2274,8 +2299,8 @@ function update() {
                             });
                         } else {
                             bossSpikes.push({
-                                x: player.x + (player.size / 2) - 30,
-                                y: player.y - 150,
+                                x: activeTarget.x + (activeTarget.size / 2) - 30,
+                                y: activeTarget.y - 150,
                                 width: 60,
                                 height: 300,
                                 state: 'warning',
@@ -2294,10 +2319,10 @@ function update() {
                     // Phase 3: Combine Black Holes and Missiles
                     // Alternate between them to keep pressure high but manageable
                     if (boss.attackCount % 2 !== 0) {
-                        // Summon one black hole directly under the player
+                        // Summon one black hole directly under the target
                         blackHoles.push({
-                            x: player.x + player.size / 2,
-                            y: player.y + player.size / 2,
+                            x: activeTarget.x + activeTarget.size / 2,
+                            y: activeTarget.y + activeTarget.size / 2,
                             radius: 40,
                             pullRadius: 100,
                             angle: 0,
@@ -2337,23 +2362,23 @@ function update() {
                         let offsetX = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 120);
                         let offsetY = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 120);
                         bossSpikes.push({
-                            x: player.x - 10 + offsetX,
-                            y: player.y + player.size - 40 + offsetY,
+                            x: activeTarget.x - 10 + offsetX,
+                            y: activeTarget.y + activeTarget.size - 40 + offsetY,
                             width: 70, height: 70, state: 'warning',
                             timer: 30, damage: 25, type: 'spike'
                         });
                     } else if (choice === 1) { // 1 Fire line
                         if (Math.random() > 0.5) { // Horizontal
                             bossSpikes.push({
-                                x: player.x - 150 + (player.size / 2) + (Math.random() * 60 - 30),
-                                y: player.y + player.size - 30 + (Math.random() * 60 - 30),
+                                x: activeTarget.x - 150 + (activeTarget.size / 2) + (Math.random() * 60 - 30),
+                                y: activeTarget.y + activeTarget.size - 30 + (Math.random() * 60 - 30),
                                 width: 300, height: 60, state: 'warning',
                                 timer: 35, damage: 35, type: 'fire', orientation: 'horizontal'
                             });
                         } else { // Vertical
                             bossSpikes.push({
-                                x: player.x + (player.size / 2) - 30 + (Math.random() * 60 - 30),
-                                y: player.y - 150 + (Math.random() * 60 - 30),
+                                x: activeTarget.x + (activeTarget.size / 2) - 30 + (Math.random() * 60 - 30),
+                                y: activeTarget.y - 150 + (Math.random() * 60 - 30),
                                 width: 60, height: 300, state: 'warning',
                                 timer: 35, damage: 35, type: 'fire', orientation: 'vertical'
                             });
@@ -2362,8 +2387,8 @@ function update() {
                         let offsetX = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 80);
                         let offsetY = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 80);
                         blackHoles.push({
-                            x: player.x + player.size / 2 + offsetX,
-                            y: player.y + player.size / 2 + offsetY,
+                            x: activeTarget.x + activeTarget.size / 2 + offsetX,
+                            y: activeTarget.y + activeTarget.size / 2 + offsetY,
                             radius: 40, pullRadius: 100, angle: 0,
                             state: 'warning', timer: 35, lifetime: 90
                         });
@@ -2385,25 +2410,6 @@ function update() {
                     boss.attackFrame = (boss.frameY === 1) ? 0 : 1;
                     setTimeout(() => { if (boss && boss.isAttacking) boss.isAttacking = false; }, 200);
                 }
-            }
-        } else if (!boss || boss.hp <= 0) {
-            bossFightActive = false; // Boss is dead
-            blackHoles.length = 0;
-            bossSpikes.length = 0;
-            bossMissiles.length = 0;
-
-            // Remove boss from npcs array so he vanishes
-            if (boss) {
-                const bossIndex = npcs.indexOf(boss);
-                if (bossIndex > -1) {
-                    npcs.splice(bossIndex, 1);
-                }
-            }
-
-            const victoryOverlay = document.getElementById('victory-overlay');
-            if (victoryOverlay && victoryOverlay.style.display !== 'flex') {
-                victoryOverlay.style.display = 'flex';
-                isOverlayActive = true;
             }
         }
     }
@@ -2472,14 +2478,16 @@ function update() {
                             }
                         }
                     }
-                } else if (dist < bh.pullRadius && bh.lifetime > 0) {
+                } else if (dist < bh.pullRadius && bh.lifetime > 0 && !player.isInvincible) {
                     if (dist < bh.radius / 2) {
                         // Sucked in!
                         player.isTrapped = true;
                         player.trappedBh = bh;
                         player.trappedTimer = 90; // Trapped for 1.5 seconds
-                        player.hp -= 20; // Damage on suck
-                        if (player.hp < 0) player.hp = 0;
+                        if (!player.isInvincible) {
+                            player.hp -= 20; // Damage on suck
+                            if (player.hp < 0) player.hp = 0;
+                        }
                         player.hurtTimer = 30;
                     } else {
                         // Constant pulling force
@@ -2568,8 +2576,8 @@ function update() {
             spikeBox.x += 15; spikeBox.y += 15; spikeBox.w -= 30; spikeBox.h -= 30;
 
             if (rectIntersect(spikeBox, playerBox)) {
-                // Deal damage if not defending
-                if (!player.isDefending && player.hurtTimer <= 0) {
+                // Deal damage if not defending & not invincible
+                if (!player.isDefending && !player.isInvincible && player.hurtTimer <= 0) {
                     player.hp -= spike.damage;
                     if (player.hp < 0) player.hp = 0;
                     player.hurtTimer = 30; // Flash red for half a second
@@ -2624,7 +2632,7 @@ function update() {
                 akbotTarget.onMissileHit();
             }
         } else if (rectIntersect(mBox, playerBox)) {
-            if (!player.isDefending) {
+            if (!player.isDefending && !player.isInvincible) {
                 player.hp -= m.damage;
                 if (player.hp < 0) player.hp = 0;
                 player.hurtTimer = 30;
@@ -2685,6 +2693,141 @@ function update() {
             if (npc.isStaticNPC) npc.isMoving = false; // Override for static NPCs
             if (npc.isMoving) {
                 npc.frameY = Math.floor(Math.random() * 4); // New direction
+            }
+        }
+
+        // AKBot Autonomous Combat AI
+        if (npc.type === 'akbot') {
+            npc.hp = 9999;
+            npc.isInvincible = true;
+
+            // Do NOT attack or move autonomously during dialogue / cutscene sequence!
+            if (!npc.inCombat) {
+                continue;
+            }
+
+            const boss = npcs.find(n => n.isBoss && n.hp > 0);
+            if (boss && !isOverlayActive) {
+                let bx = boss.x + boss.size / 2;
+                let by = boss.y + boss.size / 2;
+                let ax = npc.x + npc.size / 2;
+                let ay = npc.y + npc.size / 2;
+
+                let dx = bx - ax;
+                let dy = by - ay;
+                let absDx = Math.abs(dx);
+                let absDy = Math.abs(dy);
+
+                let speed = 2.4;
+                let moveX = 0;
+                let moveY = 0;
+
+                // Alternate between aligning X and Y to orbit boss dynamically
+                npc.alignTimer = (npc.alignTimer || 0) - 1;
+                if (npc.alignTimer <= 0) {
+                    npc.alignAxis = (Math.random() > 0.5 ? 'x' : 'y');
+                    npc.alignTimer = Math.floor(Math.random() * 80 + 40);
+                }
+
+                if (npc.alignAxis === 'y') {
+                    if (Math.abs(ay - by) > 20) {
+                        moveY = Math.sign(by - ay) * speed;
+                    }
+                    if (absDx < 140) moveX = -Math.sign(dx) * speed;
+                    else if (absDx > 220) moveX = Math.sign(dx) * speed;
+                } else {
+                    if (Math.abs(ax - bx) > 20) {
+                        moveX = Math.sign(bx - ax) * speed;
+                    }
+                    if (absDy < 140) moveY = -Math.sign(dy) * speed;
+                    else if (absDy > 220) moveY = Math.sign(dy) * speed;
+                }
+
+                // Execute movement if possible
+                if (moveX !== 0 || moveY !== 0) {
+                    if (isWalkable(npc.x + moveX, npc.y + moveY, npc.size, npc)) {
+                        npc.x += moveX;
+                        npc.y += moveY;
+                        npc.isMoving = true;
+                    } else if (isWalkable(npc.x + moveX, npc.y, npc.size, npc)) {
+                        npc.x += moveX;
+                        npc.isMoving = true;
+                    } else if (isWalkable(npc.x, npc.y + moveY, npc.size, npc)) {
+                        npc.y += moveY;
+                        npc.isMoving = true;
+                    } else {
+                        npc.isMoving = false;
+                    }
+                } else {
+                    npc.isMoving = false;
+                }
+
+                // Proper 4-directional facing: ALWAYS face the direction being walked, or face boss if stationary!
+                if (npc.isMoving && (moveX !== 0 || moveY !== 0)) {
+                    if (Math.abs(moveX) > Math.abs(moveY)) {
+                        npc.frameY = moveX > 0 ? 3 : 1; // Right (3) or Left (1)
+                    } else {
+                        npc.frameY = moveY > 0 ? 0 : 2; // Down (0) or Up (2)
+                    }
+                } else {
+                    if (absDx > absDy) {
+                        npc.frameY = dx > 0 ? 3 : 1;
+                    } else {
+                        npc.frameY = dy > 0 ? 0 : 2;
+                    }
+                }
+
+                // Continuous AK-47 firing (never stops firing! Every 24 frames = ~0.4s)
+                npc.fireCooldown = (npc.fireCooldown || 0) - 1;
+                if (npc.fireCooldown <= 0) {
+                    npc.fireCooldown = 24;
+                    npc.isAttacking = true;
+
+                    // Aim towards boss in the closest cardinal direction
+                    let aimDirX = 0, aimDirY = 0;
+                    if (absDx > absDy) {
+                        aimDirX = Math.sign(dx);
+                    } else {
+                        aimDirY = Math.sign(dy);
+                    }
+
+                    // Face boss when opening fire
+                    if (aimDirX !== 0) npc.frameY = aimDirX > 0 ? 3 : 1;
+                    else if (aimDirY !== 0) npc.frameY = aimDirY > 0 ? 0 : 2;
+
+                    let bSpeed = 9;
+                    let bVx = aimDirX * bSpeed;
+                    let bVy = aimDirY * bSpeed;
+
+                    let barrelX = npc.x + npc.size / 2 + (bVx !== 0 ? Math.sign(bVx) * 22 : 0);
+                    let barrelY = npc.y + npc.size / 2 + (bVy !== 0 ? Math.sign(bVy) * 22 : 0);
+
+                    // Fire 3 rapid burst bullets
+                    for (let b = 0; b < 3; b++) {
+                        setTimeout(() => {
+                            const currentBoss = npcs.find(n => n.isBoss && n.hp > 0);
+                            if (currentBoss) {
+                                playerProjectiles.push({
+                                    x: barrelX,
+                                    y: barrelY,
+                                    vx: bVx,
+                                    vy: bVy,
+                                    life: 60,
+                                    damage: 22
+                                });
+                            }
+                        }, b * 50);
+                    }
+
+                    setTimeout(() => { npc.isAttacking = false; }, 250);
+                }
+
+                npc.animTimer++;
+                if (npc.animTimer >= 8) {
+                    npc.frameX = (npc.frameX + 1) % 4;
+                    npc.animTimer = 0;
+                }
+                continue; // Handled by AKBot AI
             }
         }
 
@@ -2934,6 +3077,30 @@ function draw() {
                 npc.x + drawXOffset, npc.y - (displayHeight - npc.size),
                 displayWidth, displayHeight
             );
+
+            // Overlay AK-47 rifle in AKBot's hands with recoil & muzzle flash
+            if (npc.type === 'akbot' && ak47WeaponImg.complete && ak47WeaponImg.width > 0) {
+                ctx.save();
+                let gunX = npc.x + npc.size / 2;
+                let gunY = npc.y + npc.size / 2 + 2;
+                let gunAngle = (npc.frameY === 1 ? Math.PI : (npc.frameY === 3 ? 0 : (npc.frameY === 2 ? -Math.PI / 2 : Math.PI / 2)));
+
+                let recoil = npc.isAttacking ? (Math.random() * 3 + 2) : 0;
+                ctx.translate(gunX - Math.cos(gunAngle) * recoil, gunY - Math.sin(gunAngle) * recoil);
+                ctx.rotate(gunAngle);
+                ctx.drawImage(ak47WeaponImg, -8, -6, 26, 12);
+
+                // Muzzle flash when firing
+                if (npc.isAttacking) {
+                    ctx.fillStyle = "#ffcc00";
+                    ctx.shadowColor = "#ff4400";
+                    ctx.shadowBlur = 14;
+                    ctx.beginPath();
+                    ctx.arc(22, 0, 7 + Math.random() * 4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
 
             ctx.restore();
         }
@@ -4392,10 +4559,9 @@ window.summonAKBot = function () {
     if (typeof blackHoles !== 'undefined') blackHoles.length = 0;
 
     player.hp = player.maxHp;
-    player.isInvincible = true;
+    player.isInvincible = true; // Stays invincible throughout AKBot's battle!
     player.isTrapped = false;
     player.hurtTimer = 0;
-    setTimeout(() => { player.isInvincible = false; }, 3000);
 
     let spawnX = player.x - 60;
     let spawnFrameY = 3; // face right by default
@@ -4413,6 +4579,7 @@ window.summonAKBot = function () {
         hp: 9999,
         maxHp: 9999,
         isInvincible: true,
+        inCombat: false, // Remains false during full cutscene/dialogue sequence!
         type: "akbot",
         image: akbotImg,
         frameX: 0,
@@ -4511,10 +4678,19 @@ window.summonAKBot = function () {
                                 // Main character reacts: "Woah..."
                                 currentSpeechBubble = { entity: player, text: "Woah..." };
 
-                                // End scene after reaction
+                                // End cutscene after Woah reaction, trigger Boss Final Phase, and start AKBot combat targeting boss!
                                 setTimeout(() => {
-                                    window.bossTarget = null;
+                                    akbot.inCombat = true;
+                                    window.bossTarget = akbot;
                                     currentSpeechBubble = null;
+                                    const boss = npcs.find(n => n.isBoss);
+                                    if (boss && boss.hp > 0) {
+                                        boss.phase = 4; // Boss enters Final Phase (Disaster / Rage Mode)!
+                                        boss.isTransitioning = false;
+                                        boss.isCharging = false;
+                                        boss.isAttacking = false;
+                                        boss.bossAttackTimer = 15;
+                                    }
                                 }, 1500);
                             }, 2500);
                         };
