@@ -209,10 +209,13 @@ player.imageAK47.src = "assets/images/characters/main-character-ak47.png";
 player.attackImageAK47 = new Image();
 player.attackImageAK47.src = "assets/images/characters/main-character-ak47-attack.png";
 
+const akbotImg = new Image();
+akbotImg.src = "assets/images/characters/akbot-e7.png";
 
 
 
-window.buyVest = function() {
+
+window.buyVest = function () {
     player.hasVest = true;
     const btn = document.getElementById('buy-vest-btn');
     if (btn) {
@@ -223,7 +226,7 @@ window.buyVest = function() {
     }
 };
 
-window.buyHelmet = function() {
+window.buyHelmet = function () {
     player.hasHelmet = true;
     const btn = document.getElementById('buy-helmet-btn');
     if (btn) {
@@ -234,17 +237,17 @@ window.buyHelmet = function() {
     }
 };
 
-window.buyAK47 = function() {
+window.buyAK47 = function () {
     if (player.hasAK47) {
         alert("You already own this weapon!");
         return;
     }
-    
+
     if (window.playerCoins >= 100) {
         window.playerCoins -= 100;
         const counter = document.getElementById('coin-counter');
         if (counter) counter.innerText = window.playerCoins;
-        
+
         player.hasAK47 = true;
         if (window.updateShopButtons) window.updateShopButtons();
     } else {
@@ -801,7 +804,7 @@ function updateLabComputer() {
         const originalAmount = item.getAttribute('data-amount');
         const bKey = p.title + "_" + bType;
         const span = item.querySelector('span:last-child');
-        
+
         if (window.claimedBounties && window.claimedBounties[bKey]) {
             item.dataset.claimed = 'true';
             item.style.opacity = '0.5';
@@ -1997,14 +2000,14 @@ function update() {
     if (window.gameDrops) {
         window.gameDrops.forEach(drop => {
             if (drop.collected) return;
-            
+
             // Physics
             drop.x += drop.vx;
             drop.y += drop.vy;
             drop.vy += 0.3; // Gravity
-            
+
             drop.life++;
-            
+
             // Floor bounce
             if (drop.vy > 0 && drop.life > 15 && drop.vy < 2) {
                 drop.vy = 0;
@@ -2012,13 +2015,13 @@ function update() {
             } else if (drop.vy > 0 && drop.life > 15) {
                 drop.vy *= -0.5; // Bounce
             }
-            
+
             // Auto pickup after a short delay
             if (drop.life > 40) {
                 let dx = (player.x + player.size / 2) - drop.x;
                 let dy = (player.y + player.size / 2) - drop.y;
                 let dist = Math.hypot(dx, dy);
-                
+
                 if (dist < 20) {
                     drop.collected = true;
                     if (window.addCoins) window.addCoins(drop.amount);
@@ -2505,7 +2508,7 @@ function update() {
 
         let projBox = { x: proj.x - 5, y: proj.y - 5, w: 10, h: 10 };
         let hit = false;
-        
+
         npcs.forEach(npc => {
             if (npc.hp > 0 && !npc.isInvincible) {
                 let npcBox = { x: npc.x, y: npc.y, w: npc.size, h: npc.size };
@@ -2591,11 +2594,12 @@ function update() {
         m.lifetime--;
 
         if (bossFightActive) {
-            let dx = (player.x + player.size / 2) - m.x;
-            let dy = (player.y + player.size / 2) - m.y;
+            let activeTarget = (typeof window.bossTarget !== 'undefined' && window.bossTarget) ? window.bossTarget : player;
+            let dx = (activeTarget.x + activeTarget.size / 2) - m.x;
+            let dy = (activeTarget.y + activeTarget.size / 2) - m.y;
             let targetAngle = Math.atan2(dy, dx);
 
-            // Smoothly rotate towards player
+            // Smoothly rotate towards target
             let angleDiff = targetAngle - m.angle;
             // Normalize angle difference to -PI to PI
             angleDiff = (angleDiff + Math.PI * 3) % (2 * Math.PI) - Math.PI;
@@ -2610,7 +2614,13 @@ function update() {
         // Collision check
         let mBox = { x: m.x - m.width / 2, y: m.y - m.height / 2, w: m.width, h: m.height };
         let playerBox = { x: player.x, y: player.y, w: player.size, h: player.size };
-        if (rectIntersect(mBox, playerBox)) {
+        let akbotTarget = (typeof window.bossTarget !== 'undefined' && window.bossTarget && window.bossTarget.type === 'akbot') ? window.bossTarget : null;
+        let akbotBox = akbotTarget ? { x: akbotTarget.x, y: akbotTarget.y, w: akbotTarget.size, h: akbotTarget.size } : null;
+
+        if (akbotBox && rectIntersect(mBox, akbotBox)) {
+            bossMissiles.splice(i, 1);
+            screenShake = 10;
+        } else if (rectIntersect(mBox, playerBox)) {
             if (!player.isDefending) {
                 player.hp -= m.damage;
                 if (player.hp < 0) player.hp = 0;
@@ -2879,6 +2889,13 @@ function draw() {
             let sX = 190 + (npc.frameX * fW);
             let sY = 50 + (npc.frameY * fH);
 
+            if (npc.type === 'akbot') {
+                fW = 134;
+                fH = 223;
+                sX = 256 + (npc.frameX * 199);
+                sY = 90 + (npc.frameY * 281);
+            }
+
             let drawXOffset = 0;
 
             if (npc.isBoss && npc.isAttacking && npc.attackImage && npc.attackImage.complete && npc.attackImage.width > 0) {
@@ -2894,8 +2911,13 @@ function draw() {
                 }
             }
 
-            const displayWidth = npc.size * (fW / 160);
-            const displayHeight = npc.size * (fH / 160);
+            let displayWidth = npc.size * (fW / 160);
+            let displayHeight = npc.size * (fH / 160);
+
+            if (npc.type === 'akbot') {
+                displayWidth = npc.size * (134 / 160);
+                displayHeight = npc.size * (223 / 160);
+            }
 
             // Draw a tiny shadow
             ctx.fillStyle = "rgba(0,0,0,0.3)";
@@ -2943,6 +2965,7 @@ function draw() {
     }
 
     // Draw Health Bars & Indicators
+
     drawHealthBar(player, true);
     npcs.forEach(npc => {
         drawHealthBar(npc, false);
@@ -3726,7 +3749,7 @@ canvas.addEventListener('mousedown', (e) => {
                 // Spawn projectile
                 let speed = 15;
                 let vx = 0, vy = 0;
-                let px = player.x + player.size/2;
+                let px = player.x + player.size / 2;
                 let py = player.y + 25; // Shifted slightly lower
 
                 if (player.frameY === 2) { vy = -speed; px += 10; py -= 15; } // up
@@ -4127,7 +4150,7 @@ function initDiary() {
 }
 
 // --- COIN SYSTEM ---
-window.addCoins = function(amount) {
+window.addCoins = function (amount) {
     window.playerCoins += amount;
     const counter = document.getElementById('coin-counter');
     if (counter) {
@@ -4141,13 +4164,13 @@ window.addCoins = function(amount) {
     if (window.updateShopButtons) window.updateShopButtons();
 };
 
-window.updateShopButtons = function() {
+window.updateShopButtons = function () {
     const items = document.querySelectorAll('.armory-item');
     items.forEach(item => {
         const tag = item.querySelector('.armory-tag');
         const btn = item.querySelector('.buy-btn');
         if (!tag || !btn) return;
-        
+
         if (btn.id === 'buy-ak47-btn') {
             if (player.hasAK47) {
                 btn.innerText = "OWNED";
@@ -4158,10 +4181,10 @@ window.updateShopButtons = function() {
                 return;
             }
         }
-        
+
         const priceText = tag.innerText.replace(/[^0-9]/g, '');
         const price = parseInt(priceText, 10);
-        
+
         if (!isNaN(price) && window.playerCoins >= price) {
             btn.innerText = "BUY";
             btn.style.background = "#5c4322";
@@ -4169,7 +4192,7 @@ window.updateShopButtons = function() {
             btn.disabled = false;
             btn.style.cursor = "pointer";
             if (btn.id !== 'buy-ak47-btn') {
-                btn.onclick = function() {
+                btn.onclick = function () {
                     alert("😭 This is not implemented! Idk how you got these many coins. I didn't create visuals for all others so I just made them expensive thinking no one can buy...");
                 };
             }
@@ -4183,30 +4206,30 @@ window.updateShopButtons = function() {
     });
 };
 
-window.awardBounty = function(type, amount, element) {
+window.awardBounty = function (type, amount, element) {
     if (element.dataset.claimed === 'true') return;
-    
+
     const titleElement = document.getElementById('project-title');
     const pTitle = titleElement ? titleElement.innerText : 'Unknown';
     const bKey = pTitle + "_" + type;
-    
+
     if (window.claimedBounties[bKey]) return;
-    
+
     // Get the active project link based on type
     const linkId = (type.includes('github')) ? 'project-github' : 'project-live';
     const linkElement = document.getElementById(linkId);
-    
+
     if (linkElement && linkElement.href && linkElement.href !== '#' && !linkElement.href.endsWith('#')) {
         let finalUrl = linkElement.href;
-        
+
         // Custom logic for Bhilaee Labs account creation
         if (type === 'create-account' && pTitle.toUpperCase() === 'BHILAEE LABS') {
             finalUrl = finalUrl.replace(/\/$/, '') + '/login';
         }
-        
+
         window.open(finalUrl, '_blank');
         window.addCoins(amount);
-        
+
         window.claimedBounties[bKey] = true;
         element.dataset.claimed = 'true';
         element.style.opacity = '0.5';
@@ -4220,10 +4243,132 @@ window.awardBounty = function(type, amount, element) {
 };
 
 window.secretRewards = {};
-window.giveSecretReward = function(key, amount) {
+window.giveSecretReward = function (key, amount) {
     if (!window.secretRewards[key]) {
         window.secretRewards[key] = true;
         window.addCoins(amount);
     }
 };
 
+window.summonAKBot = function () {
+    const goOverlay = document.getElementById('game-over-overlay');
+    if (goOverlay) goOverlay.style.display = 'none';
+    isOverlayActive = false;
+
+    // Clear out boss spikes and black holes to prevent instant death/trapping upon revival
+    if (typeof bossSpikes !== 'undefined') bossSpikes.length = 0;
+    if (typeof blackHoles !== 'undefined') blackHoles.length = 0;
+
+    player.hp = player.maxHp;
+    player.isInvincible = true;
+    player.isTrapped = false;
+    player.hurtTimer = 0;
+    setTimeout(() => { player.isInvincible = false; }, 3000);
+
+    let spawnX = player.x - 60;
+    let spawnFrameY = 3; // face right by default
+    if (spawnX < 0) {
+        spawnX = player.x + 60;
+        spawnFrameY = 1; // face left
+    }
+
+    const akbot = {
+        id: "akbot-e7",
+        x: spawnX,
+        y: player.y - 600,
+        targetY: player.y,
+        size: 48,
+        hp: 9999,
+        maxHp: 9999,
+        isInvincible: true,
+        type: "akbot",
+        image: akbotImg,
+        frameX: 0,
+        frameY: spawnFrameY,
+        text: "AKBot-e7",
+        vy: 20
+    };
+
+    npcs.push(akbot);
+
+    const fallInterval = setInterval(() => {
+        if (akbot.y < akbot.targetY) {
+            akbot.y += akbot.vy;
+        } else {
+            akbot.y = akbot.targetY;
+            akbot.vy = 0;
+            clearInterval(fallInterval);
+
+            // Real-time Cinematic Sequence using Overhead White Speech Bubbles (currentSpeechBubble)
+            const dialogueBox = document.getElementById('dialogue-box');
+            if (dialogueBox) dialogueBox.style.display = 'none';
+
+            window.bossTarget = akbot;
+
+            let fullText = "Hi, I am Akshay R...";
+            let typedText = "";
+            let charIndex = 0;
+            let isInterrupted = false;
+
+            // Display white speech bubble over AKBot
+            currentSpeechBubble = { entity: akbot, text: "" };
+
+            const typingInterval = setInterval(() => {
+                if (isInterrupted) {
+                    clearInterval(typingInterval);
+                    return;
+                }
+
+                typedText += fullText[charIndex];
+                if (currentSpeechBubble && currentSpeechBubble.entity === akbot) {
+                    currentSpeechBubble.text = typedText;
+                }
+                charIndex++;
+
+                // When he reaches "Hi, I am Akshay", trigger missile and interrupt with player shouting
+                if (typedText === "Hi, I am Akshay") {
+                    isInterrupted = true;
+
+                    const boss = npcs.find(n => n.isBoss && n.hp > 0);
+                    if (boss) {
+                        let dx = (akbot.x + akbot.size / 2) - (boss.x + boss.size / 2);
+                        let dy = (akbot.y + akbot.size / 2) - (boss.y + boss.size / 2);
+                        let angle = Math.atan2(dy, dx);
+
+                        // Boss fires a slow homing missile at AKBot for dramatic cinematic timing!
+                        bossMissiles.push({
+                            x: boss.x + boss.size / 2,
+                            y: boss.y + boss.size / 2,
+                            width: 30, // Homing missile dimensions
+                            height: 10,
+                            speed: 5, // Slowed down from 12 to 5 for cinematic pacing
+                            angle: angle,
+                            damage: 50,
+                            lifetime: 300
+                        });
+
+                        // Main character (Player) shouts "Watch out!!" in a white speech bubble above player's head!
+                        currentSpeechBubble = { entity: player, text: "Watch out!!" };
+
+                        setTimeout(() => {
+                            window.bossTarget = null;
+                            currentSpeechBubble = null;
+                        }, 2500);
+                    } else {
+                        // Boss is dead, finish sentence
+                        isInterrupted = false;
+                    }
+                }
+
+                if (charIndex >= fullText.length) {
+                    clearInterval(typingInterval);
+                    setTimeout(() => {
+                        window.bossTarget = null;
+                        currentSpeechBubble = null;
+                    }, 2000);
+                }
+
+            }, 100);
+        }
+    }, 1000 / 60);
+};
