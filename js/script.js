@@ -2620,6 +2620,9 @@ function update() {
         if (akbotBox && rectIntersect(mBox, akbotBox)) {
             bossMissiles.splice(i, 1);
             screenShake = 10;
+            if (akbotTarget && typeof akbotTarget.onMissileHit === 'function') {
+                akbotTarget.onMissileHit();
+            }
         } else if (rectIntersect(mBox, playerBox)) {
             if (!player.isDefending) {
                 player.hp -= m.damage;
@@ -3560,69 +3563,198 @@ function draw() {
     // Draw Speech Bubble
     if (currentSpeechBubble) {
         const entity = currentSpeechBubble.entity;
-        const text = currentSpeechBubble.text;
 
-        ctx.save();
-        ctx.font = "bold 14px sans-serif";
-        const padding = 10;
+        if (currentSpeechBubble.isDictCard) {
+            ctx.save();
+            const padding = 12;
 
-        // Basic text wrapping
-        const words = text.split(' ');
-        let line = '';
-        const lines = [];
-        const maxWidth = 180;
+            // Left column title: AKSHAY
+            const headerTitle = "AKSHAY";
+            ctx.font = "900 24px sans-serif";
+            const headerWidth = ctx.measureText(headerTitle).width;
 
-        for (let n = 0; n < words.length; n++) {
-            const testLine = line + words[n] + ' ';
-            const metrics = ctx.measureText(testLine);
-            if (metrics.width > maxWidth && n > 0) {
-                lines.push(line);
-                line = words[n] + ' ';
+            // Right column definition lines
+            const rawRightLines = [
+                { text: "/ˈʌk.ʃeɪ/  ·  uk-SHY", font: "12px sans-serif", fill: "#333333" },
+                { text: "Derived from prefix a- (absence) & kshaya (decay/destruction).", font: "italic 11px sans-serif", fill: "#555555" },
+                { text: "\"indestructible\"", font: "bold 13px sans-serif", fill: "#0088cc" }
+            ];
+
+            let rightMaxWidth = 250;
+            let processedRightLines = [];
+
+            rawRightLines.forEach(rl => {
+                ctx.font = rl.font;
+                const words = rl.text.split(' ');
+                let line = '';
+                for (let n = 0; n < words.length; n++) {
+                    const testLine = line + (line ? ' ' : '') + words[n];
+                    if (ctx.measureText(testLine).width > rightMaxWidth && n > 0) {
+                        processedRightLines.push({ text: line, font: rl.font, fill: rl.fill });
+                        line = words[n];
+                    } else {
+                        line = testLine;
+                    }
+                }
+                if (line) processedRightLines.push({ text: line, font: rl.font, fill: rl.fill });
+            });
+
+            const rightHeight = processedRightLines.length * 16;
+            const maxRightLineWidth = Math.max(...processedRightLines.map(l => {
+                ctx.font = l.font;
+                return ctx.measureText(l.text).width;
+            }));
+
+            const dividerGap = 10;
+            const bubbleWidth = padding + headerWidth + dividerGap + 2 + dividerGap + maxRightLineWidth + padding;
+            const bubbleHeight = Math.max(52, rightHeight + padding * 2);
+
+            const bx = entity.x + entity.size / 2 - bubbleWidth / 2;
+            const by = entity.y - bubbleHeight - 15;
+
+            // Card background
+            ctx.fillStyle = "white";
+            ctx.strokeStyle = "black";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            if (ctx.roundRect) {
+                ctx.roundRect(bx, by, bubbleWidth, bubbleHeight, 8);
             } else {
-                line = testLine;
+                ctx.fillRect(bx, by, bubbleWidth, bubbleHeight);
+                ctx.strokeRect(bx, by, bubbleWidth, bubbleHeight);
             }
-        }
-        lines.push(line);
+            ctx.fill();
+            ctx.stroke();
 
-        const textHeight = 16;
-        const bubbleHeight = lines.length * textHeight + padding * 2;
-        const metricsLongest = ctx.measureText(lines.reduce((a, b) => a.length > b.length ? a : b));
-        const bubbleWidth = Math.max(50, metricsLongest.width) + padding * 2;
+            // Tail
+            ctx.beginPath();
+            ctx.moveTo(bx + bubbleWidth / 2 - 8, by + bubbleHeight);
+            ctx.lineTo(bx + bubbleWidth / 2 + 8, by + bubbleHeight);
+            ctx.lineTo(bx + bubbleWidth / 2, by + bubbleHeight + 12);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
 
-        const bx = entity.x + entity.size / 2 - bubbleWidth / 2;
-        const by = entity.y - bubbleHeight - 15;
+            // Left Title: AKSHAY
+            ctx.font = "900 24px sans-serif";
+            ctx.fillStyle = "#111111";
+            ctx.textAlign = "left";
+            ctx.textBaseline = "middle";
+            ctx.fillText(headerTitle, bx + padding, by + bubbleHeight / 2);
 
-        // Draw bubble background
-        ctx.fillStyle = "white";
-        ctx.strokeStyle = "black";
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        if (ctx.roundRect) {
-            ctx.roundRect(bx, by, bubbleWidth, bubbleHeight, 8);
+            // Vertical Divider
+            const dividerX = bx + padding + headerWidth + dividerGap;
+            ctx.strokeStyle = "#0088cc";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(dividerX, by + padding);
+            ctx.lineTo(dividerX, by + bubbleHeight - padding);
+            ctx.stroke();
+
+            // Right Column Lines
+            const rightStartX = dividerX + dividerGap;
+            let rightY = by + (bubbleHeight - rightHeight) / 2;
+            ctx.textBaseline = "top";
+
+            processedRightLines.forEach(l => {
+                ctx.font = l.font;
+                ctx.fillStyle = l.fill;
+                ctx.fillText(l.text, rightStartX, rightY);
+                rightY += 16;
+            });
+
+            ctx.restore();
         } else {
-            ctx.fillRect(bx, by, bubbleWidth, bubbleHeight);
-            ctx.strokeRect(bx, by, bubbleWidth, bubbleHeight);
-        }
-        ctx.fill();
-        ctx.stroke();
+            const text = currentSpeechBubble.text;
 
-        // Draw tail
-        ctx.beginPath();
-        ctx.moveTo(bx + bubbleWidth / 2 - 8, by + bubbleHeight);
-        ctx.lineTo(bx + bubbleWidth / 2 + 8, by + bubbleHeight);
-        ctx.lineTo(bx + bubbleWidth / 2, by + bubbleHeight + 12);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
+            ctx.save();
+            ctx.font = "bold 14px sans-serif";
+            const padding = 10;
 
-        // Draw text
-        ctx.fillStyle = "black";
-        ctx.textAlign = "left";
-        ctx.textBaseline = "top";
-        for (let i = 0; i < lines.length; i++) {
-            ctx.fillText(lines[i], bx + padding, by + padding + i * textHeight);
+            // Text wrapping with newline (\n) support and custom maxWidth
+            const maxWidth = currentSpeechBubble.maxWidth || 180;
+            const paragraphs = text.split('\n');
+            const lines = [];
+
+            paragraphs.forEach(para => {
+                if (para === '') {
+                    lines.push({ text: '', isHeader: false });
+                    return;
+                }
+                const isHeader = para.startsWith('AKSHAY:');
+                ctx.font = isHeader ? "bold 18px sans-serif" : "bold 13px sans-serif";
+
+                const words = para.split(' ');
+                let line = '';
+                for (let n = 0; n < words.length; n++) {
+                    const testLine = line + (line ? ' ' : '') + words[n];
+                    const metrics = ctx.measureText(testLine);
+                    if (metrics.width > maxWidth && n > 0) {
+                        lines.push({ text: line, isHeader });
+                        line = words[n];
+                    } else {
+                        line = testLine;
+                    }
+                }
+                if (line) lines.push({ text: line, isHeader });
+            });
+
+            let totalHeight = padding * 2;
+            let maxLineWidth = 50;
+
+            lines.forEach(l => {
+                ctx.font = l.isHeader ? "bold 18px sans-serif" : "bold 13px sans-serif";
+                const w = ctx.measureText(l.text).width;
+                if (w > maxLineWidth) maxLineWidth = w;
+                totalHeight += l.text === '' ? 6 : (l.isHeader ? 22 : 17);
+            });
+
+            const bubbleWidth = maxLineWidth + padding * 2;
+            const bubbleHeight = totalHeight;
+
+            const bx = entity.x + entity.size / 2 - bubbleWidth / 2;
+            const by = entity.y - bubbleHeight - 15;
+
+            // Draw bubble background
+            ctx.fillStyle = "white";
+            ctx.strokeStyle = "black";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            if (ctx.roundRect) {
+                ctx.roundRect(bx, by, bubbleWidth, bubbleHeight, 8);
+            } else {
+                ctx.fillRect(bx, by, bubbleWidth, bubbleHeight);
+                ctx.strokeRect(bx, by, bubbleWidth, bubbleHeight);
+            }
+            ctx.fill();
+            ctx.stroke();
+
+            // Draw tail
+            ctx.beginPath();
+            ctx.moveTo(bx + bubbleWidth / 2 - 8, by + bubbleHeight);
+            ctx.lineTo(bx + bubbleWidth / 2 + 8, by + bubbleHeight);
+            ctx.lineTo(bx + bubbleWidth / 2, by + bubbleHeight + 12);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Draw text lines
+            ctx.textAlign = "left";
+            ctx.textBaseline = "top";
+            let curY = by + padding;
+
+            lines.forEach(l => {
+                if (l.text === '') {
+                    curY += 6;
+                    return;
+                }
+                ctx.font = l.isHeader ? "bold 18px sans-serif" : (l.text.startsWith('"') ? "bold 14px sans-serif" : "bold 13px sans-serif");
+                ctx.fillStyle = l.isHeader ? "#0055b3" : (l.text.startsWith('"') ? "#008855" : "#111111");
+                ctx.fillText(l.text, bx + padding, curY);
+                curY += l.isHeader ? 22 : 17;
+            });
+            ctx.restore();
         }
-        ctx.restore();
     }
 
     // Map Stand removed, NPC now handles map display.
@@ -4299,6 +4431,9 @@ window.summonAKBot = function () {
             akbot.vy = 0;
             clearInterval(fallInterval);
 
+            // Make main character turn to face AKBot when AKBot lands!
+            player.frameY = (akbot.x < player.x) ? 1 : 3;
+
             // Real-time Cinematic Sequence using Overhead White Speech Bubbles (currentSpeechBubble)
             const dialogueBox = document.getElementById('dialogue-box');
             if (dialogueBox) dialogueBox.style.display = 'none';
@@ -4334,26 +4469,62 @@ window.summonAKBot = function () {
                         let dx = (akbot.x + akbot.size / 2) - (boss.x + boss.size / 2);
                         let dy = (akbot.y + akbot.size / 2) - (boss.y + boss.size / 2);
                         let angle = Math.atan2(dy, dx);
+                        let dist = Math.hypot(dx, dy);
 
-                        // Boss fires a slow homing missile at AKBot for dramatic cinematic timing!
+                        // Dynamic missile speed so flight duration is always ~1.8 seconds (~110 frames) for realistic cinematic timing
+                        let missileSpeed = Math.max(1.0, Math.min(5, dist / 110));
+
                         bossMissiles.push({
                             x: boss.x + boss.size / 2,
                             y: boss.y + boss.size / 2,
                             width: 30, // Homing missile dimensions
                             height: 10,
-                            speed: 5, // Slowed down from 12 to 5 for cinematic pacing
+                            speed: missileSpeed,
                             angle: angle,
                             damage: 50,
                             lifetime: 300
                         });
 
-                        // Main character (Player) shouts "Watch out!!" in a white speech bubble above player's head!
-                        currentSpeechBubble = { entity: player, text: "Watch out!!" };
-
+                        // Main character (Player) shouts "Watch out!!" 600ms after launch while missile is flying
                         setTimeout(() => {
-                            window.bossTarget = null;
-                            currentSpeechBubble = null;
-                        }, 2500);
+                            currentSpeechBubble = { entity: player, text: "Watch out!!" };
+                        }, 600);
+
+                        // Callback when missile hits AKBot
+                        akbot.onMissileHit = function() {
+                            akbot.onMissileHit = null; // trigger once
+
+                            // Turn AKBot to face the camera/viewer directly (Fourth Wall Break)!
+                            akbot.frameY = 0;
+
+                            // Display side-by-side dictionary card (matching portfolio layout)
+                            currentSpeechBubble = {
+                                entity: akbot,
+                                isDictCard: true
+                            };
+
+                            // Leave definition card on screen for exactly 2.5 seconds
+                            setTimeout(() => {
+                                // Turn AKBot back to face the main character
+                                akbot.frameY = spawnFrameY;
+
+                                // Main character reacts: "Woah..."
+                                currentSpeechBubble = { entity: player, text: "Woah..." };
+
+                                // End scene after reaction
+                                setTimeout(() => {
+                                    window.bossTarget = null;
+                                    currentSpeechBubble = null;
+                                }, 1500);
+                            }, 2500);
+                        };
+
+                        // Safety fallback if missile misses or boss is dead
+                        setTimeout(() => {
+                            if (typeof akbot.onMissileHit === 'function') {
+                                akbot.onMissileHit();
+                            }
+                        }, 5000);
                     } else {
                         // Boss is dead, finish sentence
                         isInterrupted = false;
