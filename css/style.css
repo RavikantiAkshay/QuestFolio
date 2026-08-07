@@ -2201,6 +2201,7 @@ canvas {
     background: #ffb86c !important;
     color: #111 !important;
 }
+
 /* Armory Hotspot */
 .armory-hotspot {
     position: absolute;
@@ -2224,6 +2225,7 @@ canvas {
     0% {
         background: rgba(255, 69, 0, 0.15);
     }
+
     100% {
         background: rgba(255, 69, 0, 0.4);
     }
