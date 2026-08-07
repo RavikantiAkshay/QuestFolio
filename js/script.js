@@ -72,8 +72,8 @@ function initializeRealTimeEnvironment() {
         console.error("Could not set IST timezone, falling back to defaults.");
     }
 }
-// Commented out by default to enforce Autumn/Day start
-// initializeRealTimeEnvironment();
+// Auto-set time of day and season based on real IST date/time
+initializeRealTimeEnvironment();
 let isDragging = false;
 let paintMode = 1;
 let brushRadius = 0; // 0 = 1x1, 1 = 3x3, 2 = 5x5
