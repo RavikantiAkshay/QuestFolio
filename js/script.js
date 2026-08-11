@@ -295,23 +295,119 @@ function initQuestModal() {
         isOverlayActive = true;
     }
 
-    function closeQuestModal() {
-        if (questOverlay) {
-            questOverlay.style.display = 'none';
-        }
+    function startFullAdventure() {
+        if (questOverlay) questOverlay.style.display = 'none';
+        const quickOverlay = document.getElementById('quick-quest-overlay');
+        if (quickOverlay) quickOverlay.style.display = 'none';
         isOverlayActive = false;
     }
 
+    function startQuickQuest() {
+        if (questOverlay) questOverlay.style.display = 'none';
+        const quickOverlay = document.getElementById('quick-quest-overlay');
+        if (quickOverlay) {
+            quickOverlay.style.display = 'flex';
+            initQuickQuestDossier();
+        }
+        isOverlayActive = true;
+    }
+
     if (fullCard) {
-        fullCard.addEventListener('click', () => {
-            closeQuestModal();
-        });
+        fullCard.addEventListener('click', startFullAdventure);
     }
 
     if (quickCard) {
-        quickCard.addEventListener('click', () => {
-            closeQuestModal();
+        quickCard.addEventListener('click', startQuickQuest);
+    }
+}
+
+function initQuickQuestDossier() {
+    const scrollContainer = document.getElementById('qq-scroll-container');
+    const dots = document.querySelectorAll('.qq-dot');
+    const stepCounter = document.getElementById('qq-step-counter');
+    const closeBtn = document.getElementById('qq-close-top');
+    const enterWorldBtn = document.getElementById('qq-btn-enter-world');
+    const sections = [
+        document.getElementById('qq-sec-character'),
+        document.getElementById('qq-sec-quests'),
+        document.getElementById('qq-sec-arsenal'),
+        document.getElementById('qq-sec-adventures'),
+        document.getElementById('qq-sec-education')
+    ];
+
+    if (!scrollContainer) return;
+
+    // Scroll tracker & active dot updater
+    function handleScroll() {
+        const containerRect = scrollContainer.getBoundingClientRect();
+        const scrollTop = scrollContainer.scrollTop;
+        const scrollHeight = scrollContainer.scrollHeight;
+        const clientHeight = scrollContainer.clientHeight;
+
+        let activeIdx = 0;
+
+        // If near bottom of container, activate final section
+        if (scrollTop + clientHeight >= scrollHeight - 60) {
+            activeIdx = sections.length - 1;
+        } else {
+            sections.forEach((sec, idx) => {
+                if (sec) {
+                    const secRect = sec.getBoundingClientRect();
+                    const relativeTop = secRect.top - containerRect.top;
+                    if (relativeTop <= containerRect.height * 0.45) {
+                        activeIdx = idx;
+                    }
+                }
+            });
+        }
+
+        dots.forEach((dot, idx) => {
+            if (idx === activeIdx) {
+                dot.classList.add('active');
+                dot.textContent = '●';
+            } else {
+                dot.classList.remove('active');
+                dot.textContent = '○';
+            }
         });
+
+        if (stepCounter) {
+            stepCounter.textContent = `${activeIdx + 1}/5`;
+        }
+    }
+
+    scrollContainer.removeEventListener('scroll', handleScroll);
+    scrollContainer.addEventListener('scroll', handleScroll);
+    handleScroll();
+
+    // Click dot navigation
+    dots.forEach((dot, idx) => {
+        dot.onclick = () => {
+            if (sections[idx]) {
+                sections[idx].scrollIntoView({ behavior: 'smooth' });
+            }
+        };
+    });
+
+    // Close button returns to splash screen
+    if (closeBtn) {
+        closeBtn.onclick = () => {
+            const quickOverlay = document.getElementById('quick-quest-overlay');
+            const questOverlay = document.getElementById('quest-modal-overlay');
+            if (quickOverlay) quickOverlay.style.display = 'none';
+            if (questOverlay) questOverlay.style.display = 'flex';
+        };
+    }
+
+    // Enter Full Adventure from dossier endpoint
+    if (enterWorldBtn) {
+        enterWorldBtn.onclick = () => {
+            const quickOverlay = document.getElementById('quick-quest-overlay');
+            const questOverlay = document.getElementById('quest-modal-overlay');
+            if (quickOverlay) quickOverlay.style.display = 'none';
+            if (questOverlay) questOverlay.style.display = 'none';
+            isOverlayActive = false;
+        };
     }
 }
 

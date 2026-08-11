@@ -2652,3 +2652,612 @@ canvas {
         font-size: 15px;
     }
 }
+
+/* ========================================================================= */
+/* QUICK QUEST FAST DOSSIER OVERLAY */
+/* ========================================================================= */
+
+.quick-quest-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #0a0810;
+    background-image: 
+        radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.15), transparent 70%),
+        linear-gradient(rgba(18, 16, 24, 0) 50%, rgba(0, 0, 0, 0.6) 50%);
+    background-size: 100% 100%, 100% 4px;
+    z-index: 2100;
+    display: flex;
+    flex-direction: column;
+    color: #ffffff;
+    font-family: 'Share Tech Mono', monospace;
+    overflow: hidden;
+}
+
+/* Floating Progress Header Bar */
+.quick-quest-progress-bar {
+    position: fixed;
+    top: 16px;
+    right: 24px;
+    z-index: 2200;
+    background: rgba(17, 13, 22, 0.92);
+    border: 3px solid #f1c40f;
+    box-shadow: 0 0 0 2px #000, 0 8px 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(241, 196, 15, 0.3);
+    border-radius: 6px;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    backdrop-filter: blur(8px);
+}
+
+.progress-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: #f1c40f;
+    letter-spacing: 1px;
+}
+
+.progress-dots {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.qq-dot {
+    font-size: 14px;
+    color: #4a5568;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.qq-dot.active {
+    color: #22c55e;
+    transform: scale(1.3);
+    text-shadow: 0 0 8px rgba(34, 197, 94, 0.8);
+}
+
+.qq-dot:hover {
+    color: #a855f7;
+}
+
+.qq-close-btn {
+    background: #7f1d1d;
+    border: 2px solid #ef4444;
+    color: #ffffff;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    box-shadow: 0 2px 0 #000;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.qq-close-btn:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+}
+
+/* Scrollable Container */
+.quick-quest-scroll-container {
+    width: 100%;
+    height: 100vh;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    padding: 80px 20px 60px 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 60px;
+}
+
+/* Section Wrapper */
+.qq-section {
+    width: 95%;
+    max-width: 980px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    scroll-margin-top: 90px;
+}
+
+.qq-section-header {
+    text-align: center;
+}
+
+.qq-section-title {
+    margin: 0 0 8px 0;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 18px;
+    color: #f1c40f;
+    text-shadow: 2px 2px 0 #000, 0 0 12px rgba(241, 196, 15, 0.4);
+    letter-spacing: 1px;
+}
+
+.qq-section-desc {
+    margin: 0;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    color: #94a3b8;
+}
+
+/* Generic RPG Card Frame */
+.qq-card {
+    position: relative;
+    width: 100%;
+    background: #14101a;
+    border: 4px solid #3b2c1a;
+    box-shadow: 
+        0 0 0 2px #000,
+        0 12px 30px rgba(0, 0, 0, 0.8),
+        inset 0 0 25px rgba(0, 0, 0, 0.8);
+    padding: 28px 32px;
+    box-sizing: border-box;
+    border-radius: 4px;
+}
+
+/* Section 1: Character Card */
+.qq-character-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+    background: linear-gradient(180deg, #1d132b 0%, #110b1a 100%);
+    border-color: #f1c40f;
+    box-shadow: 0 0 0 2px #000, 0 0 20px rgba(241, 196, 15, 0.25), inset 0 0 30px rgba(0,0,0,0.8);
+}
+
+.qq-avatar-frame {
+    width: 90px;
+    height: 90px;
+    border: 3px solid #f1c40f;
+    border-radius: 6px;
+    background: #000;
+    padding: 2px;
+    box-shadow: 0 4px 0 #000, 0 0 12px rgba(241, 196, 15, 0.4);
+}
+
+.qq-character-portrait {
+    width: 100%;
+    height: 100%;
+    background-image: url('../assets/images/characters/akbot-e7.png');
+    background-size: 460px 460px;
+    background-position: -76px -24px;
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+}
+
+.qq-name {
+    margin: 4px 0 0 0;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 22px;
+    color: #f8fafc;
+    text-shadow: 3px 3px 0 #000, 0 0 14px rgba(255, 255, 255, 0.3);
+}
+
+.qq-sub {
+    margin: 0;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 16px;
+    color: #c084fc;
+}
+
+.qq-tagline-badge {
+    background: rgba(168, 85, 247, 0.15);
+    border: 1px dashed #a855f7;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: #e9d5ff;
+    letter-spacing: 0.5px;
+}
+
+.qq-links-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 8px;
+}
+
+/* Section 2: Projects Grid */
+.qq-projects-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+}
+
+.qq-project-card {
+    background: #11151c;
+    border-color: #2b3648;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.qq-project-card:hover {
+    border-color: #38bdf8;
+    transform: translateY(-3px);
+    box-shadow: 0 0 0 2px #000, 0 10px 25px rgba(56, 189, 248, 0.25);
+}
+
+.qq-project-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.qq-project-title {
+    margin: 0;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 15px;
+    color: #38bdf8;
+    text-shadow: 2px 2px 0 #000;
+}
+
+.qq-project-badge {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    padding: 4px 8px;
+    border-radius: 2px;
+}
+
+.qq-project-badge.green {
+    background: #052e16;
+    border: 1px solid #22c55e;
+    color: #4ade80;
+}
+
+.qq-project-desc {
+    margin: 0;
+    font-size: 15px;
+    color: #e2e8f0;
+    line-height: 1.6;
+}
+
+.qq-features-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 8px 16px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px dashed #334155;
+    padding: 12px 16px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #38bdf8;
+}
+
+.qq-tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 4px 0;
+}
+
+.qq-tech-tags span {
+    background: #1e293b;
+    border: 1px solid #334155;
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.qq-project-links {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+/* Section 3: Arsenal / Skills */
+.qq-arsenal-card {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: #14121a;
+    border-color: #4a3b2c;
+}
+
+.qq-arsenal-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.qq-group-title {
+    margin: 0;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    color: #f1c40f;
+    letter-spacing: 0.5px;
+}
+
+.qq-skill-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.skill-badge {
+    background: #1e1b2e;
+    border: 1px solid #4c1d95;
+    color: #e9d5ff;
+    padding: 6px 10px;
+    border-radius: 3px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    box-shadow: 0 2px 0 #000;
+}
+
+/* Section 4: Timeline / Adventures */
+.qq-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.qq-timeline-card {
+    background: #15111e;
+    border-color: #3b2c4a;
+    padding: 24px 28px;
+}
+
+.qq-timeline-year {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: #c084fc;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
+.qq-timeline-role {
+    margin: 0 0 6px 0;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 14px;
+    color: #f8fafc;
+    line-height: 1.5;
+}
+
+.qq-timeline-org {
+    margin: 0 0 14px 0;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 15px;
+    color: #f1c40f;
+    letter-spacing: 0.5px;
+}
+
+.qq-timeline-text {
+    margin: 0;
+    font-size: 14px;
+    color: #cbd5e1;
+    line-height: 1.6;
+}
+
+.qq-timeline-bullets {
+    list-style: none;
+    padding: 0;
+    margin: 6px 0 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.qq-timeline-bullets li {
+    position: relative;
+    padding-left: 20px;
+    font-size: 14px;
+    color: #cbd5e1;
+    line-height: 1.6;
+}
+
+.qq-timeline-bullets li::before {
+    content: "▸";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #38bdf8;
+    font-size: 14px;
+}
+
+/* Section 5: Education & Endpoint */
+.qq-education-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    background: #111827;
+    border-color: #1e3a8a;
+}
+
+.qq-edu-icon {
+    font-size: 28px;
+}
+
+.qq-edu-header {
+    margin: 0;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: #3b82f6;
+}
+
+.qq-edu-inst {
+    margin: 4px 0 0 0;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 16px;
+    color: #ffffff;
+}
+
+.qq-edu-degree {
+    margin: 0;
+    font-size: 14px;
+    color: #93c5fd;
+}
+
+.qq-edu-meta {
+    margin-top: 4px;
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+.cgpa-highlight {
+    color: #f1c40f;
+    font-weight: bold;
+}
+
+/* Final Endpoint Card */
+.qq-complete-card {
+    background: linear-gradient(180deg, #24143a 0%, #12091f 100%);
+    border-color: #a855f7;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    margin-top: 10px;
+    box-shadow: 0 0 0 2px #000, 0 0 25px rgba(168, 85, 247, 0.4);
+}
+
+.qq-complete-title {
+    margin: 0;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 16px;
+    color: #f1c40f;
+    text-shadow: 2px 2px 0 #000, 0 0 10px rgba(241, 196, 15, 0.5);
+}
+
+.qq-complete-text {
+    margin: 0;
+    font-size: 14px;
+    color: #e2e8f0;
+    max-width: 460px;
+    line-height: 1.5;
+}
+
+.qq-complete-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin-top: 6px;
+}
+
+.qq-sub-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Generic Buttons */
+.qq-btn {
+    display: inline-block;
+    padding: 8px 14px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    text-decoration: none;
+    border-radius: 3px;
+    box-shadow: 0 3px 0 #000;
+    transition: transform 0.1s ease, background 0.15s ease;
+    cursor: pointer;
+}
+
+.qq-btn:hover {
+    transform: translateY(-2px);
+}
+
+.qq-btn.gold {
+    background: #854d0e;
+    border: 2px solid #f1c40f;
+    color: #ffffff;
+}
+
+.qq-btn.gold:hover {
+    background: #a16207;
+}
+
+.qq-btn.purple {
+    background: #6b21a8;
+    border: 2px solid #c084fc;
+    color: #ffffff;
+}
+
+.qq-btn.purple:hover {
+    background: #7e22ce;
+}
+
+.qq-btn.green {
+    background: #15803d;
+    border: 2px solid #4ade80;
+    color: #ffffff;
+}
+
+.qq-btn.green:hover {
+    background: #16a34a;
+}
+
+.qq-btn.dark {
+    background: #1e293b;
+    border: 2px solid #64748b;
+    color: #ffffff;
+}
+
+.qq-btn.dark:hover {
+    background: #334155;
+}
+
+.qq-btn-large {
+    padding: 12px 24px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    border-radius: 4px;
+    box-shadow: 0 4px 0 #000;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.qq-btn-large.purple {
+    background: #7e22ce;
+    border: 3px solid #c084fc;
+    color: #ffffff;
+    box-shadow: 0 4px 0 #3b0764, 0 0 15px rgba(192, 132, 252, 0.4);
+}
+
+.qq-btn-large.purple:hover {
+    background: #9333ea;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #3b0764, 0 0 20px rgba(192, 132, 252, 0.7);
+}
+
+.mt-2 { margin-top: 8px !important; }
+.mt-3 { margin-top: 14px !important; }
+
+@media (max-width: 600px) {
+    .quick-quest-progress-bar {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        justify-content: space-between;
+        padding: 6px 12px;
+    }
+    .quick-quest-scroll-container {
+        padding-top: 70px;
+    }
+    .qq-name {
+        font-size: 16px;
+    }
+    .qq-section-title {
+        font-size: 14px;
+    }
+}

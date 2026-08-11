@@ -90,6 +90,249 @@
         </div>
     </div>
 
+    <!-- QUICK QUEST FAST DOSSIER OVERLAY -->
+    <div id="quick-quest-overlay" class="quick-quest-overlay" style="display: none;">
+        <!-- Floating Progress Bar Header -->
+        <div class="quick-quest-progress-bar">
+            <div class="progress-title">⚔ QUICK QUEST <span id="qq-step-counter">1/5</span></div>
+            <div class="progress-dots">
+                <span class="qq-dot active" data-section="qq-sec-character" title="Character">●</span>
+                <span class="qq-dot" data-section="qq-sec-quests" title="Greatest Quests">○</span>
+                <span class="qq-dot" data-section="qq-sec-arsenal" title="Arsenal">○</span>
+                <span class="qq-dot" data-section="qq-sec-adventures" title="Adventures">○</span>
+                <span class="qq-dot" data-section="qq-sec-education" title="Education">○</span>
+            </div>
+            <button class="qq-close-btn" id="qq-close-top">✕ CLOSE</button>
+        </div>
+
+        <!-- Scrollable Dossier Container -->
+        <div class="quick-quest-scroll-container" id="qq-scroll-container">
+            
+            <!-- SECTION 1: CHARACTER -->
+            <section id="qq-sec-character" class="qq-section">
+                <div class="qq-card qq-character-card">
+                    <div class="pixel-corner tl"></div><div class="pixel-corner tr"></div>
+                    <div class="pixel-corner bl"></div><div class="pixel-corner br"></div>
+
+                    <div class="qq-avatar-frame">
+                        <div class="qq-character-portrait"></div>
+                    </div>
+                    <h1 class="qq-name">AKSHAY RAVIKANTI</h1>
+                    <p class="qq-sub">Electrical Engineering @ IIT Bhilai</p>
+                    <div class="qq-tagline-badge">Developer • Builder • AI Enthusiast</div>
+                    
+                    <div class="qq-links-row">
+                        <a href="https://github.com/RavikantiAkshay" target="_blank" class="qq-btn gold">[ GITHUB ]</a>
+                        <a href="https://linkedin.com/in/ravikanti-akshay" target="_blank" class="qq-btn gold">[ LINKEDIN ]</a>
+                        <a href="mailto:ravikantiakshay15@gmail.com" class="qq-btn gold">[ EMAIL ]</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: GREATEST QUESTS -->
+            <section id="qq-sec-quests" class="qq-section">
+                <div class="qq-section-header">
+                    <h2 class="qq-section-title">⚔ GREATEST QUESTS</h2>
+                    <p class="qq-section-desc">Key projects built with passion and high-performance tech.</p>
+                </div>
+
+                <div class="qq-projects-grid">
+                    <!-- Project 1: BHILAEE LABS -->
+                    <div class="qq-card qq-project-card">
+                        <div class="qq-project-header">
+                            <h3 class="qq-project-title">BHILAEE LABS</h3>
+                            <span class="qq-project-badge green">LIVE</span>
+                        </div>
+                        <p class="qq-project-desc">A structured, interactive virtual laboratory platform designed for Electrical Engineering students at IIT Bhilai. Provides digitized experiment guides with interactive theory, circuit diagrams, Viva Voce flashcards, mathematical rendering, and Chart.js data visualization.</p>
+                        <div class="qq-features-list">
+                            <span>✦ Interactive experiment guides</span>
+                            <span>✦ Viva Voce flashcards</span>
+                            <span>✦ KaTeX math rendering</span>
+                            <span>✦ Chart.js data visualization</span>
+                        </div>
+                        <div class="qq-tech-tags">
+                            <span>Next.js 15</span><span>React 19</span><span>Supabase</span><span>KaTeX</span><span>Chart.js</span>
+                        </div>
+                        <div class="qq-project-links">
+                            <a href="https://labs.bhilaee.openlake.in" target="_blank" class="qq-btn green">[ LIVE DEMO ]</a>
+                            <a href="https://github.com/RavikantiAkshay/bhilaee-labs" target="_blank" class="qq-btn dark">[ GITHUB ]</a>
+                        </div>
+                    </div>
+
+                    <!-- Project 2: BHILAEE SIMULATOR -->
+                    <div class="qq-card qq-project-card">
+                        <div class="qq-project-header">
+                            <h3 class="qq-project-title">BHILAEE SIMULATOR</h3>
+                            <span class="qq-project-badge green">LIVE</span>
+                        </div>
+                        <p class="qq-project-desc">A powerful browser-based circuit simulator built with zero external dependencies. Features Modified Nodal Analysis (MNA) solver for DC, AC, and transient analysis with real-time oscilloscope visualization and pre-built experiment templates.</p>
+                        <div class="qq-features-list">
+                            <span>✦ DC, AC, &amp; Transient Analysis</span>
+                            <span>✦ MNA Matrix Solver</span>
+                            <span>✦ Real-time oscilloscope</span>
+                            <span>✦ Experiment templates</span>
+                        </div>
+                        <div class="qq-tech-tags">
+                            <span>Vanilla JS</span><span>HTML5/CSS3</span><span>SVG Canvas</span><span>Canvas API</span>
+                        </div>
+                        <div class="qq-project-links">
+                            <a href="https://simulator.bhilaee.openlake.in" target="_blank" class="qq-btn green">[ LIVE DEMO ]</a>
+                            <a href="https://github.com/RavikantiAkshay/bhilaee-simulator" target="_blank" class="qq-btn dark">[ GITHUB ]</a>
+                        </div>
+                    </div>
+
+                    <!-- Project 3: CODE TRANSLATOR -->
+                    <div class="qq-card qq-project-card">
+                        <div class="qq-project-header">
+                            <h3 class="qq-project-title">CODE TRANSLATOR</h3>
+                            <span class="qq-project-badge green">LIVE</span>
+                        </div>
+                        <p class="qq-project-desc">An elite full-stack utility leveraging the Groq LLaMA-3 engine to seamlessly translate, optimize, analyze, and explain code within a high-performance monochrome workspace featuring Monaco Editor and visual diffing.</p>
+                        <div class="qq-features-list">
+                            <span>✦ High-fidelity Monaco Editor</span>
+                            <span>✦ Visual diff viewer</span>
+                            <span>✦ Algorithmic complexity analysis</span>
+                            <span>✦ Performance optimization</span>
+                        </div>
+                        <div class="qq-tech-tags">
+                            <span>React 19</span><span>Node.js</span><span>Express</span><span>Groq LLaMA-3</span><span>Monaco Editor</span>
+                        </div>
+                        <div class="qq-project-links">
+                            <a href="https://code-translator-tau.vercel.app/" target="_blank" class="qq-btn green">[ LIVE DEMO ]</a>
+                            <a href="https://github.com/RavikantiAkshay/code-translator" target="_blank" class="qq-btn dark">[ GITHUB ]</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: ARSENAL -->
+            <section id="qq-sec-arsenal" class="qq-section">
+                <div class="qq-section-header">
+                    <h2 class="qq-section-title">🗡 TECH ARSENAL</h2>
+                    <p class="qq-section-desc">Tools, languages, and frameworks mastered across development quests.</p>
+                </div>
+
+                <div class="qq-card qq-arsenal-card">
+                    <div class="qq-arsenal-group">
+                        <h4 class="qq-group-title">LANGUAGES</h4>
+                        <div class="qq-skill-badges">
+                            <span class="skill-badge">[ Python ]</span>
+                            <span class="skill-badge">[ JavaScript ]</span>
+                            <span class="skill-badge">[ C++ ]</span>
+                            <span class="skill-badge">[ TypeScript ]</span>
+                            <span class="skill-badge">[ SQL ]</span>
+                            <span class="skill-badge">[ HTML5 / CSS3 ]</span>
+                        </div>
+                    </div>
+
+                    <div class="qq-arsenal-group">
+                        <h4 class="qq-group-title">DEVELOPMENT &amp; FRAMEWORKS</h4>
+                        <div class="qq-skill-badges">
+                            <span class="skill-badge">[ React ]</span>
+                            <span class="skill-badge">[ Node.js ]</span>
+                            <span class="skill-badge">[ Express ]</span>
+                            <span class="skill-badge">[ Next.js ]</span>
+                            <span class="skill-badge">[ FastAPI ]</span>
+                            <span class="skill-badge">[ Vite ]</span>
+                        </div>
+                    </div>
+
+                    <div class="qq-arsenal-group">
+                        <h4 class="qq-group-title">DATABASES &amp; INFRASTRUCTURE</h4>
+                        <div class="qq-skill-badges">
+                            <span class="skill-badge">[ MongoDB ]</span>
+                            <span class="skill-badge">[ Supabase ]</span>
+                            <span class="skill-badge">[ PostgreSQL ]</span>
+                            <span class="skill-badge">[ Docker ]</span>
+                            <span class="skill-badge">[ Git / GitHub ]</span>
+                        </div>
+                    </div>
+
+                    <div class="qq-arsenal-group">
+                        <h4 class="qq-group-title">AI &amp; INTELLIGENCE</h4>
+                        <div class="qq-skill-badges">
+                            <span class="skill-badge">[ Groq API ]</span>
+                            <span class="skill-badge">[ OpenRouter ]</span>
+                            <span class="skill-badge">[ LangChain ]</span>
+                            <span class="skill-badge">[ PyTorch ]</span>
+                            <span class="skill-badge">[ OpenCV ]</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: ADVENTURES -->
+            <section id="qq-sec-adventures" class="qq-section">
+                <div class="qq-section-header">
+                    <h2 class="qq-section-title">📜 ADVENTURES</h2>
+                    <p class="qq-section-desc">Work Experience &amp; Professional Quests.</p>
+                </div>
+
+                <div class="qq-timeline">
+                    <!-- Experience 1: NTPC Ramagundam -->
+                    <div class="qq-card qq-timeline-card">
+                        <div class="qq-timeline-year">MAY 2026 – JUN 2026</div>
+                        <h3 class="qq-timeline-role">Summer Intern - Generator Protection</h3>
+                        <p class="qq-timeline-org">NTPC Ramagundam</p>
+                        <ul class="qq-timeline-bullets">
+                            <li>Investigated relay coordination and differential protection schemes for large thermal generators.</li>
+                            <li>Analyzed the implementation of stator earth fault, reverse power, and overcurrent relay trip logic mechanisms.</li>
+                        </ul>
+                        <div class="qq-tech-tags mt-2">
+                            <span>Generator Protection</span><span>Relay Coordination</span><span>Differential Protection</span><span>Trip Logic</span><span>Power Systems</span>
+                        </div>
+                    </div>
+
+                    <!-- Experience 2: NxtWave -->
+                    <div class="qq-card qq-timeline-card">
+                        <div class="qq-timeline-year">FEB 2026</div>
+                        <h3 class="qq-timeline-role">Python Dev - AI Code Review Assistant</h3>
+                        <p class="qq-timeline-org">NxtWave</p>
+                        <ul class="qq-timeline-bullets">
+                            <li>Developed a Python-based intelligent code review assistant integrating the Groq Llama-3.3-70B model for elite algorithmic analysis.</li>
+                            <li>Engineered automated prompt pipelines that convert complex static analysis and syntax evaluation into highly actionable, step-by-step developer feedback.</li>
+                        </ul>
+                        <div class="qq-tech-tags mt-2">
+                            <span>Python</span><span>Groq LLaMA 3.3 70B</span><span>Static Analysis</span><span>Prompt Engineering</span><span>AST Parsing</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 5: EDUCATION & ENDPOINT -->
+            <section id="qq-sec-education" class="qq-section">
+                <div class="qq-card qq-education-card">
+                    <div class="qq-edu-icon">🎓</div>
+                    <h3 class="qq-edu-header">CURRENT QUEST</h3>
+                    <h2 class="qq-edu-inst">IIT BHILAI</h2>
+                    <p class="qq-edu-degree">B.Tech. Electrical Engineering</p>
+                    <div class="qq-edu-meta">
+                        <span>2023 – 2027</span> • <span class="cgpa-highlight">CGPA: 8.91</span>
+                    </div>
+                </div>
+
+                <!-- QUEST COMPLETE ENDPOINT -->
+                <div class="qq-card qq-complete-card">
+                    <div class="pixel-corner tl"></div><div class="pixel-corner tr"></div>
+                    <div class="pixel-corner bl"></div><div class="pixel-corner br"></div>
+
+                    <h2 class="qq-complete-title">🏆 QUEST COMPLETE</h2>
+                    <p class="qq-complete-text">You've seen the quick dossier essentials! Ready to step into the interactive 2D pixel world?</p>
+                    
+                    <div class="qq-complete-actions">
+                        <button class="qq-btn-large purple" id="qq-btn-enter-world">🗡️ ENTER FULL ADVENTURE</button>
+                        <div class="qq-sub-actions">
+                            <a href="mailto:ravikantiakshay15@gmail.com" class="qq-btn gold">[ CONTACT AKSHAY ]</a>
+                            <a href="https://github.com/RavikantiAkshay" target="_blank" class="qq-btn dark">[ GITHUB ]</a>
+                            <a href="https://linkedin.com/in/ravikanti-akshay" target="_blank" class="qq-btn gold">[ LINKEDIN ]</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
 
     <!-- Dialogue System Overlay -->
     <div id="dialogue-backdrop"></div>
