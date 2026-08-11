@@ -283,7 +283,43 @@ const interactables = {
 };
 
 let activeInteractable = null;
-let isOverlayActive = false;
+let isOverlayActive = true;
+
+// --- CHOOSE YOUR QUEST SYSTEM ---
+function initQuestModal() {
+    const questOverlay = document.getElementById('quest-modal-overlay');
+    const quickCard = document.getElementById('quest-card-quick');
+    const fullCard = document.getElementById('quest-card-full');
+
+    if (questOverlay && questOverlay.style.display !== 'none') {
+        isOverlayActive = true;
+    }
+
+    function closeQuestModal() {
+        if (questOverlay) {
+            questOverlay.style.display = 'none';
+        }
+        isOverlayActive = false;
+    }
+
+    if (fullCard) {
+        fullCard.addEventListener('click', () => {
+            closeQuestModal();
+        });
+    }
+
+    if (quickCard) {
+        quickCard.addEventListener('click', () => {
+            closeQuestModal();
+        });
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initQuestModal);
+} else {
+    initQuestModal();
+}
 
 let screenShake = 0;
 let currentSpeechBubble = null;

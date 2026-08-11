@@ -2230,3 +2230,425 @@ canvas {
         background: rgba(255, 69, 0, 0.4);
     }
 }
+
+/* ========================================================================= */
+/* CHOOSE YOUR QUEST OVERLAY */
+/* ========================================================================= */
+
+/* ========================================================================= */
+/* CHOOSE YOUR QUEST OVERLAY (RETRO 16-BIT RPG GAMIFIED STYLING) */
+/* ========================================================================= */
+
+.quest-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(6, 4, 10, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    image-rendering: pixelated;
+}
+
+.quest-modal-box {
+    position: relative;
+    width: 100%;
+    max-width: 780px;
+    background: #110d16;
+    background-image: 
+        radial-gradient(circle at 50% 0%, rgba(168, 85, 247, 0.15), transparent 70%),
+        linear-gradient(rgba(18, 16, 24, 0) 50%, rgba(0, 0, 0, 0.5) 50%);
+    background-size: 100% 100%, 100% 4px; /* Subtle pixel scanline texture */
+    border: 4px solid #4a3b2c;
+    outline: 4px solid #1a120b;
+    box-shadow: 
+        0 0 0 8px #09070c,
+        0 25px 60px rgba(0, 0, 0, 0.95),
+        inset 0 0 0 2px #7a6349,
+        inset 0 0 35px rgba(0, 0, 0, 0.9),
+        0 0 25px rgba(212, 175, 55, 0.25);
+    padding: 36px 40px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    user-select: none;
+    color: #ffffff;
+    font-family: 'Press Start 2P', monospace;
+}
+
+/* Retro Pixel Corner Brackets */
+.pixel-corner {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background: #f1c40f;
+    box-shadow: 0 0 8px rgba(241, 196, 15, 0.8);
+    z-index: 10;
+}
+.pixel-corner.tl { top: -6px; left: -6px; }
+.pixel-corner.tr { top: -6px; right: -6px; }
+.pixel-corner.bl { bottom: -6px; left: -6px; }
+.pixel-corner.br { bottom: -6px; right: -6px; }
+
+/* Header */
+.quest-modal-header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.quest-modal-title {
+    margin: 0;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 20px;
+    color: #f8fafc;
+    letter-spacing: 2px;
+    text-shadow: 3px 3px 0 #000, 0 0 12px rgba(248, 250, 252, 0.4);
+}
+
+.quest-modal-subtitle {
+    margin: 0;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    color: #94a3b8;
+    line-height: 1.6;
+    letter-spacing: 0.5px;
+}
+
+.quest-modal-question {
+    margin: 2px 0 0 0;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    color: #c084fc;
+    text-shadow: 2px 2px 0 #000, 0 0 10px rgba(192, 132, 252, 0.6);
+}
+
+.quest-modal-divider {
+    width: 100%;
+    max-width: 360px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #4a3b2c 25%, #f1c40f 50%, #4a3b2c 75%, transparent);
+    position: relative;
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.quest-modal-divider span {
+    background: #110d16;
+    padding: 0 10px;
+    color: #f1c40f;
+    font-size: 10px;
+    text-shadow: 0 0 6px #f1c40f;
+}
+
+/* Cards Grid Container */
+.quest-cards-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 28px;
+    width: 100%;
+    max-width: 680px;
+}
+
+/* Gamified 16-Bit Pixel RPG Quest Card */
+.quest-card {
+    flex: 1;
+    position: relative;
+    background: #131715;
+    border: 4px solid #2d3748;
+    box-shadow: 
+        0 0 0 2px #000,
+        0 8px 20px rgba(0, 0, 0, 0.8),
+        inset 0 0 15px rgba(0, 0, 0, 0.8);
+    padding: 20px 18px 22px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    user-select: none;
+    overflow: hidden;
+}
+
+/* Pixel inner border line */
+.card-pixel-border {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    right: 3px;
+    bottom: 3px;
+    border: 1px dashed rgba(255, 255, 255, 0.12);
+    pointer-events: none;
+}
+
+/* Quick Quest Card (Retro Green Theme) */
+.quest-card-quick {
+    background: linear-gradient(180deg, #0d2114 0%, #08140c 100%);
+    border-color: #1e5e33;
+}
+
+.quest-card-quick:hover {
+    border-color: #22c55e;
+    transform: translateY(-6px);
+    box-shadow: 
+        0 0 0 2px #000,
+        0 14px 30px rgba(34, 197, 94, 0.3),
+        0 0 20px rgba(34, 197, 94, 0.4),
+        inset 0 0 25px rgba(34, 197, 94, 0.2);
+}
+
+.quest-card-quick .quest-card-header-banner {
+    background: rgba(14, 46, 25, 0.9);
+    border: 2px solid #22c55e;
+    box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.2), 0 2px 0 #000;
+}
+
+.quest-card-quick .quest-card-icon {
+    color: #4ade80;
+    text-shadow: 0 0 12px rgba(74, 222, 128, 0.9);
+}
+
+.quest-card-quick .quest-card-title {
+    color: #4ade80;
+    text-shadow: 2px 2px 0 #000, 0 0 8px rgba(74, 222, 128, 0.5);
+}
+
+.quest-card-quick .quest-card-badge {
+    border: 2px solid #16a34a;
+    color: #86efac;
+    background: #052e16;
+    box-shadow: 0 2px 0 #000;
+}
+
+.quest-card-quick .card-action-btn {
+    background: #15803d;
+    border: 3px solid #4ade80;
+    color: #ffffff;
+    box-shadow: 0 4px 0 #052e16, 0 0 10px rgba(74, 222, 128, 0.4);
+}
+
+.quest-card-quick:hover .card-action-btn {
+    background: #22c55e;
+    box-shadow: 0 2px 0 #052e16, 0 0 15px rgba(74, 222, 128, 0.8);
+    transform: translateY(2px);
+}
+
+/* Full Adventure Card (Retro Purple Theme) */
+.quest-card-full {
+    background: linear-gradient(180deg, #1f0f2e 0%, #11071c 100%);
+    border-color: #5b21b6;
+}
+
+.quest-card-full:hover {
+    border-color: #a855f7;
+    transform: translateY(-6px);
+    box-shadow: 
+        0 0 0 2px #000,
+        0 14px 30px rgba(168, 85, 247, 0.3),
+        0 0 20px rgba(168, 85, 247, 0.4),
+        inset 0 0 25px rgba(168, 85, 247, 0.2);
+}
+
+.quest-card-full .quest-card-header-banner {
+    background: rgba(45, 18, 74, 0.9);
+    border: 2px solid #a855f7;
+    box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.2), 0 2px 0 #000;
+}
+
+.quest-card-full .quest-card-icon {
+    color: #c084fc;
+    text-shadow: 0 0 12px rgba(192, 132, 252, 0.9);
+}
+
+.quest-card-full .quest-card-title {
+    color: #c084fc;
+    text-shadow: 2px 2px 0 #000, 0 0 8px rgba(192, 132, 252, 0.5);
+}
+
+.quest-card-full .quest-card-badge {
+    border: 2px solid #9333ea;
+    color: #e9d5ff;
+    background: #3b0764;
+    box-shadow: 0 2px 0 #000;
+}
+
+.quest-card-full .card-action-btn {
+    background: #7e22ce;
+    border: 3px solid #c084fc;
+    color: #ffffff;
+    box-shadow: 0 4px 0 #3b0764, 0 0 10px rgba(192, 132, 252, 0.4);
+}
+
+.quest-card-full:hover .card-action-btn {
+    background: #a855f7;
+    box-shadow: 0 2px 0 #3b0764, 0 0 15px rgba(192, 132, 252, 0.8);
+    transform: translateY(2px);
+}
+
+/* Banner Header inside Card */
+.quest-card-header-banner {
+    width: 100%;
+    padding: 10px 8px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-sizing: border-box;
+}
+
+.quest-card-icon {
+    font-size: 22px;
+    line-height: 1;
+}
+
+.quest-card-title {
+    margin: 0;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+/* Retro Pixel Badge */
+.quest-card-badge {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    padding: 6px 12px;
+    border-radius: 2px;
+    letter-spacing: 0.5px;
+}
+
+/* Description Text */
+.quest-card-desc {
+    text-align: center;
+    color: #e2e8f0;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.quest-card-desc p {
+    margin: 0;
+}
+
+/* Action Button at Bottom of Card */
+.card-action-btn {
+    width: 100%;
+    padding: 10px 0;
+    text-align: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    border-radius: 3px;
+    margin-top: 4px;
+    transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+/* Bottom Guide Box (AKBot-e7 Your Guide) */
+.quest-guide-box {
+    width: 100%;
+    max-width: 680px;
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    margin-top: 4px;
+}
+
+.quest-guide-avatar-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.quest-guide-tag {
+    background: #141018;
+    border: 2px solid #f1c40f;
+    border-radius: 4px;
+    padding: 5px 8px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    color: #ffffff;
+    text-align: center;
+    line-height: 1.4;
+    box-shadow: 0 3px 0 #000;
+}
+
+.quest-guide-tag span {
+    color: #f1c40f;
+    font-size: 7px;
+}
+
+.quest-guide-portrait {
+    width: 64px;
+    height: 64px;
+    background-image: url('../assets/images/characters/akbot-e7.png');
+    background-size: 360px 360px;
+    background-position: -60px -19px;
+    background-repeat: no-repeat;
+    border: 3px solid #f1c40f;
+    border-radius: 6px;
+    background-color: #111;
+    box-shadow: 0 4px 0 #000, 0 0 10px rgba(241, 196, 15, 0.3);
+    image-rendering: pixelated;
+}
+
+.quest-guide-speech {
+    flex-grow: 1;
+    background: #0f0c14;
+    border: 3px solid #8c734b;
+    border-radius: 6px;
+    padding: 14px 18px;
+    position: relative;
+    box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.8), 0 4px 0 #000;
+    font-family: 'Share Tech Mono', monospace;
+}
+
+.quest-guide-speech p {
+    margin: 0 0 5px 0;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    color: #f8fafc;
+    line-height: 1.4;
+}
+
+.quest-guide-speech p:last-of-type {
+    margin-bottom: 0;
+}
+
+.quest-guide-arrow {
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+    font-size: 10px;
+    color: #f1c40f;
+    animation: blink 1.5s infinite;
+}
+
+@media (max-width: 680px) {
+    .quest-cards-container {
+        flex-direction: column;
+    }
+    .quest-modal-box {
+        padding: 24px 20px;
+    }
+    .quest-modal-title {
+        font-size: 15px;
+    }
+}

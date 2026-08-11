@@ -6,7 +6,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Permanent+Marker&family=Special+Elite&family=Kalam:wght@400;700&family=Caveat:wght@400;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&family=Permanent+Marker&family=Special+Elite&family=Kalam:wght@400;700&family=Caveat:wght@400;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="css/style.css?v=3">
     <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
@@ -22,6 +22,72 @@
         <span style="font-size: 24px;">🪙</span>
         <span id="coin-counter"
             style="color: #ffd700; font-family: 'Press Start 2P', monospace; font-size: 20px; text-shadow: 2px 2px 0 #000;">0</span>
+    </div>
+
+    <!-- Choose Your Quest Overlay -->
+    <div id="quest-modal-overlay" class="quest-modal-overlay">
+        <div class="quest-modal-box">
+            <!-- Corner Brackets -->
+            <div class="pixel-corner tl"></div>
+            <div class="pixel-corner tr"></div>
+            <div class="pixel-corner bl"></div>
+            <div class="pixel-corner br"></div>
+
+            <!-- Header -->
+            <div class="quest-modal-header">
+                <h2 class="quest-modal-title">✦ CHOOSE YOUR QUEST ✦</h2>
+                <p class="quest-modal-subtitle">Every adventurer has a different amount of time.</p>
+                <p class="quest-modal-question">How do you want to explore?</p>
+                <div class="quest-modal-divider"><span>◆</span></div>
+            </div>
+
+            <!-- Quest Cards Container -->
+            <div class="quest-cards-container">
+                <!-- Quick Quest Card -->
+                <div class="quest-card quest-card-quick" id="quest-card-quick">
+                    <div class="card-pixel-border"></div>
+                    <div class="quest-card-header-banner">
+                        <span class="quest-card-icon">⚡</span>
+                        <h3 class="quest-card-title">QUICK QUEST</h3>
+                    </div>
+                    <div class="quest-card-badge">⏱ ~30 SECONDS</div>
+                    <div class="quest-card-desc">
+                        <p>The essentials.</p>
+                        <p>Fast &amp; focused.</p>
+                    </div>
+                    <div class="card-action-btn">SELECT ⚡</div>
+                </div>
+
+                <!-- Full Adventure Card -->
+                <div class="quest-card quest-card-full" id="quest-card-full">
+                    <div class="card-pixel-border"></div>
+                    <div class="quest-card-header-banner">
+                        <span class="quest-card-icon">🗡️</span>
+                        <h3 class="quest-card-title">FULL ADVENTURE</h3>
+                    </div>
+                    <div class="quest-card-badge">⚔️ 5+ MINUTES</div>
+                    <div class="quest-card-desc">
+                        <p>Explore everything.</p>
+                        <p>There are secrets.</p>
+                    </div>
+                    <div class="card-action-btn">SELECT 🗡️</div>
+                </div>
+            </div>
+
+            <!-- Guide Footer (AKBot-e7 Your Guide) -->
+            <div class="quest-guide-box">
+                <div class="quest-guide-avatar-wrap">
+                    <div class="quest-guide-tag">AKBOT-E7<br><span>&lt;YOUR GUIDE&gt;</span></div>
+                    <div class="quest-guide-portrait"></div>
+                </div>
+                <div class="quest-guide-speech">
+                    <p><strong>Welcome, Adventurer!</strong></p>
+                    <p>I'm AKBot-e7, your guide in this journey.</p>
+                    <p>Choose your quest and let's begin!</p>
+                    <span class="quest-guide-arrow">▼</span>
+                </div>
+            </div>
+        </div>
     </div>
 
 
